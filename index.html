@@ -24,10 +24,66 @@
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
     .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
     .tab-panel { display: none; }
-    .tab-panel.active { display: flex; animation: fadeIn 0.2s ease-out; }
+    .tab-panel.active { display: flex; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* DASHBOARD ANIMATIONS & MICRO-INTERACTIONS */
+    .dash-card {
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1), border-color 0.25s ease;
+    }
+    .dash-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 105, 72, 0.25);
+    }
+    @keyframes pulseHeart {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+    .animate-heartbeat {
+      animation: pulseHeart 1.6s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes waveMotion {
+      0% { transform: translateX(0) translateZ(0) scaleY(1); }
+      50% { transform: translateX(-25%) translateZ(0) scaleY(0.85); }
+      100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+    }
+    .wave-animated {
+      animation: waveMotion 6s linear infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 4px rgba(0, 105, 72, 0.4)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(0, 105, 72, 0.8)); }
+    }
+    .animate-glow-ring {
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    .chart-bar-rect {
+      transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1), y 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      cursor: pointer;
+    }
+    .chart-bar-rect:hover {
+      opacity: 0.85;
+      filter: drop-shadow(0 4px 8px rgba(0, 105, 72, 0.3));
+    }
+    .chart-point {
+      transition: r 0.2s ease, filter 0.2s ease;
+      cursor: pointer;
+    }
+    .chart-point:hover {
+      r: 6;
+      filter: drop-shadow(0 0 6px rgba(0, 105, 72, 0.8));
+    }
+    .chart-tooltip {
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .chart-panel {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @media print {
       body { background-color: #ffffff !important; }
@@ -181,11 +237,218 @@
         <!-- Responsive Dashboard Grid for Hoy -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full">
 
+          <!-- FULL-WIDTH DASHBOARD ANALYTICS & CHARTS HUB -->
+          <div id="dashboard-analytics-hub" class="lg:col-span-12 dash-card bg-surface-container-lowest rounded-3xl p-5 sm:p-6 shadow-sm border border-outline-variant/20 flex flex-col gap-4 transition-all">
+            <!-- Hub Header with Sub-tabs -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/20 pb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-sm">
+                  <span class="material-symbols-outlined text-[24px]">analytics</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-display text-[18px] lg:text-[20px] font-bold text-on-surface">Panel de Analíticas y Tendencias</h3>
+                    <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-extrabold uppercase tracking-wider">En Vivo</span>
+                  </div>
+                  <p class="text-[12px] text-outline">Balance calórico, curvas de salud y cumplimiento de metas</p>
+                </div>
+              </div>
+
+              <!-- Chart Mode Switcher -->
+              <div class="bg-surface-container-low p-1 rounded-2xl flex items-center gap-1 border border-outline-variant/20 shadow-sm self-start sm:self-auto">
+                <button type="button" onclick="switchChartTab('calorias')" id="chart-tab-calorias" class="chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all bg-surface text-primary shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[16px]">bar_chart</span>
+                  <span>Calorías Semanal</span>
+                </button>
+                <button type="button" onclick="switchChartTab('presion')" id="chart-tab-presion" class="chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[16px]">show_chart</span>
+                  <span>Presión & Pulso</span>
+                </button>
+                <button type="button" onclick="switchChartTab('peso')" id="chart-tab-peso" class="chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[16px]">trending_down</span>
+                  <span>Meta Peso</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- TAB 1: WEEKLY CALORIE & BURN BAR CHART -->
+            <div id="chart-panel-calorias" class="chart-panel flex flex-col gap-4">
+              <!-- Summary KPI Strip -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Promedio Diario</span>
+                  <span id="kpi-avg-consumed" class="font-display text-[18px] font-bold text-on-surface mt-0.5">1,620 kcal</span>
+                  <span class="text-[10px] text-primary font-semibold">Dentro de meta</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Déficit Acumulado</span>
+                  <span id="kpi-total-deficit" class="font-display text-[18px] font-bold text-primary mt-0.5">-2,940 kcal</span>
+                  <span class="text-[10px] text-outline">~0.38 kg grasa</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Gasto por Ejercicio</span>
+                  <span id="kpi-total-burned" class="font-display text-[18px] font-bold text-secondary mt-0.5">2,340 kcal</span>
+                  <span class="text-[10px] text-outline">7 días activos</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Día Más Favorable</span>
+                  <span id="kpi-best-day" class="font-display text-[18px] font-bold text-tertiary mt-0.5">Miércoles</span>
+                  <span class="text-[10px] text-outline">-510 kcal neto</span>
+                </div>
+              </div>
+
+              <!-- Interactive SVG Bar Chart -->
+              <div class="relative w-full bg-surface-container-lowest rounded-2xl p-3 sm:p-4 border border-outline-variant/15">
+                <!-- Legend & Goal Marker -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-[11px]">
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1.5">
+                      <span class="w-3 h-3 rounded bg-primary"></span>
+                      <span class="text-on-surface-variant font-medium">Consumidas</span>
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                      <span class="w-3 h-3 rounded bg-secondary"></span>
+                      <span class="text-on-surface-variant font-medium">Quemadas (Ejercicio)</span>
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-outline">
+                    <span class="w-4 h-0.5 border-t-2 border-dashed border-error"></span>
+                    <span>Límite de Meta (<strong id="chart-target-kcal-label">1,850 kcal</strong>)</span>
+                  </div>
+                </div>
+
+                <!-- Responsive SVG Graphic -->
+                <div class="w-full overflow-x-auto no-scrollbar">
+                  <svg id="weekly-bar-svg" class="w-full min-w-[500px] h-48 sm:h-56" viewBox="0 0 650 200" preserveAspectRatio="none">
+                    <!-- Rendered dynamically -->
+                  </svg>
+                </div>
+
+                <!-- Floating Tooltip for SVG Bar -->
+                <div id="chart-bar-tooltip" class="chart-tooltip opacity-0 absolute pointer-events-none z-30 bg-inverse-surface text-inverse-on-surface px-3 py-2 rounded-xl shadow-xl text-[11px] flex flex-col gap-0.5 transform -translate-x-1/2 -translate-y-full">
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: BLOOD PRESSURE & PULSE BEZIER CURVE -->
+            <div id="chart-panel-presion" class="chart-panel hidden flex-col gap-4">
+              <!-- Vitals Summary Strip -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Última Lectura</span>
+                  <span class="font-display text-[18px] font-bold text-primary mt-0.5">118 / 76 <span class="text-[11px] font-normal text-outline">mmHg</span></span>
+                  <span class="text-[10px] text-primary font-bold">Óptima (AHA/ESC)</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Pulso en Reposo</span>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <span class="material-symbols-outlined text-error text-[18px] animate-heartbeat">favorite</span>
+                    <span class="font-display text-[18px] font-bold text-on-surface">68 <span class="text-[11px] font-normal text-outline">lpm</span></span>
+                  </div>
+                  <span class="text-[10px] text-primary font-semibold">Ritmo sinusal normal</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Presión de Pulso</span>
+                  <span class="font-display text-[18px] font-bold text-on-surface mt-0.5">42 <span class="text-[11px] font-normal text-outline">mmHg</span></span>
+                  <span class="text-[10px] text-outline">Elasticidad arterial buena</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Cumplimiento Guía</span>
+                  <span class="font-display text-[18px] font-bold text-secondary mt-0.5">100% en meta</span>
+                  <span class="text-[10px] text-outline">Últimos 7 días</span>
+                </div>
+              </div>
+
+              <!-- Interactive Bezier Curve Chart -->
+              <div class="relative w-full bg-surface-container-lowest rounded-2xl p-3 sm:p-4 border border-outline-variant/15">
+                <div class="flex items-center justify-between text-[11px] mb-2">
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1.5 text-primary font-bold">
+                      <span class="w-3 h-3 rounded-full bg-primary"></span>
+                      <span>Sistólica (Alta)</span>
+                    </span>
+                    <span class="flex items-center gap-1.5 text-secondary font-bold">
+                      <span class="w-3 h-3 rounded-full bg-secondary"></span>
+                      <span>Diastólica (Baja)</span>
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-primary bg-primary-fixed px-2 py-0.5 rounded-full font-bold">Zona Óptima: Verde (&lt; 120/80)</span>
+                </div>
+                
+                <div class="w-full overflow-x-auto no-scrollbar">
+                  <svg id="pressure-chart-svg" class="w-full min-w-[500px] h-48 sm:h-56" viewBox="0 0 650 200" preserveAspectRatio="none">
+                    <!-- Rendered dynamically -->
+                  </svg>
+                </div>
+
+                <!-- Floating Tooltip for Pressure Chart -->
+                <div id="chart-pressure-tooltip" class="chart-tooltip opacity-0 absolute pointer-events-none z-30 bg-inverse-surface text-inverse-on-surface px-3 py-2 rounded-xl shadow-xl text-[11px] flex flex-col gap-0.5 transform -translate-x-1/2 -translate-y-full">
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: WEIGHT GOAL PROGRESS & MILESTONES -->
+            <div id="chart-panel-peso" class="chart-panel hidden flex-col gap-4">
+              <!-- Weight Progress Milestone Card -->
+              <div class="p-4 sm:p-5 rounded-2xl bg-surface-container-low flex flex-col gap-4 border border-outline-variant/15">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h4 class="font-display text-[16px] font-bold text-on-surface">Trayectoria hacia tu Peso Saludable</h4>
+                    <p class="text-[12px] text-outline">Progreso real medido con ritmo calórico sostenible</p>
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-display text-[26px] font-extrabold text-primary" id="journey-current-weight">72.0 kg</span>
+                    <span class="text-[12px] text-outline font-semibold">Meta: <strong id="journey-target-weight" class="text-on-surface">65.0 kg</strong></span>
+                  </div>
+                </div>
+
+                <!-- Animated Progress Bar with Milestone Markers -->
+                <div class="relative w-full pt-4 pb-2">
+                  <div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden">
+                    <div id="weight-journey-bar" class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000" style="width: 36.4%;"></div>
+                  </div>
+                  <!-- Milestone Flags -->
+                  <div class="flex justify-between items-center text-[11px] mt-2">
+                    <span class="font-bold text-outline">Inicio: 76.0 kg</span>
+                    <span class="font-bold text-primary px-2 py-0.5 rounded-full bg-primary-fixed">-4.0 kg logrados (36%)</span>
+                    <span class="font-bold text-on-surface">Objetivo: 65.0 kg</span>
+                  </div>
+                </div>
+
+                <!-- 3 Milestone Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                  <div class="p-3 rounded-xl bg-surface flex items-center gap-2.5 border border-outline-variant/15 shadow-sm">
+                    <span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[13px] shrink-0">✓</span>
+                    <div>
+                      <span class="text-[10px] font-bold text-outline block">Hito 1 Superado</span>
+                      <span class="text-[12px] font-bold text-on-surface">-4 kg de grasa inicial</span>
+                    </div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-surface flex items-center gap-2.5 border border-primary/30 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full animate-ping m-1.5"></div>
+                    <span class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-[13px] shrink-0">2</span>
+                    <div>
+                      <span class="text-[10px] font-bold text-primary block">Próximo Hito (En curso)</span>
+                      <span class="text-[12px] font-bold text-on-surface">Bajar de 70 kg</span>
+                    </div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-surface flex items-center gap-2.5 border border-outline-variant/15 shadow-sm opacity-80">
+                    <span class="w-8 h-8 rounded-full bg-surface-container text-outline flex items-center justify-center font-bold text-[13px] shrink-0">★</span>
+                    <div>
+                      <span class="text-[10px] font-bold text-outline block">Meta Final</span>
+                      <span class="text-[12px] font-bold text-on-surface">65.0 kg (IMC Óptimo)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Left Column (lg:col-span-6): Energy Rings, Macros & Hydration -->
           <div class="lg:col-span-6 flex flex-col gap-5">
 
             <!-- Energy & Rings Card -->
-            <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-4">
+            <div class="dash-card bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-4">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col">
                   <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Energía Disponible</span>
@@ -281,12 +544,12 @@
               </div>
             </div>
 
-            <!-- SMART HYDRATION TRACKER -->
-            <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
+            <!-- SMART HYDRATION TRACKER WITH ANIMATED WAVE GAUGE -->
+            <div class="dash-card bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <div class="w-9 h-9 rounded-xl bg-primary-fixed/50 text-primary flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+                    <span class="material-symbols-outlined text-[20px] animate-pulse" style="font-variation-settings: 'FILL' 1;">water_drop</span>
                   </div>
                   <div>
                     <h3 class="font-display text-[16px] font-bold text-on-surface">Hidratación Inteligente</h3>
@@ -298,16 +561,24 @@
                 </span>
               </div>
 
-              <!-- Water progress -->
-              <div class="flex items-baseline justify-between">
-                <div class="flex items-baseline gap-1">
-                  <span id="water-current-ml" class="font-display text-[26px] font-bold text-primary">1,500</span>
+              <!-- Animated Liquid Wave Gauge -->
+              <div class="relative w-full h-20 rounded-2xl bg-gradient-to-r from-emerald-50/40 to-teal-50/40 overflow-hidden border border-outline-variant/20 flex items-center justify-between px-4">
+                <div id="water-wave-fill" class="absolute bottom-0 left-0 right-0 bg-primary/15 transition-all duration-700 ease-out" style="height: 66%;">
+                  <svg class="absolute -top-3 left-0 w-[200%] h-4 wave-animated fill-primary/25" viewBox="0 0 1200 40" preserveAspectRatio="none">
+                    <path d="M0,20 C150,40 350,0 500,20 C650,40 850,0 1000,20 C1150,40 1200,20 1200,20 L1200,40 L0,40 Z"></path>
+                  </svg>
+                </div>
+                <div class="relative z-10 flex items-baseline gap-1">
+                  <span id="water-current-ml" class="font-display text-[28px] font-bold text-primary">1,500</span>
                   <span class="text-[13px] font-semibold text-outline">/ <span id="water-target-ml">2,250</span> ml</span>
                 </div>
-                <span id="water-pct-label" class="text-[12px] font-bold text-primary">66%</span>
+                <div class="relative z-10 flex items-center gap-2">
+                  <span id="water-pct-label" class="font-display text-[20px] font-extrabold text-primary">66%</span>
+                </div>
               </div>
-              <div class="w-full h-2.5 bg-surface-container rounded-full overflow-hidden">
-                <div id="water-progress-bar" class="h-full bg-primary rounded-full transition-all duration-500" style="width: 66%;"></div>
+
+              <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+                <div id="water-progress-bar" class="h-full bg-primary rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(0,105,72,0.4)]" style="width: 66%;"></div>
               </div>
 
               <!-- Interactive Glass Controls -->
@@ -325,11 +596,11 @@
             </div>
 
             <!-- Heart Protection Score Card -->
-            <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
+            <div class="dash-card bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <div class="w-9 h-9 rounded-xl bg-error-container text-on-error-container flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                    <span class="material-symbols-outlined text-[20px] animate-heartbeat" style="font-variation-settings: 'FILL' 1;">favorite</span>
                   </div>
                   <div>
                     <span class="font-display text-[16px] text-on-surface font-bold">Protección del Corazón</span>
@@ -382,7 +653,7 @@
           <div class="lg:col-span-6 flex flex-col gap-5">
 
             <!-- MEDICATION & PILLBOX REMINDERS (NEW FEATURE) -->
-            <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
+            <div class="dash-card bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <div class="w-9 h-9 rounded-xl bg-secondary-fixed/50 text-secondary flex items-center justify-center">
@@ -412,7 +683,7 @@
             </div>
 
             <!-- Today's Meals Section -->
-            <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
+            <div class="dash-card bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <h3 class="font-display text-[18px] text-on-surface font-bold">Comidas de Hoy</h3>
@@ -2095,6 +2366,353 @@
       return { consumed, burned, carbs, protein, fat, fiber, goodFat, effectiveBudget, remaining, ratio, targetWaterMl };
     }
 
+    // ==========================================
+    // DASHBOARD ANALYTICS & CHARTS ENGINE
+    // ==========================================
+    let currentChartTab = 'calorias';
+
+    const WEEKLY_DATA = [
+      { day: 'Lun', label: '13 Nov', consumed: 1680, burned: 320 },
+      { day: 'Mar', label: '14 Nov', consumed: 1750, burned: 280 },
+      { day: 'Mié', label: '15 Nov', consumed: 1540, burned: 450 },
+      { day: 'Jue', label: '16 Nov', consumed: 1620, burned: 310 },
+      { day: 'Vie', label: '17 Nov', consumed: 1820, burned: 420 },
+      { day: 'Sáb', label: '18 Nov', consumed: 1590, burned: 260 },
+      { day: 'Hoy', label: '19 Nov', consumed: 0, burned: 0 }
+    ];
+
+    const PRESSURE_HISTORY = [
+      { day: 'Lun', sys: 124, dia: 82, pulse: 72, time: '08:15' },
+      { day: 'Mar', sys: 122, dia: 80, pulse: 70, time: '08:30' },
+      { day: 'Mié', sys: 120, dia: 78, pulse: 69, time: '08:00' },
+      { day: 'Jue', sys: 119, dia: 77, pulse: 68, time: '08:20' },
+      { day: 'Vie', sys: 121, dia: 79, pulse: 71, time: '08:10' },
+      { day: 'Sáb', sys: 118, dia: 76, pulse: 67, time: '09:00' },
+      { day: 'Hoy', sys: 118, dia: 76, pulse: 68, time: '08:30' }
+    ];
+
+    function switchChartTab(tabKey) {
+      currentChartTab = tabKey;
+      ['calorias', 'presion', 'peso'].forEach(k => {
+        const panel = document.getElementById(`chart-panel-${k}`);
+        const btn = document.getElementById(`chart-tab-${k}`);
+        if (panel) {
+          if (k === tabKey) {
+            panel.classList.remove('hidden');
+            panel.classList.add('flex');
+          } else {
+            panel.classList.add('hidden');
+            panel.classList.remove('flex');
+          }
+        }
+        if (btn) {
+          if (k === tabKey) {
+            btn.className = 'chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all bg-surface text-primary shadow-sm flex items-center gap-1.5 whitespace-nowrap';
+          } else {
+            btn.className = 'chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 whitespace-nowrap';
+          }
+        }
+      });
+
+      if (tabKey === 'calorias') renderWeeklyBarChart();
+      if (tabKey === 'presion') renderPressureChart();
+      if (tabKey === 'peso') renderWeightJourney();
+    }
+
+    function animateNumber(elementId, targetValue, duration = 700) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const target = Math.round(Number(targetValue) || 0);
+      const currentText = el.textContent.replace(/[^0-9.-]+/g, '');
+      const start = Number(currentText) || 0;
+      if (start === target) {
+        el.textContent = target.toLocaleString('es-ES');
+        return;
+      }
+      const startTime = performance.now();
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(start + (target - start) * ease);
+        el.textContent = current.toLocaleString('es-ES');
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = target.toLocaleString('es-ES');
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    function renderWeeklyBarChart() {
+      const svg = document.getElementById('weekly-bar-svg');
+      if (!svg) return;
+      const t = getTotals();
+      const goal = appState.goalKcal || 1850;
+
+      const data = JSON.parse(JSON.stringify(WEEKLY_DATA));
+      data[6].consumed = t.consumed;
+      data[6].burned = t.burned;
+
+      const targetLabel = document.getElementById('chart-target-kcal-label');
+      if (targetLabel) targetLabel.textContent = `${goal.toLocaleString('es-ES')} kcal`;
+
+      const avgConsumed = Math.round(data.reduce((s, d) => s + d.consumed, 0) / data.length);
+      const totalBurned = data.reduce((s, d) => s + d.burned, 0);
+      const totalNetDeficit = data.reduce((s, d) => s + (goal - (d.consumed - d.burned)), 0);
+
+      const kpiAvg = document.getElementById('kpi-avg-consumed');
+      if (kpiAvg) kpiAvg.textContent = `${avgConsumed.toLocaleString('es-ES')} kcal`;
+      const kpiDeficit = document.getElementById('kpi-total-deficit');
+      if (kpiDeficit) kpiDeficit.textContent = `${totalNetDeficit >= 0 ? '-' : '+'}${Math.abs(Math.round(totalNetDeficit)).toLocaleString('es-ES')} kcal`;
+      const kpiBurned = document.getElementById('kpi-total-burned');
+      if (kpiBurned) kpiBurned.textContent = `${totalBurned.toLocaleString('es-ES')} kcal`;
+
+      const w = 650;
+      const h = 200;
+      const padLeft = 40;
+      const padRight = 20;
+      const padTop = 20;
+      const padBottom = 35;
+      const chartW = w - padLeft - padRight;
+      const chartH = h - padTop - padBottom;
+      const maxVal = Math.max(2500, goal * 1.25);
+
+      let svgHtml = '';
+      const gridSteps = [500, 1000, 1500, 2000];
+      gridSteps.forEach(stepVal => {
+        const y = padTop + chartH - (stepVal / maxVal) * chartH;
+        svgHtml += `
+          <line x1="${padLeft}" y1="${y}" x2="${w - padRight}" y2="${y}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1" />
+          <text x="${padLeft - 8}" y="${y + 3}" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">${stepVal}</text>
+        `;
+      });
+
+      const goalY = padTop + chartH - (goal / maxVal) * chartH;
+      svgHtml += `
+        <line x1="${padLeft}" y1="${goalY}" x2="${w - padRight}" y2="${goalY}" stroke="#ba1a1a" stroke-dasharray="4,4" stroke-width="1.5" stroke-opacity="0.75" />
+      `;
+
+      const colWidth = chartW / data.length;
+      const barW = Math.min(24, colWidth * 0.38);
+
+      data.forEach((d, idx) => {
+        const cx = padLeft + idx * colWidth + colWidth / 2;
+        const consH = Math.max(4, (d.consumed / maxVal) * chartH);
+        const consY = padTop + chartH - consH;
+
+        const burnH = Math.max(2, (d.burned / maxVal) * chartH);
+        const burnY = padTop + chartH - burnH;
+
+        const xCons = cx - barW - 2;
+        const xBurn = cx + 2;
+
+        const isToday = idx === 6;
+        const isOver = d.consumed > goal;
+        const consColor = isOver ? '#ba1a1a' : (isToday ? '#006d44' : '#1b6b47');
+        const burnColor = '#486558';
+
+        svgHtml += `
+          <g class="chart-bar-group cursor-pointer" onmousemove="showBarTooltip(event, '${d.day}', '${d.label}', ${d.consumed}, ${d.burned}, ${goal})" onmouseleave="hideBarTooltip()">
+            <rect x="${cx - colWidth / 2 + 4}" y="${padTop}" width="${colWidth - 8}" height="${chartH}" rx="8" fill="currentColor" fill-opacity="0" class="hover:fill-opacity-5 transition-all" />
+            <rect class="chart-bar-rect" x="${xCons}" y="${consY}" width="${barW}" height="${consH}" rx="4" fill="${consColor}">
+              <title>${d.day}: ${d.consumed} kcal</title>
+            </rect>
+            <rect class="chart-bar-rect" x="${xBurn}" y="${burnY}" width="${barW}" height="${burnH}" rx="4" fill="${burnColor}" fill-opacity="0.85">
+              <title>${d.day} Actividad: ${d.burned} kcal</title>
+            </rect>
+            <text x="${cx}" y="${h - 15}" fill="${isToday ? '#006d44' : '#666'}" font-size="11" font-weight="${isToday ? '700' : '500'}" text-anchor="middle" font-family="sans-serif">${d.day}</text>
+            <text x="${cx}" y="${h - 4}" fill="#999" font-size="8" text-anchor="middle" font-family="sans-serif">${d.consumed}</text>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = svgHtml;
+    }
+
+    function showBarTooltip(evt, day, dateLabel, consumed, burned, goal) {
+      const tip = document.getElementById('chart-bar-tooltip');
+      if (!tip) return;
+      const net = consumed - burned;
+      const statusText = net <= goal ? '✓ En meta calórica' : '⚠ Excedente calórico';
+      const statusClass = net <= goal ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
+
+      tip.innerHTML = `
+        <div class="font-bold border-b border-white/20 pb-1 mb-1 text-[11px] flex justify-between gap-4">
+          <span>${day} (${dateLabel})</span>
+          <span class="${statusClass}">${statusText}</span>
+        </div>
+        <div class="flex justify-between gap-3 text-[10px]">
+          <span class="text-white/70">Consumo:</span>
+          <span class="font-bold">${consumed.toLocaleString('es-ES')} kcal</span>
+        </div>
+        <div class="flex justify-between gap-3 text-[10px]">
+          <span class="text-white/70">Ejercicio:</span>
+          <span class="font-bold text-teal-300">-${burned.toLocaleString('es-ES')} kcal</span>
+        </div>
+        <div class="flex justify-between gap-3 text-[10px] pt-1 border-t border-white/15">
+          <span class="text-white/70">Balance Neto:</span>
+          <span class="font-extrabold text-white">${net.toLocaleString('es-ES')} kcal</span>
+        </div>
+      `;
+
+      const parentRect = tip.parentElement.getBoundingClientRect();
+      const x = evt.clientX - parentRect.left;
+      const y = evt.clientY - parentRect.top - 12;
+
+      tip.style.left = `${Math.max(60, Math.min(parentRect.width - 60, x))}px`;
+      tip.style.top = `${Math.max(10, y)}px`;
+      tip.style.opacity = '1';
+    }
+
+    function hideBarTooltip() {
+      const tip = document.getElementById('chart-bar-tooltip');
+      if (tip) tip.style.opacity = '0';
+    }
+
+    function renderPressureChart() {
+      const svg = document.getElementById('pressure-chart-svg');
+      if (!svg) return;
+
+      const data = PRESSURE_HISTORY;
+      const w = 650;
+      const h = 200;
+      const padLeft = 40;
+      const padRight = 25;
+      const padTop = 20;
+      const padBottom = 30;
+      const chartW = w - padLeft - padRight;
+      const chartH = h - padTop - padBottom;
+
+      const minVal = 50;
+      const maxVal = 160;
+      const getY = val => padTop + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
+      const getX = idx => padLeft + (idx / (data.length - 1)) * chartW;
+
+      let svgHtml = '';
+
+      const ySysOpt = getY(120);
+      const yDiaOpt = getY(80);
+      const yDiaMin = getY(60);
+      svgHtml += `
+        <rect x="${padLeft}" y="${yDiaOpt}" width="${chartW}" height="${yDiaMin - yDiaOpt}" fill="#486558" fill-opacity="0.06" />
+        <rect x="${padLeft}" y="${ySysOpt}" width="${chartW}" height="${getY(90) - ySysOpt}" fill="#006d44" fill-opacity="0.08" />
+        <line x1="${padLeft}" y1="${ySysOpt}" x2="${w - padRight}" y2="${ySysOpt}" stroke="#006d44" stroke-dasharray="3,3" stroke-width="1" stroke-opacity="0.4" />
+        <text x="${padLeft - 6}" y="${ySysOpt + 3}" fill="#006d44" font-size="9" text-anchor="end" font-family="sans-serif">120</text>
+        <line x1="${padLeft}" y1="${yDiaOpt}" x2="${w - padRight}" y2="${yDiaOpt}" stroke="#486558" stroke-dasharray="3,3" stroke-width="1" stroke-opacity="0.4" />
+        <text x="${padLeft - 6}" y="${yDiaOpt + 3}" fill="#486558" font-size="9" text-anchor="end" font-family="sans-serif">80</text>
+      `;
+
+      function buildBezierPath(points) {
+        if (points.length === 0) return '';
+        let d = `M ${points[0].x} ${points[0].y}`;
+        for (let i = 0; i < points.length - 1; i++) {
+          const p0 = points[i];
+          const p1 = points[i + 1];
+          const cpX = (p0.x + p1.x) / 2;
+          d += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
+        }
+        return d;
+      }
+
+      const sysPoints = data.map((d, i) => ({ x: getX(i), y: getY(d.sys), item: d }));
+      const diaPoints = data.map((d, i) => ({ x: getX(i), y: getY(d.dia), item: d }));
+
+      const sysPath = buildBezierPath(sysPoints);
+      const diaPath = buildBezierPath(diaPoints);
+
+      const sysAreaPath = `${sysPath} L ${getX(data.length - 1)} ${padTop + chartH} L ${getX(0)} ${padTop + chartH} Z`;
+      svgHtml += `
+        <defs>
+          <linearGradient id="sysGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#006d44" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#006d44" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+        <path d="${sysAreaPath}" fill="url(#sysGradient)" />
+        <path d="${sysPath}" fill="none" stroke="#006d44" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="${diaPath}" fill="none" stroke="#486558" stroke-width="2.5" stroke-dasharray="4,2" stroke-linecap="round" stroke-linejoin="round" />
+      `;
+
+      data.forEach((d, i) => {
+        const x = getX(i);
+        const yS = getY(d.sys);
+        const yD = getY(d.dia);
+
+        svgHtml += `
+          <line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop + chartH}" stroke="currentColor" stroke-opacity="0.05" stroke-width="1" />
+          <circle cx="${x}" cy="${yS}" r="5" fill="#006d44" stroke="#ffffff" stroke-width="2" class="cursor-pointer transition-transform hover:scale-125" onmousemove="showPressureTooltip(event, '${d.day}', '${d.time}', ${d.sys}, ${d.dia}, ${d.pulse})" onmouseleave="hidePressureTooltip()" />
+          <circle cx="${x}" cy="${yD}" r="4" fill="#486558" stroke="#ffffff" stroke-width="2" class="cursor-pointer transition-transform hover:scale-125" onmousemove="showPressureTooltip(event, '${d.day}', '${d.time}', ${d.sys}, ${d.dia}, ${d.pulse})" onmouseleave="hidePressureTooltip()" />
+          <text x="${x}" y="${h - 8}" fill="#666" font-size="10" font-weight="600" text-anchor="middle" font-family="sans-serif">${d.day}</text>
+        `;
+      });
+
+      svg.innerHTML = svgHtml;
+    }
+
+    function showPressureTooltip(evt, day, time, sys, dia, pulse) {
+      const tip = document.getElementById('chart-pressure-tooltip');
+      if (!tip) return;
+
+      const pp = sys - dia;
+      const status = sys < 120 && dia < 80 ? 'Presión Óptima' : (sys <= 129 && dia < 80 ? 'Presión Normal' : 'En Observación');
+      const statusColor = sys < 120 && dia < 80 ? 'text-emerald-400' : 'text-amber-400';
+
+      tip.innerHTML = `
+        <div class="font-bold border-b border-white/20 pb-1 mb-1 text-[11px] flex justify-between gap-4">
+          <span>${day} · ${time}</span>
+          <span class="${statusColor} font-bold">${status}</span>
+        </div>
+        <div class="flex justify-between gap-3 text-[10px]">
+          <span class="text-white/70">Sistólica / Diastólica:</span>
+          <span class="font-bold text-white">${sys} / ${dia} mmHg</span>
+        </div>
+        <div class="flex justify-between gap-3 text-[10px]">
+          <span class="text-white/70">Pulso Cardíaco:</span>
+          <span class="font-bold text-rose-300">♥ ${pulse} lpm</span>
+        </div>
+        <div class="flex justify-between gap-3 text-[10px] pt-1 border-t border-white/15">
+          <span class="text-white/70">Presión de Pulso:</span>
+          <span class="font-semibold text-white/90">${pp} mmHg</span>
+        </div>
+      `;
+
+      const parentRect = tip.parentElement.getBoundingClientRect();
+      const x = evt.clientX - parentRect.left;
+      const y = evt.clientY - parentRect.top - 12;
+
+      tip.style.left = `${Math.max(60, Math.min(parentRect.width - 60, x))}px`;
+      tip.style.top = `${Math.max(10, y)}px`;
+      tip.style.opacity = '1';
+    }
+
+    function hidePressureTooltip() {
+      const tip = document.getElementById('chart-pressure-tooltip');
+      if (tip) tip.style.opacity = '0';
+    }
+
+    function renderWeightJourney() {
+      const p = appState.profile;
+      const curr = parseFloat(p.weight) || 72;
+      const target = parseFloat(p.targetWeight) || 65;
+      const start = 76;
+
+      const currElem = document.getElementById('journey-current-weight');
+      if (currElem) currElem.textContent = `${curr.toFixed(1)} kg`;
+      const targetElem = document.getElementById('journey-target-weight');
+      if (targetElem) targetElem.textContent = `${target.toFixed(1)} kg`;
+
+      const totalDiff = Math.max(0.1, start - target);
+      const doneDiff = Math.max(0, start - curr);
+      const pct = Math.min(100, Math.max(5, Math.round((doneDiff / totalDiff) * 100)));
+
+      const bar = document.getElementById('weight-journey-bar');
+      if (bar) {
+        bar.style.width = `${pct}%`;
+      }
+    }
+
     function updateAllUI() {
       const t = getTotals();
       const prof = appState.profile;
@@ -2133,11 +2751,11 @@
         stickyLabel.textContent = 'Zona Segura · Margen óptimo';
       }
 
-      // Energy KPIs
-      document.getElementById('hoy-remaining-kcal').textContent = t.remaining.toLocaleString('es-ES');
+      // Energy KPIs with Animated Numbers
+      animateNumber('hoy-remaining-kcal', t.remaining);
       document.getElementById('hoy-goal-kcal').textContent = appState.goalKcal.toLocaleString('es-ES');
-      document.getElementById('hoy-consumed-kcal').textContent = t.consumed.toLocaleString('es-ES');
-      document.getElementById('hoy-burned-kcal').textContent = t.burned.toLocaleString('es-ES');
+      animateNumber('hoy-consumed-kcal', t.consumed);
+      animateNumber('hoy-burned-kcal', t.burned);
       document.getElementById('hoy-pct-day').textContent = Math.min(100, Math.round(t.ratio * 100)) + '%';
 
       // Concentric Rings
@@ -2163,7 +2781,7 @@
       document.getElementById('hoy-goodfat').textContent = Math.round(t.goodFat);
       document.getElementById('bar-goodfat').style.width = Math.min(100, Math.round((t.goodFat / 50) * 100)) + '%';
       const cardioScore = Math.min(99, Math.max(60, Math.round(62 + (t.fiber / 30) * 18 + (t.goodFat / 50) * 15)));
-      document.getElementById('hoy-cardio-score').textContent = cardioScore;
+      animateNumber('hoy-cardio-score', cardioScore);
 
       // Submodules
       updateHydrationUI(t.targetWaterMl);
@@ -2175,6 +2793,15 @@
       renderBloodPressureList();
       updateScanPreview();
       renderLabAnalytics();
+
+      // Dashboard Interactive Charts
+      if (currentChartTab === 'calorias') {
+        renderWeeklyBarChart();
+      } else if (currentChartTab === 'presion') {
+        renderPressureChart();
+      } else if (currentChartTab === 'peso') {
+        renderWeightJourney();
+      }
     }
 
     // ---- PROFILE EDITING LOGIC ----
@@ -2566,11 +3193,16 @@
     // ---- HYDRATION LOGIC ----
     function updateHydrationUI(targetMl) {
       const current = appState.waterConsumedMl || 0;
-      document.getElementById('water-current-ml').textContent = current.toLocaleString('es-ES');
+      animateNumber('water-current-ml', current);
       document.getElementById('water-target-ml').textContent = targetMl.toLocaleString('es-ES');
       const pct = Math.min(100, Math.round((current / targetMl) * 100));
       document.getElementById('water-pct-label').textContent = pct + '%';
       document.getElementById('water-progress-bar').style.width = pct + '%';
+
+      const waveFill = document.getElementById('water-wave-fill');
+      if (waveFill) {
+        waveFill.style.height = `${pct}%`;
+      }
 
       const totalGlasses = Math.round(targetMl / 250);
       const drunkGlasses = Math.floor(current / 250);
