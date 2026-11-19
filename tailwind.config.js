@@ -1,0 +1,63 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["C:/Users/Usuario/Documents/Nutri amiga App/index.html"],
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "tertiary-fixed-dim": "#fcb973",
+        "surface": "#fbf9f5",
+        "surface-container": "#efeeea",
+        "secondary-fixed-dim": "#ffb690",
+        "background": "#fbf9f5",
+        "surface-bright": "#fbf9f5",
+        "on-background": "#1b1c1a",
+        "on-secondary": "#ffffff",
+        "on-tertiary": "#ffffff",
+        "tertiary-fixed": "#ffdcbd",
+        "tertiary": "#825114",
+        "surface-container-high": "#eae8e4",
+        "surface-container-low": "#f5f3ef",
+        "surface-tint": "#006c4a",
+        "on-primary-fixed-variant": "#005137",
+        "on-error": "#ffffff",
+        "on-tertiary-fixed-variant": "#683c00",
+        "tertiary-container": "#9f692b",
+        "primary-container": "#00855d",
+        "inverse-primary": "#68dba9",
+        "inverse-on-surface": "#f2f0ed",
+        "on-tertiary-container": "#fffbff",
+        "surface-container-highest": "#e4e2de",
+        "secondary": "#9d4300",
+        "outline": "#6d7a72",
+        "primary-fixed": "#85f8c4",
+        "on-surface": "#1b1c1a",
+        "surface-dim": "#dbdad6",
+        "surface-variant": "#e4e2de",
+        "on-surface-variant": "#3d4a42",
+        "on-tertiary-fixed": "#2c1600",
+        "on-primary": "#ffffff",
+        "secondary-fixed": "#ffdbca",
+        "primary-fixed-dim": "#68dba9",
+        "secondary-container": "#fd761a",
+        "surface-container-lowest": "#ffffff",
+        "primary": "#006948",
+        "on-error-container": "#93000a",
+        "outline-variant": "#bccac0",
+        "on-primary-container": "#f5fff7",
+        "on-secondary-fixed-variant": "#783200",
+        "on-secondary-container": "#5c2400",
+        "error": "#ba1a1a",
+        "inverse-surface": "#30312e",
+        "error-container": "#ffdad6",
+        "on-secondary-fixed": "#341100",
+        "on-primary-fixed": "#002114"
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        display: ["Plus Jakarta Sans", "sans-serif"]
+      }
+    }
+  },
+  plugins: [],
+}

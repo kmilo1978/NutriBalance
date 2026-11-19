@@ -1,0 +1,10 @@
+# Temporales y respaldos locales
+*.backup.html
+*.zip
+.DS_Store
+Thumbs.db
+
+# Logs y entornos
+node_modules/
+.vscode/
+.idea/
