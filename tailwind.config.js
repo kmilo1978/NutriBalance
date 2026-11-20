@@ -4,6 +4,9 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
+      gridTemplateColumns: {
+        '7': 'repeat(7, minmax(0, 1fr))',
+      },
       colors: {
         "tertiary-fixed-dim": "#fcb973",
         "surface": "#fbf9f5",

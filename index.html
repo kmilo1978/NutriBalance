@@ -1264,8 +1264,13 @@
             </div>
           </div>
 
-          <!-- Tira de 7 Días: Lunes a Domingo (Generada dinámicamente) -->
-          <div id="weekly-days-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2">
+                    <!-- Tira de 7 Días: Lunes a Domingo (Calendario Horizontal Compacto) -->
+          <div id="weekly-days-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2 w-full" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px;">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Inspector Interactivo: Detalle del Día Seleccionado -->
+          <div id="selected-day-exercise-detail" class="w-full">
             <!-- Rendered by JS -->
           </div>
 
@@ -6299,58 +6304,151 @@
         }
       }
 
-      // 2. Renderizar Tira de 7 Días (Lunes a Domingo)
+      // 2. Renderizar Tira de 7 Días (Lunes a Domingo en 7 Columnas Horizontales)
       const daysContainer = document.getElementById('weekly-days-grid');
       if (daysContainer) {
+        daysContainer.style.display = 'grid';
+        daysContainer.style.gridTemplateColumns = 'repeat(7, minmax(0, 1fr))';
+        daysContainer.style.gap = '6px';
+
         daysContainer.innerHTML = currentWeek.days.map(d => {
           const dData = currentWeek.dayMap[d.dateStr];
           const hasTrained = dData && dData.sessions.length > 0;
           const kcal = dData ? dData.totalKcal : 0;
           const isToday = d.isToday;
           const isSelected = d.dateStr === selectedExerciseDate;
-          const fillPercent = Math.min(100, Math.round((kcal / 500) * 100));
+          const fillPercent = Math.min(100, Math.round((kcal / 450) * 100));
 
           const cardBorder = isSelected
-            ? 'ring-2 ring-primary border-primary shadow-md'
-            : (isToday ? 'border-primary/60 shadow-sm' : 'border-outline-variant/20 hover:border-outline-variant/40');
-
-          const cardBg = isSelected
-            ? 'bg-primary/5'
-            : (hasTrained ? 'bg-surface-container-lowest' : 'bg-surface-container-low/60');
+            ? 'ring-2 ring-primary border-primary bg-primary/10 shadow-sm'
+            : (isToday ? 'border-primary/60 bg-surface-container-lowest shadow-xs' : 'border-outline-variant/20 bg-surface-container-low hover:border-outline-variant/40 hover:bg-surface-container');
 
           return `
-            <button type="button" onclick="selectWeekDay('${d.dateStr}')" class="flex flex-col items-center justify-between p-2 sm:p-2.5 rounded-xl border ${cardBorder} ${cardBg} transition-all text-center min-h-[110px] relative overflow-hidden group">
+            <button type="button" onclick="selectWeekDay('${d.dateStr}')" class="flex flex-col items-center justify-between p-1.5 sm:p-2 rounded-2xl border ${cardBorder} transition-all text-center min-h-[95px] sm:min-h-[105px] relative overflow-hidden group select-none">
               <!-- Header día -->
               <div class="flex flex-col items-center w-full">
-                <span class="text-[10px] font-bold uppercase tracking-wider ${isToday ? 'text-primary' : 'text-outline'}">${d.shortName}</span>
-                <span class="font-display font-extrabold text-[13px] ${isToday ? 'text-primary' : 'text-on-surface'}">${d.dayNumber}</span>
-                ${isToday ? `<span class="text-[8px] font-black uppercase px-1 rounded bg-primary text-white mt-0.5 tracking-tight leading-tight">HOY</span>` : ''}
+                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${isToday ? 'text-primary' : 'text-outline'}">${d.shortName}</span>
+                <span class="font-display font-extrabold text-[12px] sm:text-[14px] leading-tight ${isToday ? 'text-primary' : 'text-on-surface'}">${d.dayNumber}</span>
+                ${isToday ? `<span class="text-[7px] sm:text-[8px] font-black uppercase px-1 rounded bg-primary text-white mt-0.5 tracking-tight leading-tight">HOY</span>` : ''}
               </div>
 
               <!-- Indicador de entrenamiento -->
-              <div class="my-1.5 flex flex-col items-center justify-center">
+              <div class="my-1 flex flex-col items-center justify-center">
                 ${hasTrained ? `
-                  <div class="w-7 h-7 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center font-bold shadow-xs">
-                    <span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+                  <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center font-bold shadow-xs">
+                    <span class="material-symbols-outlined text-[14px] sm:text-[16px]">local_fire_department</span>
                   </div>
-                  <span class="font-display font-black text-[12px] sm:text-[13px] text-secondary mt-1 leading-tight">+${kcal}</span>
-                  <span class="text-[9px] text-outline font-semibold">${dData.sessions.length} ses.</span>
+                  <span class="font-display font-black text-[11px] sm:text-[12px] text-secondary mt-0.5 leading-tight">+${kcal}</span>
+                  <span class="text-[8px] text-outline font-semibold leading-tight">${dData.sessions.length} ses.</span>
                 ` : `
-                  <div class="w-6 h-6 rounded-full bg-surface-container text-outline/50 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[13px]">hotel</span>
+                  <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-surface-container text-outline/50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[12px] sm:text-[14px]">hotel</span>
                   </div>
-                  <span class="font-display font-semibold text-[11px] text-outline/70 mt-1 leading-tight">0 kcal</span>
-                  <span class="text-[8px] text-outline/60">Descanso</span>
+                  <span class="font-display font-semibold text-[10px] text-outline/60 mt-0.5 leading-tight">0</span>
+                  <span class="text-[8px] text-outline/50 leading-tight">Descanso</span>
                 `}
               </div>
 
-              <!-- Barra de llenado calórico -->
-              <div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden mt-1">
+              <!-- Barra sutil de progreso -->
+              <div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden mt-0.5">
                 <div class="bg-secondary h-full rounded-full transition-all" style="width: ${fillPercent}%;"></div>
               </div>
             </button>
           `;
         }).join('');
+      }
+
+      // 2.1 Renderizar Inspector del Día Seleccionado
+      const detailContainer = document.getElementById('selected-day-exercise-detail');
+      if (detailContainer) {
+        const curSelectedDate = selectedExerciseDate || todayStr;
+        const [sy, sm, sd] = curSelectedDate.split('-').map(Number);
+        const selDateObj = new Date(sy, sm - 1, sd);
+        const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        const fullDayName = `${dayNames[selDateObj.getDay()]}, ${selDateObj.getDate()} de ${monthNames[selDateObj.getMonth()]}`;
+        const isSelToday = curSelectedDate === todayStr;
+
+        // Buscar sesiones de este día en exerciseHistory o en exercises del día
+        const allHistory = (appState.exerciseHistory || []).concat(appState.exercises || []);
+        // deduplicate by id
+        const seenIds = new Set();
+        const daySessions = allHistory.filter(h => {
+          if ((h.date || todayStr) === curSelectedDate && !seenIds.has(h.id)) {
+            seenIds.add(h.id);
+            return true;
+          }
+          return false;
+        });
+
+        const dayKcal = daySessions.reduce((acc, s) => acc + Number(s.kcal || 0), 0);
+        const dayMins = daySessions.reduce((acc, s) => acc + Number(s.minutes || 0), 0);
+
+        if (daySessions.length > 0) {
+          detailContainer.innerHTML = `
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col gap-2.5 transition-all">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-outline-variant/15">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-primary text-on-primary flex items-center justify-center font-bold text-[13px]">
+                    <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <h4 class="font-display text-[13px] font-bold text-on-surface">${fullDayName}</h4>
+                      ${isSelToday ? '<span class="text-[9px] bg-primary text-white font-extrabold px-1.5 py-0.2 rounded-full">HOY</span>' : ''}
+                    </div>
+                    <p class="text-[11px] text-outline">${daySessions.length} sesión${daySessions.length > 1 ? 'es' : ''} realizada${daySessions.length > 1 ? 's' : ''} · +${dayKcal} kcal quemadas · ${dayMins} min activos</p>
+                  </div>
+                </div>
+                <button type="button" onclick="scrollToExerciseForm('${curSelectedDate}')" class="h-8 px-3 rounded-xl bg-primary text-on-primary text-[11px] font-bold flex items-center gap-1 shadow-xs hover:bg-primary-container active:scale-95 transition-all self-start sm:self-auto">
+                  <span class="material-symbols-outlined text-[15px]">add</span>
+                  <span>Añadir a esta fecha</span>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                ${daySessions.map(s => `
+                  <div class="p-2.5 rounded-xl bg-surface flex items-center justify-between border border-outline-variant/15 text-[12px] shadow-xs">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="w-8 h-8 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[18px]">directions_run</span>
+                      </div>
+                      <div class="min-w-0 truncate">
+                        <div class="flex items-center gap-1.5">
+                          <strong class="font-bold text-on-surface text-[13px]">${s.sport}</strong>
+                          <span class="text-[10px] text-outline">(${s.time || '08:00'})</span>
+                        </div>
+                        <span class="text-[11px] text-outline block truncate">${s.minutes} min · Esfuerzo ${s.effort || 'Moderado'}</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <span class="font-display font-extrabold text-secondary text-[13px]">+${s.kcal} kcal</span>
+                      <button type="button" onclick="removeExercise(${s.id})" title="Eliminar entrenamiento" class="w-7 h-7 rounded-lg text-outline hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>`;
+        } else {
+          detailContainer.innerHTML = `
+            <div class="p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-surface-container-high text-outline flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[17px]">hotel</span>
+                </div>
+                <div>
+                  <h4 class="font-display text-[13px] font-bold text-on-surface">${fullDayName} · Día de Descanso</h4>
+                  <p class="text-[11px] text-outline">No hay entrenamientos anotados para esta fecha. La recuperación es parte del progreso.</p>
+                </div>
+              </div>
+              <button type="button" onclick="scrollToExerciseForm('${curSelectedDate}')" class="h-8 px-3 rounded-xl bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed-variant text-[11px] font-bold flex items-center gap-1 self-start sm:self-auto transition-all">
+                <span class="material-symbols-outlined text-[15px]">add</span>
+                <span>Registrar ejercicio aquí</span>
+              </button>
+            </div>`;
+        }
       }
 
       // 3. Métricas Clave de la Semana
@@ -7529,6 +7627,21 @@ _Generado automáticamente desde NutriBalance para control en consulta médica._
         }, 800);
       };
       reader.readAsDataURL(file);
+    }
+
+    function scrollToExerciseForm(dateStr) {
+      if (dateStr) {
+        selectedExerciseDate = dateStr;
+        const dateInput = document.getElementById('sport-date-input');
+        if (dateInput) dateInput.value = dateStr;
+        renderWeeklyExerciseUI();
+      }
+      const formEl = document.getElementById('sport-name-select');
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        formEl.focus();
+        showToast(`Fecha de ejercicio fijada en: ${dateStr}`, 'calendar_today');
+      }
     }
 </script>
 
