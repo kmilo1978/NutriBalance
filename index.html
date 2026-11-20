@@ -103,16 +103,16 @@
     <header class="sticky top-0 w-full z-40 pt-safe bg-surface/90 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm">
       <div class="h-16 px-4 lg:px-8 flex items-center justify-between gap-3">
         <!-- Logo & Title -->
-        <div class="flex items-center gap-3 min-w-0 cursor-pointer" onclick="switchTab('hoy')">
-          <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shrink-0 shadow-md">
+        <div class="flex items-center gap-3 shrink-0 cursor-pointer" onclick="switchTab('hoy')">
+          <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-105">
             <span class="material-symbols-outlined text-on-primary text-[22px]">favorite</span>
           </div>
-          <div class="flex flex-col min-w-0">
+          <div class="flex flex-col justify-center">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-extrabold text-primary uppercase tracking-wider">NutriBalance</span>
-              <span class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold">Cardio & Déficit</span>
+              <span class="font-display text-[18px] lg:text-[20px] font-extrabold text-on-surface tracking-tight whitespace-nowrap">Nutri<span class="text-primary">Balance</span></span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-extrabold tracking-wide uppercase whitespace-nowrap shrink-0">Cardio & Déficit</span>
             </div>
-            <h1 id="header-title" class="font-display text-[18px] lg:text-[20px] font-bold text-on-surface truncate leading-tight">Hoy</h1>
+            <span id="header-title" class="lg:hidden text-[11px] font-bold text-primary leading-none mt-0.5">Hoy</span>
           </div>
         </div>
 
