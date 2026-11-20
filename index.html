@@ -1157,17 +1157,170 @@
       <!-- VIEW 4: ACTIVIDAD FÍSICA & GASTO CALÓRICO                 -->
       <!-- ========================================================= -->
       <section id="view-actividad" class="tab-panel flex-col w-full gap-4 max-w-4xl mx-auto">
-        <div class="flex items-center justify-between">
+        <!-- Header con Quema de Hoy y de la Semana -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-secondary">Movimiento & HDL+</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-secondary">Movimiento & Salud Cardiovascular</span>
             <h2 class="font-display text-[22px] font-bold text-on-surface">Módulo de Ejercicios</h2>
           </div>
-          <div class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[12px] font-bold">
-            +<span id="act-total-burned">250</span> kcal quemadas hoy
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[12px] font-bold shadow-sm flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+              <span>+<span id="act-total-burned">250</span> kcal hoy</span>
+            </div>
+            <div class="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[12px] font-bold shadow-sm flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">date_range</span>
+              <span>+<span id="act-week-burned">1.166</span> kcal en la semana</span>
+            </div>
           </div>
         </div>
 
-        <!-- Visual Sport Grid -->
+        <!-- TABLERO SEMANAL: REGISTRO DÍA A DÍA (LUNES A DOMINGO) -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-outline-variant/20">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[20px]">calendar_view_week</span>
+              </div>
+              <div>
+                <h3 class="font-display text-[15px] font-bold text-on-surface">Registro Semanal de Días & Calorías</h3>
+                <p class="text-[11px] text-outline">Seguimiento día a día (Lunes a Domingo) de quema calórica y constancia deportiva</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 self-end sm:self-auto">
+              <button type="button" onclick="navigateWeek(-1)" class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-all" title="Semana anterior">
+                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+              </button>
+              <span id="act-week-label" class="px-3 py-1 rounded-lg bg-surface-container-low text-[12px] font-bold text-on-surface select-none">
+                16 Nov - 22 Nov 2026
+              </span>
+              <button type="button" onclick="navigateWeek(1)" id="btn-next-week" class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-all" title="Semana siguiente">
+                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+              </button>
+              <button type="button" onclick="resetToCurrentWeek()" class="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold transition-all ml-1">
+                Semana Actual
+              </button>
+            </div>
+          </div>
+
+          <!-- Tira de 7 Días: Lunes a Domingo (Generada dinámicamente) -->
+          <div id="weekly-days-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Métricas Clave de la Semana Seleccionada -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Días Entrenados</span>
+              <div class="flex items-baseline gap-1.5">
+                <span id="act-week-active-days" class="font-display text-[20px] font-extrabold text-on-surface">4</span>
+                <span class="text-[12px] font-semibold text-outline">/ 7 días</span>
+              </div>
+              <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-0.5">
+                <div id="act-week-days-progress" class="bg-primary h-full rounded-full transition-all" style="width: 57%;"></div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Calorías Quemadas</span>
+              <div class="flex items-baseline gap-1">
+                <span id="act-week-kcal-val" class="font-display text-[20px] font-extrabold text-secondary">+1.166</span>
+                <span class="text-[11px] font-semibold text-outline">kcal</span>
+              </div>
+              <span id="act-week-kcal-sub" class="text-[10px] text-outline truncate">Promedio 291 kcal/sesión</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Minutos Cardio</span>
+              <div class="flex items-baseline gap-1.5">
+                <span id="act-week-mins-val" class="font-display text-[20px] font-extrabold text-primary">170</span>
+                <span class="text-[11px] font-semibold text-outline">/ 150 min OMS</span>
+              </div>
+              <span id="act-week-mins-badge" class="text-[10px] font-bold text-primary flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[13px]">check_circle</span> Meta OMS superada
+              </span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Estatus Semanal</span>
+              <div id="act-week-status-badge" class="mt-0.5 flex items-center">
+                <!-- Rendered by JS -->
+              </div>
+              <span id="act-week-favorite-sport" class="text-[10px] text-outline truncate">Deporte líder: Natación</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPARATIVA SEMANAL & HALL DE LA FAMA (MÁS DÍAS Y MEJOR RENDIMIENTO) -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[20px]">leaderboard</span>
+              </div>
+              <div>
+                <h3 class="font-display text-[15px] font-bold text-on-surface">Comparativa & Récords Entre Semanas</h3>
+                <p class="text-[11px] text-outline">Descubre en qué semana entrenaste más días y en cuál alcanzaste tu mejor rendimiento</p>
+              </div>
+            </div>
+            <button type="button" onclick="toggleWeeklyHallOfFame()" class="text-[12px] font-bold text-primary hover:underline flex items-center gap-1">
+              <span id="toggle-hall-fame-label">Ocultar Detalle</span>
+              <span id="toggle-hall-fame-icon" class="material-symbols-outlined text-[16px]">expand_less</span>
+            </button>
+          </div>
+
+          <!-- Tarjetas de Récords Históricos (Podio de Oro) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Récord 1: Mayor Constancia (Más Días Entrenados) -->
+            <div class="p-4 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50/50 border border-amber-200/60 flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[22px]">workspace_premium</span>
+              </div>
+              <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800">Mayor Constancia</span>
+                  <span class="px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-900 text-[10px] font-extrabold">🏆 Récord de Días</span>
+                </div>
+                <h4 id="record-days-week-label" class="text-[13px] font-bold text-amber-950 truncate">Semana 09 - 15 Nov</h4>
+                <div class="flex items-center gap-2 mt-1 text-[12px] text-amber-900">
+                  <span class="font-extrabold text-[15px] text-amber-950" id="record-days-count">5 días activos</span>
+                  <span>·</span>
+                  <span id="record-days-kcal">1.718 kcal</span>
+                  <span>·</span>
+                  <span id="record-days-mins">220 min</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Récord 2: Máximo Rendimiento (Mayor Gasto Calórico) -->
+            <div class="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50/50 border border-emerald-200/60 flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[22px]">bolt</span>
+              </div>
+              <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Máximo Rendimiento</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900 text-[10px] font-extrabold">🔥 Récord Calórico</span>
+                </div>
+                <h4 id="record-kcal-week-label" class="text-[13px] font-bold text-emerald-950 truncate">Semana 02 - 08 Nov</h4>
+                <div class="flex items-center gap-2 mt-1 text-[12px] text-emerald-900">
+                  <span class="font-extrabold text-[15px] text-emerald-950" id="record-kcal-value">2.094 kcal</span>
+                  <span>·</span>
+                  <span id="record-kcal-days">4 días activos</span>
+                  <span>·</span>
+                  <span id="record-kcal-mins">230 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contenedor con Ranking Comparativo de Semanas -->
+          <div id="weekly-comparison-container" class="flex flex-col gap-2 pt-2 border-t border-outline-variant/15">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- FORMULARIO: REGISTRAR NUEVA SESIÓN DE EJERCICIO -->
         <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
           <div class="flex items-center justify-between">
             <span class="text-[13px] font-bold text-on-surface">1. Selecciona el deporte o ejercicio</span>
@@ -1220,10 +1373,26 @@
             <span id="sport-cardio-benefit">Sube HDL+ y mejora capacidad aeróbica sin impacto articular</span>
           </div>
 
-          <!-- Time Selection -->
+          <!-- 2. Fecha & Hora de la Sesión -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="flex flex-col gap-1">
+              <label class="text-[11px] font-semibold text-outline">2. Fecha del ejercicio</label>
+              <div class="flex items-center gap-1.5">
+                <input id="sport-date-input" type="date" class="flex-1 px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold text-on-surface outline-none" />
+                <button type="button" onclick="setSportDateToday()" class="px-2.5 py-2 rounded-xl bg-surface-container text-[11px] font-bold hover:bg-primary hover:text-white transition-all">Hoy</button>
+                <button type="button" onclick="setSportDateYesterday()" class="px-2.5 py-2 rounded-xl bg-surface-container text-[11px] font-bold hover:bg-primary hover:text-white transition-all">Ayer</button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[11px] font-semibold text-outline">Hora de realización (opcional)</label>
+              <input id="sport-time-input" type="time" class="px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold text-on-surface outline-none" />
+            </div>
+          </div>
+
+          <!-- 3. Time Selection -->
           <div class="flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
-              <label class="text-[12px] font-bold text-on-surface">2. Tiempo (minutos)</label>
+              <label class="text-[12px] font-bold text-on-surface">3. Tiempo (minutos)</label>
               <div class="flex gap-1">
                 <button type="button" onclick="setSportMinutes(20)" class="px-2.5 py-0.5 rounded bg-surface-container text-[11px] font-semibold hover:bg-primary hover:text-white">20m</button>
                 <button type="button" onclick="setSportMinutes(30)" class="px-2.5 py-0.5 rounded bg-surface-container text-[11px] font-semibold hover:bg-primary hover:text-white">30m</button>
@@ -1234,9 +1403,9 @@
             <input id="sport-minutes" type="number" min="5" max="360" value="40" oninput="recalcExerciseKcal()" class="w-full px-3 py-2 rounded-xl bg-surface-container-low font-display font-bold text-[16px] text-on-surface outline-none" />
           </div>
 
-          <!-- Effort / RPE Selector -->
+          <!-- 4. Effort / RPE Selector -->
           <div class="flex flex-col gap-1.5">
-            <label class="text-[12px] font-bold text-on-surface">3. Nivel de esfuerzo percibido</label>
+            <label class="text-[12px] font-bold text-on-surface">4. Nivel de esfuerzo percibido</label>
             <div class="grid grid-cols-4 gap-1.5">
               <button type="button" onclick="setEffortMultiplier(0.8, 'Suave', this)" class="effort-btn py-2 rounded-xl bg-surface-container-low text-[11px] font-semibold text-on-surface-variant">Suave</button>
               <button type="button" onclick="setEffortMultiplier(1.0, 'Moderado', this)" class="effort-btn active py-2 rounded-xl bg-secondary text-on-secondary text-[11px] font-bold shadow-sm">Moderado</button>
@@ -1245,7 +1414,7 @@
             </div>
           </div>
 
-          <!-- Weight & Manual Calories -->
+          <!-- 5. Weight & Manual Calories -->
           <div class="grid grid-cols-2 gap-2.5">
             <div class="flex flex-col gap-1">
               <label class="text-[11px] font-semibold text-outline">Tu peso (kg)</label>
@@ -1270,9 +1439,18 @@
           </div>
         </div>
 
-        <!-- Logged Exercises Today -->
-        <div class="flex flex-col gap-2">
-          <h3 class="font-display text-[16px] font-bold text-on-surface px-1">Sesiones realizadas hoy</h3>
+        <!-- SESIONES REGISTRADAS CON FILTRO DE SEMANA / DÍA -->
+        <div class="flex flex-col gap-2.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+            <div>
+              <h3 class="font-display text-[16px] font-bold text-on-surface" id="sessions-list-title">Sesiones Registradas</h3>
+              <p class="text-[11px] text-outline" id="sessions-list-subtitle">Viendo ejercicios de la semana actual</p>
+            </div>
+            <div class="flex items-center gap-1.5 self-start sm:self-auto bg-surface-container-low p-1 rounded-xl">
+              <button type="button" id="btn-filter-view-week" onclick="setExerciseViewFilter('week')" class="px-3 py-1 rounded-lg bg-surface-container-lowest text-primary font-bold text-[11px] shadow-sm transition-all">Toda la semana</button>
+              <button type="button" id="btn-filter-view-day" onclick="setExerciseViewFilter('day')" class="px-3 py-1 rounded-lg text-outline font-semibold text-[11px] hover:bg-surface-container transition-all">Día seleccionado</button>
+            </div>
+          </div>
           <div id="today-exercises-list" class="flex flex-col gap-2">
             <!-- Rendered by JS -->
           </div>
@@ -2405,7 +2583,32 @@
         { id: 3, mealType: 'Merienda', time: '16:15', name: 'Yogurt griego con arándanos y nueces', kcal: 170, carbs: 16, protein: 15, fat: 6, fiber: 4, goodFat: 7, badge: 'Proteína 15g', badgeType: 'primary' }
       ],
       exercises: [
-        { id: 101, sport: 'Caminar', minutes: 45, effort: 'Moderado', kcal: 250, time: '07:15' }
+        { id: 101, date: '2026-11-20', sport: 'Caminar', minutes: 45, effort: 'Moderado', kcal: 250, time: '07:15' }
+      ],
+      exerciseHistory: [
+        // Semana 16 - 22 Nov 2026 (Semana en Curso)
+        { id: 1001, date: '2026-11-16', sport: 'Natación', minutes: 40, effort: 'Moderado', kcal: 336, time: '07:00' },
+        { id: 1002, date: '2026-11-17', sport: 'Pesas', minutes: 50, effort: 'Intenso', kcal: 320, time: '18:30' },
+        { id: 1003, date: '2026-11-19', sport: 'Caminadora', minutes: 35, effort: 'Moderado', kcal: 210, time: '06:45' },
+        { id: 101, date: '2026-11-20', sport: 'Caminar', minutes: 45, effort: 'Moderado', kcal: 250, time: '07:15' },
+
+        // Semana 09 - 15 Nov 2026 (Récord de Días Entrenados: 5 días!)
+        { id: 2001, date: '2026-11-09', sport: 'Natación', minutes: 45, effort: 'Moderado', kcal: 378, time: '07:00' },
+        { id: 2002, date: '2026-11-10', sport: 'Pesas', minutes: 45, effort: 'Intenso', kcal: 290, time: '18:30' },
+        { id: 2003, date: '2026-11-11', sport: 'Senderismo', minutes: 60, effort: 'Intenso', kcal: 468, time: '08:00' },
+        { id: 2004, date: '2026-11-13', sport: 'Caminadora', minutes: 40, effort: 'Moderado', kcal: 240, time: '07:30' },
+        { id: 2005, date: '2026-11-14', sport: 'HIIT', minutes: 30, effort: 'Máximo', kcal: 342, time: '09:00' },
+
+        // Semana 02 - 08 Nov 2026 (Récord de Rendimiento Calórico: 2.094 kcal!)
+        { id: 3001, date: '2026-11-02', sport: 'Fútbol', minutes: 60, effort: 'Intenso', kcal: 576, time: '19:00' },
+        { id: 3002, date: '2026-11-04', sport: 'Natación', minutes: 50, effort: 'Moderado', kcal: 420, time: '07:00' },
+        { id: 3003, date: '2026-11-06', sport: 'HIIT', minutes: 45, effort: 'Máximo', kcal: 513, time: '07:15' },
+        { id: 3004, date: '2026-11-08', sport: 'Senderismo', minutes: 75, effort: 'Intenso', kcal: 585, time: '08:30' },
+
+        // Semana 26 Oct - 01 Nov 2026 (Semana Base)
+        { id: 4001, date: '2026-10-27', sport: 'Caminar', minutes: 40, effort: 'Moderado', kcal: 220, time: '07:30' },
+        { id: 4002, date: '2026-10-29', sport: 'Pesas', minutes: 45, effort: 'Moderado', kcal: 240, time: '18:00' },
+        { id: 4003, date: '2026-10-31', sport: 'Natación', minutes: 45, effort: 'Moderado', kcal: 378, time: '09:00' }
       ],
       medications: [
         { id: 'm1', name: 'Atorvastatina', dose: '20 mg (1 pastilla)', time: '21:00', timing: 'Antes de dormir', stock: 18, daily: 1, takenToday: false, note: 'Protege arterias y reduce colesterol LDL malo' },
@@ -2452,6 +2655,62 @@
       ]
     };
 
+    function getTodayDateStr() {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function formatShortDate(dateStr) {
+      if (!dateStr) return '';
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    }
+
+    let currentWeekOffset = 0; // 0 = semana actual, -1 = semana anterior, etc.
+    let selectedExerciseDate = getTodayDateStr(); // 'YYYY-MM-DD'
+    let exerciseViewFilter = 'week'; // 'week' o 'day'
+    let hallOfFameExpanded = true;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('nutriamiga_state_v3');
+        if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+        const parsed = JSON.parse(raw);
+        const todayStr = getTodayDateStr();
+
+        let loadedHistory = (Array.isArray(parsed.exerciseHistory) && parsed.exerciseHistory.length > 0)
+          ? parsed.exerciseHistory
+          : JSON.parse(JSON.stringify(DEFAULT_STATE.exerciseHistory));
+
+        // Incorporar cualquier ejercicio previo si no estaba en el historial
+        if (Array.isArray(parsed.exercises)) {
+          parsed.exercises.forEach(ex => {
+            if (!loadedHistory.some(h => h.id === ex.id)) {
+              loadedHistory.push({ ...ex, date: ex.date || todayStr });
+            }
+          });
+        }
+
+        const todayExercises = loadedHistory.filter(h => (h.date || todayStr) === todayStr);
+
+        return {
+          ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
+          ...parsed,
+          profile: { ...DEFAULT_STATE.profile, ...(parsed.profile || {}) },
+          medications: (parsed.medications && parsed.medications.length) ? parsed.medications : DEFAULT_STATE.medications,
+          groceries: (Array.isArray(parsed.groceries) && parsed.groceries.length > 0) ? parsed.groceries : DEFAULT_STATE.groceries,
+          exerciseHistory: loadedHistory,
+          exercises: todayExercises.length > 0 ? todayExercises : DEFAULT_STATE.exercises
+        };
+      } catch (e) {
+        return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
+    }
+
     let appState = loadState();
     let currentSport = { name: 'Natación', met: 7.0, benefit: 'Sube HDL+ y mejora capacidad aeróbica sin impacto articular' };
     let effortMultiplier = 1.0;
@@ -2462,23 +2721,6 @@
     let currentLabPeriod = 'semestral';
     let pendingMealPayload = null;
     let activeRefillMedId = null;
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('nutriamiga_state_v3');
-        if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
-        const parsed = JSON.parse(raw);
-        return {
-          ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
-          ...parsed,
-          profile: { ...DEFAULT_STATE.profile, ...(parsed.profile || {}) },
-          medications: (parsed.medications && parsed.medications.length) ? parsed.medications : DEFAULT_STATE.medications,
-          groceries: (Array.isArray(parsed.groceries) && parsed.groceries.length > 0) ? parsed.groceries : DEFAULT_STATE.groceries
-        };
-      } catch (e) {
-        return JSON.parse(JSON.stringify(DEFAULT_STATE));
-      }
-    }
 
     function saveState() {
       try {
@@ -4901,6 +5143,501 @@
       document.getElementById('sport-estimated-kcal').textContent = `+${kcal} kcal`;
     }
 
+    // =========================================================
+    // MÓDULO DE EJERCICIOS: ANÁLISIS SEMANAL & COMPARATIVO
+    // =========================================================
+
+    // Retorna los 7 días (Lunes a Domingo) para un offset de semanas dado
+    function getWeekDays(offsetWeeks = 0) {
+      const today = new Date();
+      // En JavaScript: 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+      const day = today.getDay();
+      const diffToMonday = (day === 0 ? -6 : 1 - day);
+      const monday = new Date(today);
+      monday.setDate(today.getDate() + diffToMonday + (offsetWeeks * 7));
+      monday.setHours(0, 0, 0, 0);
+
+      const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+      const dayShorts = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+      const todayStr = getTodayDateStr();
+
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const cur = new Date(monday);
+        cur.setDate(monday.getDate() + i);
+        const yyyy = cur.getFullYear();
+        const mm = String(cur.getMonth() + 1).padStart(2, '0');
+        const dd = String(cur.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        days.push({
+          dateStr,
+          dayIndex: i,
+          dayName: dayNames[i],
+          shortName: dayShorts[i],
+          dayNumber: cur.getDate(),
+          monthShort: cur.toLocaleDateString('es-ES', { month: 'short' }),
+          isToday: dateStr === todayStr
+        });
+      }
+      return days;
+    }
+
+    // Calcula estadísticas completas de una semana específica
+    function getWeekStats(offsetWeeks = 0) {
+      const days = getWeekDays(offsetWeeks);
+      const startStr = days[0].dateStr;
+      const endStr = days[6].dateStr;
+      const history = appState.exerciseHistory || [];
+
+      // Sesiones que caen en este rango de fechas
+      const sessions = history.filter(item => {
+        const d = item.date || getTodayDateStr();
+        return d >= startStr && d <= endStr;
+      });
+
+      // Mapeo por día
+      const dayMap = {};
+      days.forEach(d => {
+        dayMap[d.dateStr] = {
+          dayInfo: d,
+          sessions: [],
+          totalKcal: 0,
+          totalMinutes: 0
+        };
+      });
+
+      const sportsCount = {};
+      let totalKcal = 0;
+      let totalMinutes = 0;
+
+      sessions.forEach(s => {
+        const d = s.date || getTodayDateStr();
+        if (dayMap[d]) {
+          dayMap[d].sessions.push(s);
+          dayMap[d].totalKcal += Number(s.kcal || 0);
+          dayMap[d].totalMinutes += Number(s.minutes || 0);
+        }
+        totalKcal += Number(s.kcal || 0);
+        totalMinutes += Number(s.minutes || 0);
+        const sport = s.sport || 'Ejercicio';
+        sportsCount[sport] = (sportsCount[sport] || 0) + 1;
+      });
+
+      const activeDaysCount = Object.values(dayMap).filter(d => d.sessions.length > 0).length;
+
+      // Deporte líder
+      let leaderSport = 'Descanso';
+      let maxSportCount = 0;
+      Object.entries(sportsCount).forEach(([sp, cnt]) => {
+        if (cnt > maxSportCount) {
+          maxSportCount = cnt;
+          leaderSport = sp;
+        }
+      });
+
+      const weekLabel = `${days[0].dayNumber} ${days[0].monthShort} - ${days[6].dayNumber} ${days[6].monthShort} ${days[0].dateStr.slice(0, 4)}`;
+
+      return {
+        offsetWeeks,
+        startStr,
+        endStr,
+        weekLabel,
+        days,
+        dayMap,
+        sessions,
+        activeDaysCount,
+        totalKcal,
+        totalMinutes,
+        avgKcalPerSession: sessions.length > 0 ? Math.round(totalKcal / sessions.length) : 0,
+        leaderSport,
+        isCurrentWeek: offsetWeeks === 0
+      };
+    }
+
+    // Extrae todas las semanas presentes en el historial
+    function getAllRecordedWeeks() {
+      const history = appState.exerciseHistory || [];
+      const offsets = new Set([0]); // siempre incluir semana en curso
+
+      const today = new Date();
+      const day = today.getDay();
+      const diffToMonday = (day === 0 ? -6 : 1 - day);
+      const curMonday = new Date(today);
+      curMonday.setDate(today.getDate() + diffToMonday);
+      curMonday.setHours(0, 0, 0, 0);
+
+      history.forEach(item => {
+        if (item.date) {
+          const [y, m, d] = item.date.split('-').map(Number);
+          const dt = new Date(y, m - 1, d);
+          const dtDay = dt.getDay();
+          const dtDiff = (dtDay === 0 ? -6 : 1 - dtDay);
+          const itemMon = new Date(dt);
+          itemMon.setDate(dt.getDate() + dtDiff);
+          itemMon.setHours(0, 0, 0, 0);
+
+          const diffDays = Math.round((itemMon - curMonday) / (1000 * 60 * 60 * 24));
+          const offset = Math.round(diffDays / 7);
+          offsets.add(offset);
+        }
+      });
+
+      // Ordenar de más reciente a más antigua
+      const sortedOffsets = Array.from(offsets).sort((a, b) => b - a);
+      return sortedOffsets.map(off => getWeekStats(off));
+    }
+
+    // Calcula los récords históricos: mayor constancia (días) y mayor rendimiento (kcal)
+    function getExerciseRecords() {
+      const allWeeks = getAllRecordedWeeks();
+      if (allWeeks.length === 0) return { bestDaysWeek: null, bestKcalWeek: null, allWeeks: [] };
+
+      // Mejor semana por días entrenados (constancia)
+      const bestDaysWeek = [...allWeeks].sort((a, b) => {
+        if (b.activeDaysCount !== a.activeDaysCount) return b.activeDaysCount - a.activeDaysCount;
+        return b.totalKcal - a.totalKcal;
+      })[0];
+
+      // Mejor semana por quema calórica (rendimiento atlético)
+      const bestKcalWeek = [...allWeeks].sort((a, b) => {
+        if (b.totalKcal !== a.totalKcal) return b.totalKcal - a.totalKcal;
+        return b.activeDaysCount - a.activeDaysCount;
+      })[0];
+
+      return { bestDaysWeek, bestKcalWeek, allWeeks };
+    }
+
+    // Controles de navegación y fechas
+    function navigateWeek(delta) {
+      currentWeekOffset += delta;
+      renderWeeklyExerciseUI();
+    }
+
+    function resetToCurrentWeek() {
+      currentWeekOffset = 0;
+      selectedExerciseDate = getTodayDateStr();
+      renderWeeklyExerciseUI();
+    }
+
+    function selectWeekDay(dateStr) {
+      selectedExerciseDate = dateStr;
+      exerciseViewFilter = 'day';
+      const dateInput = document.getElementById('sport-date-input');
+      if (dateInput) dateInput.value = dateStr;
+      renderWeeklyExerciseUI();
+    }
+
+    function setExerciseViewFilter(filter) {
+      exerciseViewFilter = filter;
+      renderWeeklyExerciseUI();
+    }
+
+    function setSportDateToday() {
+      const dateInput = document.getElementById('sport-date-input');
+      if (dateInput) dateInput.value = getTodayDateStr();
+    }
+
+    function setSportDateYesterday() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const dateInput = document.getElementById('sport-date-input');
+      if (dateInput) dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    function toggleWeeklyHallOfFame() {
+      hallOfFameExpanded = !hallOfFameExpanded;
+      const container = document.getElementById('weekly-comparison-container');
+      const label = document.getElementById('toggle-hall-fame-label');
+      const icon = document.getElementById('toggle-hall-fame-icon');
+      if (container) {
+        if (hallOfFameExpanded) {
+          container.classList.remove('hidden');
+          if (label) label.textContent = 'Ocultar Detalle';
+          if (icon) icon.textContent = 'expand_less';
+        } else {
+          container.classList.add('hidden');
+          if (label) label.textContent = 'Ver Detalle';
+          if (icon) icon.textContent = 'expand_more';
+        }
+      }
+    }
+
+    function jumpToWeekOffset(offset) {
+      currentWeekOffset = offset;
+      renderWeeklyExerciseUI();
+      const el = document.getElementById('view-actividad');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function syncTodayExercises() {
+      const todayStr = getTodayDateStr();
+      if (Array.isArray(appState.exerciseHistory)) {
+        appState.exercises = appState.exerciseHistory.filter(e => (e.date || todayStr) === todayStr);
+      }
+    }
+
+    // Renderiza el Tablero Semanal, Récords y Comparativas
+    function renderWeeklyExerciseUI() {
+      const currentWeek = getWeekStats(currentWeekOffset);
+      const { bestDaysWeek, bestKcalWeek, allWeeks } = getExerciseRecords();
+      const todayStr = getTodayDateStr();
+
+      // Sincronizar campo de fecha del formulario si está vacío
+      const dateInput = document.getElementById('sport-date-input');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = selectedExerciseDate || todayStr;
+      }
+
+      // 1. Cabecera y badge de calorías de la semana
+      const weekBurnedEl = document.getElementById('act-week-burned');
+      if (weekBurnedEl) {
+        weekBurnedEl.textContent = currentWeek.totalKcal.toLocaleString('es-ES');
+      }
+
+      // Etiqueta de rango de semana
+      const weekLabelEl = document.getElementById('act-week-label');
+      if (weekLabelEl) {
+        weekLabelEl.textContent = currentWeek.weekLabel + (currentWeek.isCurrentWeek ? ' · (Actual)' : '');
+      }
+
+      // Deshabilitar botón de semana siguiente si estamos en la semana actual o futura
+      const nextBtn = document.getElementById('btn-next-week');
+      if (nextBtn) {
+        if (currentWeekOffset >= 0) {
+          nextBtn.classList.add('opacity-40', 'cursor-not-allowed');
+        } else {
+          nextBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        }
+      }
+
+      // 2. Renderizar Tira de 7 Días (Lunes a Domingo)
+      const daysContainer = document.getElementById('weekly-days-grid');
+      if (daysContainer) {
+        daysContainer.innerHTML = currentWeek.days.map(d => {
+          const dData = currentWeek.dayMap[d.dateStr];
+          const hasTrained = dData && dData.sessions.length > 0;
+          const kcal = dData ? dData.totalKcal : 0;
+          const isToday = d.isToday;
+          const isSelected = d.dateStr === selectedExerciseDate;
+          const fillPercent = Math.min(100, Math.round((kcal / 500) * 100));
+
+          const cardBorder = isSelected
+            ? 'ring-2 ring-primary border-primary shadow-md'
+            : (isToday ? 'border-primary/60 shadow-sm' : 'border-outline-variant/20 hover:border-outline-variant/40');
+
+          const cardBg = isSelected
+            ? 'bg-primary/5'
+            : (hasTrained ? 'bg-surface-container-lowest' : 'bg-surface-container-low/60');
+
+          return `
+            <button type="button" onclick="selectWeekDay('${d.dateStr}')" class="flex flex-col items-center justify-between p-2 sm:p-2.5 rounded-xl border ${cardBorder} ${cardBg} transition-all text-center min-h-[110px] relative overflow-hidden group">
+              <!-- Header día -->
+              <div class="flex flex-col items-center w-full">
+                <span class="text-[10px] font-bold uppercase tracking-wider ${isToday ? 'text-primary' : 'text-outline'}">${d.shortName}</span>
+                <span class="font-display font-extrabold text-[13px] ${isToday ? 'text-primary' : 'text-on-surface'}">${d.dayNumber}</span>
+                ${isToday ? `<span class="text-[8px] font-black uppercase px-1 rounded bg-primary text-white mt-0.5 tracking-tight leading-tight">HOY</span>` : ''}
+              </div>
+
+              <!-- Indicador de entrenamiento -->
+              <div class="my-1.5 flex flex-col items-center justify-center">
+                ${hasTrained ? `
+                  <div class="w-7 h-7 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center font-bold shadow-xs">
+                    <span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+                  </div>
+                  <span class="font-display font-black text-[12px] sm:text-[13px] text-secondary mt-1 leading-tight">+${kcal}</span>
+                  <span class="text-[9px] text-outline font-semibold">${dData.sessions.length} ses.</span>
+                ` : `
+                  <div class="w-6 h-6 rounded-full bg-surface-container text-outline/50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[13px]">hotel</span>
+                  </div>
+                  <span class="font-display font-semibold text-[11px] text-outline/70 mt-1 leading-tight">0 kcal</span>
+                  <span class="text-[8px] text-outline/60">Descanso</span>
+                `}
+              </div>
+
+              <!-- Barra de llenado calórico -->
+              <div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden mt-1">
+                <div class="bg-secondary h-full rounded-full transition-all" style="width: ${fillPercent}%;"></div>
+              </div>
+            </button>
+          `;
+        }).join('');
+      }
+
+      // 3. Métricas Clave de la Semana
+      const activeDaysEl = document.getElementById('act-week-active-days');
+      if (activeDaysEl) activeDaysEl.textContent = currentWeek.activeDaysCount;
+
+      const daysProgressEl = document.getElementById('act-week-days-progress');
+      if (daysProgressEl) {
+        const pct = Math.round((currentWeek.activeDaysCount / 7) * 100);
+        daysProgressEl.style.width = `${pct}%`;
+      }
+
+      const kcalValEl = document.getElementById('act-week-kcal-val');
+      if (kcalValEl) kcalValEl.textContent = `+${currentWeek.totalKcal.toLocaleString('es-ES')}`;
+
+      const kcalSubEl = document.getElementById('act-week-kcal-sub');
+      if (kcalSubEl) {
+        kcalSubEl.textContent = currentWeek.sessions.length > 0
+          ? `Promedio ${currentWeek.avgKcalPerSession} kcal/sesión`
+          : 'Sin sesiones aún';
+      }
+
+      const minsValEl = document.getElementById('act-week-mins-val');
+      if (minsValEl) minsValEl.textContent = currentWeek.totalMinutes;
+
+      const minsBadgeEl = document.getElementById('act-week-mins-badge');
+      if (minsBadgeEl) {
+        if (currentWeek.totalMinutes >= 150) {
+          minsBadgeEl.className = 'text-[10px] font-bold text-primary flex items-center gap-0.5';
+          minsBadgeEl.innerHTML = `<span class="material-symbols-outlined text-[13px]">check_circle</span> Meta OMS superada`;
+        } else {
+          const diff = 150 - currentWeek.totalMinutes;
+          minsBadgeEl.className = 'text-[10px] font-bold text-secondary flex items-center gap-0.5';
+          minsBadgeEl.innerHTML = `<span class="material-symbols-outlined text-[13px]">timer</span> Faltan ${diff} min OMS`;
+        }
+      }
+
+      // Estatus semanal
+      const statusBadgeEl = document.getElementById('act-week-status-badge');
+      if (statusBadgeEl) {
+        const isBestDays = bestDaysWeek && bestDaysWeek.offsetWeeks === currentWeek.offsetWeeks && currentWeek.activeDaysCount > 0;
+        const isBestKcal = bestKcalWeek && bestKcalWeek.offsetWeeks === currentWeek.offsetWeeks && currentWeek.totalKcal > 0;
+
+        if (isBestDays && isBestKcal) {
+          statusBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-extrabold flex items-center gap-1">🏆 Semana Histórica Doble Récord</span>`;
+        } else if (isBestDays) {
+          statusBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-extrabold flex items-center gap-1">🏆 Récord de Días (${currentWeek.activeDaysCount}/7)</span>`;
+        } else if (isBestKcal) {
+          statusBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-extrabold flex items-center gap-1">🔥 Récord Calórico (+${currentWeek.totalKcal} kcal)</span>`;
+        } else if (currentWeek.isCurrentWeek) {
+          statusBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold flex items-center gap-1">⚡ Semana en Curso</span>`;
+        } else {
+          statusBadgeEl.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold">Semana Completada</span>`;
+        }
+      }
+
+      const favSportEl = document.getElementById('act-week-favorite-sport');
+      if (favSportEl) {
+        favSportEl.textContent = `Deporte líder: ${currentWeek.leaderSport}`;
+      }
+
+      // 4. Actualizar Tarjetas de Récords del Hall de la Fama
+      if (bestDaysWeek) {
+        const rDaysLabel = document.getElementById('record-days-week-label');
+        if (rDaysLabel) rDaysLabel.textContent = bestDaysWeek.weekLabel + (bestDaysWeek.isCurrentWeek ? ' (Actual)' : '');
+        const rDaysCount = document.getElementById('record-days-count');
+        if (rDaysCount) rDaysCount.textContent = `${bestDaysWeek.activeDaysCount} de 7 días`;
+        const rDaysKcal = document.getElementById('record-days-kcal');
+        if (rDaysKcal) rDaysKcal.textContent = `+${bestDaysWeek.totalKcal.toLocaleString('es-ES')} kcal`;
+        const rDaysMins = document.getElementById('record-days-mins');
+        if (rDaysMins) rDaysMins.textContent = `${bestDaysWeek.totalMinutes} min`;
+      }
+
+      if (bestKcalWeek) {
+        const rKcalLabel = document.getElementById('record-kcal-week-label');
+        if (rKcalLabel) rKcalLabel.textContent = bestKcalWeek.weekLabel + (bestKcalWeek.isCurrentWeek ? ' (Actual)' : '');
+        const rKcalVal = document.getElementById('record-kcal-value');
+        if (rKcalVal) rKcalVal.textContent = `+${bestKcalWeek.totalKcal.toLocaleString('es-ES')} kcal`;
+        const rKcalDays = document.getElementById('record-kcal-days');
+        if (rKcalDays) rKcalDays.textContent = `${bestKcalWeek.activeDaysCount} días activos`;
+        const rKcalMins = document.getElementById('record-kcal-mins');
+        if (rKcalMins) rKcalMins.textContent = `${bestKcalWeek.totalMinutes} min`;
+      }
+
+      // 5. Ranking Comparativo de Semanas
+      const comparisonContainer = document.getElementById('weekly-comparison-container');
+      if (comparisonContainer) {
+        const maxKcalRecorded = Math.max(...allWeeks.map(w => w.totalKcal), 100);
+
+        // Ordenar por rendimiento calórico descendente para el ranking
+        const rankedWeeks = [...allWeeks].sort((a, b) => b.totalKcal - a.totalKcal);
+
+        comparisonContainer.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] font-bold text-outline uppercase tracking-wider px-1 pt-1">
+            <span>Ranking de Rendimiento Semanal</span>
+            <span>Quema Calórica Relativa</span>
+          </div>
+          <div class="flex flex-col gap-2">
+            ${rankedWeeks.map((wk, idx) => {
+              const medalIcons = ['🥇 1º', '🥈 2º', '🥉 3º'];
+              const medal = idx < 3 ? medalIcons[idx] : `#${idx + 1}`;
+              const isSelectedWeek = wk.offsetWeeks === currentWeek.offsetWeeks;
+              const isRecordDays = bestDaysWeek && bestDaysWeek.offsetWeeks === wk.offsetWeeks;
+              const isRecordKcal = bestKcalWeek && bestKcalWeek.offsetWeeks === wk.offsetWeeks;
+              const barWidth = Math.min(100, Math.round((wk.totalKcal / maxKcalRecorded) * 100));
+
+              return `
+                <div class="p-3 rounded-xl border ${isSelectedWeek ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant/20 bg-surface-container-low'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <span class="font-display font-extrabold text-[13px] ${idx === 0 ? 'text-amber-600' : (idx === 1 ? 'text-slate-500' : (idx === 2 ? 'text-amber-800' : 'text-outline'))} shrink-0 w-8">
+                      ${medal}
+                    </span>
+                    <div class="flex flex-col min-w-0">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h5 class="text-[13px] font-bold text-on-surface truncate">${wk.weekLabel}</h5>
+                        ${wk.isCurrentWeek ? `<span class="px-1.5 py-0.2 rounded bg-primary-fixed text-on-primary-fixed-variant text-[9px] font-bold">Semana Actual</span>` : ''}
+                        ${isRecordKcal ? `<span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-900 text-[9px] font-bold">🔥 Récord Kcal</span>` : ''}
+                        ${isRecordDays ? `<span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 text-[9px] font-bold">🏆 Récord Días</span>` : ''}
+                      </div>
+                      <div class="flex items-center gap-2 text-[11px] text-outline mt-0.5">
+                        <span class="font-bold text-on-surface">${wk.activeDaysCount} de 7 días</span>
+                        <span>·</span>
+                        <span>${wk.totalMinutes} min cardio</span>
+                        <span>·</span>
+                        <span>Líder: ${wk.leaderSport}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-3 shrink-0 self-end sm:self-auto w-full sm:w-48">
+                    <div class="flex flex-col gap-0.5 flex-1">
+                      <div class="flex items-center justify-between text-[11px] font-bold">
+                        <span class="text-secondary">+${wk.totalKcal.toLocaleString('es-ES')} kcal</span>
+                        <span class="text-[10px] text-outline font-normal">${barWidth}%</span>
+                      </div>
+                      <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-secondary h-full rounded-full transition-all" style="width: ${barWidth}%;"></div>
+                      </div>
+                    </div>
+                    <button type="button" onclick="jumpToWeekOffset(${wk.offsetWeeks})" class="px-2.5 py-1 rounded-lg ${isSelectedWeek ? 'bg-primary text-on-primary' : 'bg-surface hover:bg-surface-container border border-outline-variant/30 text-on-surface'} text-[11px] font-bold transition-all shrink-0">
+                      ${isSelectedWeek ? 'Viendo' : 'Ver'}
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 6. Actualizar selector de filtro de la lista de sesiones
+      const btnFilterWeek = document.getElementById('btn-filter-view-week');
+      const btnFilterDay = document.getElementById('btn-filter-view-day');
+      const listTitle = document.getElementById('sessions-list-title');
+      const listSub = document.getElementById('sessions-list-subtitle');
+
+      if (btnFilterWeek && btnFilterDay) {
+        if (exerciseViewFilter === 'week') {
+          btnFilterWeek.className = 'px-3 py-1 rounded-lg bg-surface-container-lowest text-primary font-bold text-[11px] shadow-sm transition-all';
+          btnFilterDay.className = 'px-3 py-1 rounded-lg text-outline font-semibold text-[11px] hover:bg-surface-container transition-all';
+          if (listTitle) listTitle.textContent = `Sesiones de la Semana (${currentWeek.weekLabel})`;
+          if (listSub) listSub.textContent = `${currentWeek.sessions.length} sesión(es) en total · +${currentWeek.totalKcal} kcal quemadas`;
+        } else {
+          btnFilterDay.className = 'px-3 py-1 rounded-lg bg-surface-container-lowest text-primary font-bold text-[11px] shadow-sm transition-all';
+          btnFilterWeek.className = 'px-3 py-1 rounded-lg text-outline font-semibold text-[11px] hover:bg-surface-container transition-all';
+          if (listTitle) listTitle.textContent = `Sesiones del ${formatShortDate(selectedExerciseDate)}`;
+          const daySessions = (appState.exerciseHistory || []).filter(e => (e.date || todayStr) === selectedExerciseDate);
+          const dayKcal = daySessions.reduce((acc, s) => acc + Number(s.kcal || 0), 0);
+          if (listSub) listSub.textContent = `${daySessions.length} sesión(es) este día · +${dayKcal} kcal quemadas`;
+        }
+      }
+    }
+
     function addExerciseSession() {
       const mins = Math.max(1, parseInt(document.getElementById('sport-minutes').value || '30', 10));
       const kcal = getCalculatedSportKcal();
@@ -4909,51 +5646,110 @@
         const customName = document.getElementById('custom-sport-input').value.trim();
         if (customName) sportTitle = customName;
       }
-      const now = new Date();
-      const hhmm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-      appState.exercises.push({
+
+      const todayStr = getTodayDateStr();
+      const dateInput = document.getElementById('sport-date-input')?.value || selectedExerciseDate || todayStr;
+      const timeInput = document.getElementById('sport-time-input')?.value;
+      let hhmm = timeInput;
+      if (!hhmm) {
+        const now = new Date();
+        hhmm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+      }
+
+      const newSession = {
         id: Date.now(),
+        date: dateInput,
         sport: sportTitle,
         minutes: mins,
         effort: effortLabel,
         kcal: kcal,
         time: hhmm
-      });
+      };
+
+      if (!Array.isArray(appState.exerciseHistory)) {
+        appState.exerciseHistory = [];
+      }
+      appState.exerciseHistory.push(newSession);
+
+      // Si corresponde al día de hoy, sincronizar también appState.exercises para métricas diarias inmediatas
+      if (dateInput === todayStr) {
+        if (!Array.isArray(appState.exercises)) appState.exercises = [];
+        appState.exercises.push(newSession);
+      }
+
       document.getElementById('sport-manual-kcal').value = '';
       saveState();
       updateAllUI();
-      showToast(`+${kcal} kcal quemadas en ${sportTitle}`, 'directions_run');
+      showToast(`+${kcal} kcal registradas en ${sportTitle} (${formatShortDate(dateInput)})`, 'directions_run');
     }
 
     function removeExercise(id) {
-      appState.exercises = appState.exercises.filter(e => e.id !== id);
+      if (Array.isArray(appState.exerciseHistory)) {
+        appState.exerciseHistory = appState.exerciseHistory.filter(e => e.id !== id);
+      }
+      if (Array.isArray(appState.exercises)) {
+        appState.exercises = appState.exercises.filter(e => e.id !== id);
+      }
       saveState();
       updateAllUI();
-      showToast('Sesión eliminada', 'delete');
+      showToast('Sesión de ejercicio eliminada', 'delete');
     }
 
     function renderExercisesList() {
-      const totalBurned = appState.exercises.reduce((acc, e) => acc + e.kcal, 0);
-      document.getElementById('act-total-burned').textContent = totalBurned;
+      syncTodayExercises();
+      const totalBurnedToday = appState.exercises.reduce((acc, e) => acc + Number(e.kcal || 0), 0);
+      const todayBurnedEl = document.getElementById('act-total-burned');
+      if (todayBurnedEl) todayBurnedEl.textContent = totalBurnedToday;
+
+      renderWeeklyExerciseUI();
+
       const container = document.getElementById('today-exercises-list');
-      if (appState.exercises.length === 0) {
-        container.innerHTML = `<div class="p-4 rounded-2xl bg-surface-container-low text-center text-[12px] text-outline">Aún no registras ejercicios hoy.</div>`;
+      if (!container) return;
+
+      const currentWeek = getWeekStats(currentWeekOffset);
+      const todayStr = getTodayDateStr();
+
+      let displaySessions = [];
+      if (exerciseViewFilter === 'day') {
+        displaySessions = (appState.exerciseHistory || []).filter(e => (e.date || todayStr) === selectedExerciseDate);
+      } else {
+        displaySessions = currentWeek.sessions;
+      }
+
+      if (displaySessions.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 rounded-2xl bg-surface-container-low text-center text-[12px] text-outline flex flex-col items-center gap-2">
+            <span class="material-symbols-outlined text-[28px] text-outline/50">event_busy</span>
+            <span>No hay sesiones de ejercicio registradas para este período. ¡Usa el formulario para registrar una sesión!</span>
+          </div>
+        `;
         return;
       }
-      container.innerHTML = appState.exercises.map(ex => `
+
+      // Ordenar por fecha/hora descendente
+      const sorted = [...displaySessions].sort((a, b) => {
+        const da = (a.date || '') + ' ' + (a.time || '');
+        const db = (b.date || '') + ' ' + (b.time || '');
+        return db.localeCompare(da);
+      });
+
+      container.innerHTML = sorted.map(ex => `
         <div class="bg-surface-container-lowest rounded-2xl p-3.5 shadow-sm border border-outline-variant/15 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-[20px]">directions_run</span>
             </div>
             <div>
-              <h4 class="text-[14px] font-bold text-on-surface">${ex.sport} · ${ex.minutes} min</h4>
-              <span class="text-[11px] text-outline">Esfuerzo ${ex.effort} · ${ex.time}</span>
+              <div class="flex items-center gap-2">
+                <h4 class="text-[14px] font-bold text-on-surface">${ex.sport} · ${ex.minutes} min</h4>
+                <span class="text-[10px] font-bold px-2 py-0.2 rounded-full bg-surface-container text-outline">${formatShortDate(ex.date)}</span>
+              </div>
+              <span class="text-[11px] text-outline">Esfuerzo ${ex.effort} · ${ex.time || '07:00'}</span>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <span class="font-display text-[15px] font-bold text-secondary">+${ex.kcal} kcal</span>
-            <button type="button" onclick="removeExercise(${ex.id})" class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-error">
+            <button type="button" onclick="removeExercise(${ex.id})" class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-error transition-all" title="Eliminar sesión">
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
           </div>
