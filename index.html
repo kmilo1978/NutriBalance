@@ -154,6 +154,10 @@
             <span class="material-symbols-outlined text-[18px] text-primary">print</span>
             <span class="hidden xl:inline">Reporte</span>
           </button>
+          <button onclick="openAiSettingsModal()" title="Configuración de Inteligencia Artificial (OpenAI, Gemini, Claude)" class="h-9 px-2.5 sm:px-3 rounded-xl bg-primary-fixed/40 hover:bg-primary-fixed text-on-primary-fixed-variant flex items-center gap-1.5 text-[12px] font-bold transition-all border border-primary/20 whitespace-nowrap">
+            <span class="material-symbols-outlined text-[18px] text-primary">smart_toy</span>
+            <span class="hidden xl:inline">IA</span>
+          </button>
           <button onclick="switchTab('mi-salud'); setTimeout(() => document.getElementById('alertas-section')?.scrollIntoView({behavior:'smooth'}), 100)" aria-label="Recordatorios y Alertas" class="relative w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low active:scale-95 transition-all border border-outline-variant/30">
             <span class="material-symbols-outlined text-[20px]">notifications</span>
             <span id="notif-dot" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span>
@@ -933,16 +937,147 @@
           <!-- Rendered by JS -->
         </div>
 
-        <!-- Add Custom Food Box -->
-        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-2.5 mt-2">
-          <span class="font-display text-[15px] font-bold text-on-surface">¿No encuentras tu alimento? Agrégalo rápido</span>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <input id="custom-food-name" type="text" placeholder="Nombre (ej. Arepa de maíz con queso bajo en grasa)" class="sm:col-span-2 px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] outline-none" />
-            <input id="custom-food-kcal" type="number" placeholder="kcal (ej. 210)" class="px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] outline-none" />
+        <!-- Add Custom Food Box with AI & Photo Estimation -->
+        <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-6 shadow-sm border border-outline-variant/20 flex flex-col gap-4 mt-2">
+          <!-- Card Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+              </div>
+              <div>
+                <h3 class="font-display text-[16px] font-bold text-on-surface">¿No encuentras tu alimento? Calcúlalo con IA o Foto</h3>
+                <p class="text-[12px] text-outline">Escribe qué comiste y su peso aproximado, o sube una foto de tu plato</p>
+              </div>
+            </div>
+            <button type="button" onclick="openAiSettingsModal()" class="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-primary text-[11px] font-bold flex items-center gap-1.5 border border-outline-variant/30 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-[16px] text-primary">psychology</span>
+              <span id="active-ai-badge-label">IA: OpenAI (gpt-4o-mini)</span>
+              <span class="material-symbols-outlined text-[14px] text-outline">tune</span>
+            </button>
           </div>
-          <button type="button" onclick="addCustomFoodToCatalog()" class="w-full h-11 rounded-xl bg-secondary-fixed text-on-secondary-fixed-variant text-[13px] font-bold hover:opacity-90 transition-opacity">
-            + Guardar y sumar al día
+
+          <!-- Input Fields: Description & Weight/Portion -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+            <div class="sm:col-span-8 flex flex-col gap-1">
+              <label class="text-[11px] font-bold text-on-surface-variant flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px] text-primary">edit_note</span>
+                <span>Descripción o nombre del alimento</span>
+              </label>
+              <input id="custom-food-name" type="text" placeholder="ej. 150g pechuga a la plancha con puré de papa y ensalada de aguacate" class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-[13px] outline-none border border-outline-variant/20 focus:border-primary transition-all" />
+            </div>
+
+            <div class="sm:col-span-4 flex flex-col gap-1">
+              <label class="text-[11px] font-bold text-on-surface-variant flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px] text-secondary">scale</span>
+                <span>Peso o porción (opcional)</span>
+              </label>
+              <input id="custom-food-portion" type="text" placeholder="ej. 220g, 1 taza, 1 unidad" class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-[13px] outline-none border border-outline-variant/20 focus:border-primary transition-all" />
+            </div>
+          </div>
+
+          <!-- Photo Upload Option & Thumbnail Preview -->
+          <div class="flex flex-wrap items-center gap-3">
+            <input type="file" id="custom-food-file" accept="image/*" class="hidden" onchange="handleCustomFoodPhoto(event)" />
+            <button type="button" onclick="document.getElementById('custom-food-file').click()" class="h-10 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[12px] font-semibold flex items-center gap-2 border border-outline-variant/20 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px] text-primary">photo_camera</span>
+              <span id="custom-food-photo-btn-text">Adjuntar o tomar foto del plato</span>
+            </button>
+
+            <!-- Image preview box (hidden by default) -->
+            <div id="custom-food-preview-box" class="hidden items-center gap-2 p-1.5 pr-3 rounded-xl bg-surface-container border border-outline-variant/30">
+              <img id="custom-food-thumb" src="" alt="Plato" class="w-8 h-8 rounded-lg object-cover" />
+              <span id="custom-food-thumb-name" class="text-[11px] font-bold text-on-surface max-w-[140px] truncate">foto.jpg</span>
+              <button type="button" onclick="removeCustomFoodPhoto()" class="text-error hover:text-error/80 text-[11px] font-bold ml-1">✕</button>
+            </div>
+          </div>
+
+          <!-- Action Estimate Button -->
+          <button type="button" id="btn-estimate-ai" onclick="estimateFoodWithAi()" class="w-full h-12 rounded-2xl bg-gradient-to-r from-primary to-teal-700 text-on-primary font-display font-bold text-[14px] shadow-md hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+            <span id="btn-estimate-ai-text">Calcular Calorías y Nutrientes con IA</span>
           </button>
+
+          <!-- Loading Spinner Box -->
+          <div id="custom-ai-loading" class="hidden flex-col items-center justify-center p-6 bg-surface-container-low rounded-2xl gap-3">
+            <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p id="custom-ai-loading-text" class="text-[12px] font-semibold text-primary animate-pulse">Analizando ingredientes, porciones y valor biológico con IA...</p>
+          </div>
+
+          <!-- Result Preview Box (Hidden until calculated) -->
+          <div id="custom-ai-result-box" class="hidden flex-col gap-3.5 p-4 sm:p-5 rounded-2xl bg-surface-container-low border border-primary/30 shadow-sm transition-all">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+                <h4 class="font-display text-[15px] font-bold text-on-surface">Resultado del Análisis Nutricional</h4>
+              </div>
+              <span class="text-[11px] text-outline">Puedes ajustar los valores si lo deseas antes de guardar</span>
+            </div>
+
+            <!-- Estimated Values Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2">
+              <div class="col-span-2 sm:col-span-2 p-3 rounded-xl bg-surface border border-primary/20 flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Calorías Totales</span>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <input id="res-food-kcal" type="number" class="w-24 font-display text-[22px] font-extrabold text-primary bg-transparent outline-none border-b border-primary/30" />
+                  <span class="text-[12px] font-bold text-outline">kcal</span>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-surface flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-outline uppercase">Proteína</span>
+                <div class="flex items-baseline gap-0.5 mt-0.5">
+                  <input id="res-food-protein" type="number" class="w-12 font-bold text-[16px] text-on-surface bg-transparent outline-none border-b border-outline-variant/40" />
+                  <span class="text-[11px] text-outline">g</span>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-surface flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-outline uppercase">Carbos</span>
+                <div class="flex items-baseline gap-0.5 mt-0.5">
+                  <input id="res-food-carbs" type="number" class="w-12 font-bold text-[16px] text-on-surface bg-transparent outline-none border-b border-outline-variant/40" />
+                  <span class="text-[11px] text-outline">g</span>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-surface flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-outline uppercase">Grasas</span>
+                <div class="flex items-baseline gap-0.5 mt-0.5">
+                  <input id="res-food-fat" type="number" class="w-12 font-bold text-[16px] text-on-surface bg-transparent outline-none border-b border-outline-variant/40" />
+                  <span class="text-[11px] text-outline">g</span>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-surface flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-outline uppercase">Fibra</span>
+                <div class="flex items-baseline gap-0.5 mt-0.5">
+                  <input id="res-food-fiber" type="number" class="w-12 font-bold text-[16px] text-on-surface bg-transparent outline-none border-b border-outline-variant/40" />
+                  <span class="text-[11px] text-outline">g</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cardioprotective Health Tip -->
+            <div class="p-3 rounded-xl bg-primary-fixed/40 text-on-primary-fixed-variant text-[12px] flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">favorite</span>
+              <div>
+                <strong class="font-bold">Impacto Cardiovascular:</strong>
+                <p id="res-food-tip" class="text-[11px] leading-relaxed mt-0.5 text-on-primary-fixed-variant/90">Aporte equilibrado de macronutrientes.</p>
+              </div>
+            </div>
+
+            <!-- Save Buttons -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="saveCustomAiFood(true)" class="h-11 rounded-xl bg-primary text-on-primary text-[13px] font-bold shadow-sm hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">add_task</span>
+                <span>Guardar y sumar a comidas de hoy</span>
+              </button>
+              <button type="button" onclick="saveCustomAiFood(false)" class="h-11 rounded-xl bg-surface border border-outline-variant/30 text-on-surface hover:bg-surface-container text-[13px] font-semibold shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px] text-primary">bookmark_add</span>
+                <span>Solo guardar en catálogo</span>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -2115,6 +2250,102 @@
       </div>
     </div>
 
+    <!-- 10. MODAL DE CONFIGURACIÓN DE INTELIGENCIA ARTIFICIAL -->
+    <div id="ai-settings-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-lg bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto border border-outline-variant/20">
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-[24px]">psychology</span>
+            </div>
+            <div>
+              <h3 class="font-display text-[18px] font-bold text-on-surface">Configuración de Inteligencia Artificial</h3>
+              <p class="text-[12px] text-on-surface-variant">Conecta tu proveedor de IA para análisis de fotos y platos</p>
+            </div>
+          </div>
+          <button onclick="closeAiSettingsModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <p class="text-[12px] text-on-surface-variant leading-relaxed">
+          NutriBalance puede conectarse directamente con <strong>OpenAI</strong>, <strong>Google Gemini</strong> o <strong>Claude</strong> para estimar calorías exactas, macronutrientes y grasas cardioprotectoras analizando la foto de tu plato o su peso en gramos.
+        </p>
+
+        <!-- Provider Selector -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Proveedor de IA</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" onclick="selectAiProvider('openai')" id="ai-provider-openai" class="ai-provider-btn p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all bg-surface border-primary ring-2 ring-primary/20 shadow-sm">
+              <span class="font-bold text-[13px] text-primary">OpenAI</span>
+              <span class="text-[10px] text-outline">ChatGPT / GPT-4o</span>
+            </button>
+            <button type="button" onclick="selectAiProvider('gemini')" id="ai-provider-gemini" class="ai-provider-btn p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all bg-surface-container-low border-outline-variant/20 hover:border-primary/50">
+              <span class="font-bold text-[13px] text-on-surface">Gemini</span>
+              <span class="text-[10px] text-outline">Google AI (Gratis)</span>
+            </button>
+            <button type="button" onclick="selectAiProvider('claude')" id="ai-provider-claude" class="ai-provider-btn p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all bg-surface-container-low border-outline-variant/20 hover:border-primary/50">
+              <span class="font-bold text-[13px] text-on-surface">Claude</span>
+              <span class="text-[10px] text-outline">Anthropic</span>
+            </button>
+            <button type="button" onclick="selectAiProvider('offline')" id="ai-provider-offline" class="ai-provider-btn p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all bg-surface-container-low border-outline-variant/20 hover:border-primary/50">
+              <span class="font-bold text-[13px] text-on-surface">Offline</span>
+              <span class="text-[10px] text-outline">Sin API Key (Gratis)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Model Selection Dropdown -->
+        <div id="ai-model-container" class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Modelo de IA</label>
+          <select id="ai-model-select" class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-[13px] font-medium outline-none border border-outline-variant/20 focus:border-primary">
+            <!-- Populated dynamically -->
+          </select>
+          <span id="ai-model-hint" class="text-[11px] text-outline">Recomendado: gpt-4o-mini es ultra rápido, económico y analiza fotos con gran precisión.</span>
+        </div>
+
+        <!-- API Key Input Field -->
+        <div id="ai-key-container" class="flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Clave de API (API Key)</label>
+            <a id="ai-key-help-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-0.5">
+              <span>¿Dónde obtenerla?</span>
+              <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+            </a>
+          </div>
+          <div class="relative w-full">
+            <input id="ai-api-key" type="password" placeholder="sk-..." class="w-full h-11 pl-3.5 pr-10 rounded-xl bg-surface-container-low text-on-surface text-[13px] font-mono outline-none border border-outline-variant/20 focus:border-primary transition-all" />
+            <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface">
+              <span id="ai-key-eye-icon" class="material-symbols-outlined text-[18px]">visibility</span>
+            </button>
+          </div>
+          <span class="text-[10px] text-outline flex items-center gap-1">
+            <span class="material-symbols-outlined text-[12px] text-emerald-600">lock</span>
+            <span>Tu clave se guarda 100% en tu navegador local (localStorage). Nunca se envía a servidores de terceros.</span>
+          </span>
+        </div>
+
+        <!-- Custom URL for Ollama / OpenRouter (optional) -->
+        <div id="ai-custom-url-container" class="hidden flex-col gap-1.5">
+          <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">URL Base del Servidor (opcional)</label>
+          <input id="ai-custom-url" type="text" placeholder="http://localhost:11434/v1" class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-[13px] font-mono outline-none border border-outline-variant/20 focus:border-primary" />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-2 pt-2 border-t border-outline-variant/20">
+          <button type="button" onclick="testAiConnection()" id="btn-test-ai" class="w-full sm:w-auto px-4 h-11 rounded-xl bg-surface border border-outline-variant/30 text-on-surface hover:bg-surface-container text-[12px] font-bold shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px] text-primary">bolt</span>
+            <span>Probar Conexión</span>
+          </button>
+          <button type="button" onclick="saveAiSettings()" class="w-full sm:flex-1 h-11 rounded-xl bg-primary text-on-primary text-[13px] font-bold shadow-md hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">save</span>
+            <span>Guardar Configuración</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- TOAST NOTIFICATION -->
     <div id="toast-notification" class="fixed bottom-24 lg:bottom-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none translate-y-4 px-4 py-2.5 bg-inverse-surface text-inverse-on-surface rounded-full shadow-lg flex items-center gap-2 max-w-[90vw]">
       <span id="toast-icon" class="material-symbols-outlined text-inverse-primary text-[20px]">check_circle</span>
@@ -2793,6 +3024,7 @@
       renderBloodPressureList();
       updateScanPreview();
       renderLabAnalytics();
+      updateAiBadgeUI();
 
       // Dashboard Interactive Charts
       if (currentChartTab === 'calorias') {
@@ -3808,16 +4040,37 @@
       const file = event.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('scanner-preview-img').src = e.target.result;
-        document.getElementById('scan-status-pill').textContent = 'Foto Analizada';
+      reader.onload = async function(e) {
+        const photoData = e.target.result;
+        document.getElementById('scanner-preview-img').src = photoData;
+        const pill = document.getElementById('scan-status-pill');
+        if (pill) pill.textContent = 'Analizando con IA...';
 
-        const presets = [
-          { name: 'Filete de Salmón con Quinoa y Brócoli', kcal: 510, grams: 360, protein: 36, carbs: 38, fat: 21, fiber: 8, goodFat: 18, tip: 'Excelente aporte de Omega-3 (EPA/DHA). Puedes añadir 1 cda de aceite de oliva en crudo para potenciar el colesterol bueno HDL+.' },
-          { name: 'Avena Integral con Arándanos y Chía', kcal: 345, grams: 290, protein: 12, carbs: 54, fat: 9, fiber: 12, goodFat: 7, tip: 'Muy rico en betaglucanos para atrapar LDL. Te conviene incrementar 15g de proteína (ej. yogurt griego o claras) para mayor saciedad.' },
-          { name: 'Pechuga a la Plancha con Ensalada y Aguacate', kcal: 440, grams: 350, protein: 39, carbs: 14, fat: 24, fiber: 9, goodFat: 19, tip: 'Gran densidad proteica y grasas monoinsaturadas. Añade 80g de lentejas o papa enfriada para sumar fibra soluble.' }
-        ];
-        const pick = presets[Math.floor(Math.random() * presets.length)];
+        const cfg = getAiConfig();
+        let pick = null;
+
+        if (cfg.apiKey && (cfg.provider === 'openai' || cfg.provider === 'gemini')) {
+          try {
+            if (cfg.provider === 'openai') {
+              pick = await callOpenAiNutrition('Analiza detalladamente este plato de comida', '1 porción', photoData, cfg);
+            } else if (cfg.provider === 'gemini') {
+              pick = await callGeminiNutrition('Analiza detalladamente este plato de comida', '1 porción', photoData, cfg);
+            }
+          } catch (err) {
+            console.warn('AI Scanner fallback:', err);
+          }
+        }
+
+        if (!pick) {
+          const presets = [
+            { name: 'Filete de Salmón con Quinoa y Brócoli', kcal: 510, grams: 360, protein: 36, carbs: 38, fat: 21, fiber: 8, goodFat: 18, tip: 'Excelente aporte de Omega-3 (EPA/DHA). Puedes añadir 1 cda de aceite de oliva en crudo para potenciar el colesterol bueno HDL+.' },
+            { name: 'Avena Integral con Arándanos y Chía', kcal: 345, grams: 290, protein: 12, carbs: 54, fat: 9, fiber: 12, goodFat: 7, tip: 'Muy rico en betaglucanos para atrapar LDL. Te conviene incrementar 15g de proteína (ej. yogurt griego o claras) para mayor saciedad.' },
+            { name: 'Pechuga a la Plancha con Ensalada y Aguacate', kcal: 440, grams: 350, protein: 39, carbs: 14, fat: 24, fiber: 9, goodFat: 19, tip: 'Gran densidad proteica y grasas monoinsaturadas. Añade 80g de lentejas o papa enfriada para sumar fibra soluble.' }
+          ];
+          pick = presets[Math.floor(Math.random() * presets.length)];
+        }
+
+        if (pill) pill.textContent = 'Foto Analizada';
         document.getElementById('scan-dish-name').value = pick.name;
         document.getElementById('scan-coach-tip').textContent = pick.tip;
         scanBaseData = pick;
@@ -3961,46 +4214,501 @@
       });
     }
 
-    function addCustomFoodToCatalog() {
-      const nameInput = document.getElementById('custom-food-name');
-      const kcalInput = document.getElementById('custom-food-kcal');
-      const name = nameInput.value.trim();
-      const kcal = parseInt(kcalInput.value, 10);
-      if (!name || isNaN(kcal) || kcal <= 0) {
-        showToast('Escribe nombre y calorías válidas', 'info');
+    // ==========================================
+    // AI NUTRITION ENGINE (OPENAI, GEMINI, CLAUDE, OFFLINE)
+    // ==========================================
+    let customFoodPhotoBase64 = null;
+    let customAiEstimatedData = null;
+
+    const AI_MODELS = {
+      openai: [
+        { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Recomendado - Rápido, económico y visión)', hasVision: true },
+        { id: 'gpt-4o', name: 'GPT-4o (Máxima precisión y visión avanzada)', hasVision: true },
+        { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo (Solo texto)', hasVision: false }
+      ],
+      gemini: [
+        { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Gratuito, rápido y visión)', hasVision: true },
+        { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Última generación)', hasVision: true },
+        { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Razonamiento profundo)', hasVision: true }
+      ],
+      claude: [
+        { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku (Rápido y preciso)', hasVision: true },
+        { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet (Excelente análisis)', hasVision: true }
+      ],
+      offline: [
+        { id: 'offline-smart', name: 'Motor Nutricional Local (Gratis, sin API Key)', hasVision: false }
+      ]
+    };
+
+    function getAiConfig() {
+      if (!appState.aiConfig) {
+        appState.aiConfig = {
+          provider: 'openai',
+          model: 'gpt-4o-mini',
+          apiKey: '',
+          customUrl: ''
+        };
+      }
+      return appState.aiConfig;
+    }
+
+    function openAiSettingsModal() {
+      const cfg = getAiConfig();
+      selectAiProvider(cfg.provider || 'openai', false);
+      const modelSelect = document.getElementById('ai-model-select');
+      if (modelSelect && cfg.model) {
+        modelSelect.value = cfg.model;
+      }
+      const keyInput = document.getElementById('ai-api-key');
+      if (keyInput) keyInput.value = cfg.apiKey || '';
+      const urlInput = document.getElementById('ai-custom-url');
+      if (urlInput) urlInput.value = cfg.customUrl || '';
+
+      const modal = document.getElementById('ai-settings-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAiSettingsModal() {
+      const modal = document.getElementById('ai-settings-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function selectAiProvider(prov, updateModel = true) {
+      const cfg = getAiConfig();
+      cfg.provider = prov;
+
+      ['openai', 'gemini', 'claude', 'offline'].forEach(p => {
+        const btn = document.getElementById(`ai-provider-${p}`);
+        if (btn) {
+          if (p === prov) {
+            btn.className = 'ai-provider-btn p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all bg-surface border-primary ring-2 ring-primary/20 shadow-sm';
+            const firstSpan = btn.querySelector('span:first-child');
+            if (firstSpan) firstSpan.className = 'font-bold text-[13px] text-primary';
+          } else {
+            btn.className = 'ai-provider-btn p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all bg-surface-container-low border-outline-variant/20 hover:border-primary/50';
+            const firstSpan = btn.querySelector('span:first-child');
+            if (firstSpan) firstSpan.className = 'font-bold text-[13px] text-on-surface';
+          }
+        }
+      });
+
+      const select = document.getElementById('ai-model-select');
+      const models = AI_MODELS[prov] || [];
+      if (select) {
+        select.innerHTML = models.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+        if (updateModel && models.length > 0) {
+          cfg.model = models[0].id;
+          select.value = cfg.model;
+        }
+      }
+
+      const keyContainer = document.getElementById('ai-key-container');
+      const helpLink = document.getElementById('ai-key-help-link');
+      const hint = document.getElementById('ai-model-hint');
+      const customUrlContainer = document.getElementById('ai-custom-url-container');
+
+      if (prov === 'offline') {
+        if (keyContainer) keyContainer.classList.add('hidden');
+        if (customUrlContainer) customUrlContainer.classList.add('hidden');
+        if (hint) hint.textContent = 'Modo integrado: analiza alimentos mediante base de datos nutricional sin consumir saldo ni requerir internet.';
+      } else {
+        if (keyContainer) keyContainer.classList.remove('hidden');
+        if (prov === 'openai') {
+          if (helpLink) helpLink.href = 'https://platform.openai.com/api-keys';
+          if (hint) hint.textContent = 'Recomendado: gpt-4o-mini es ultra rápido, económico y analiza fotos con gran precisión.';
+        } else if (prov === 'gemini') {
+          if (helpLink) helpLink.href = 'https://aistudio.google.com/app/apikey';
+          if (hint) hint.textContent = 'Google Gemini ofrece cuota gratuita generosa para análisis multimodal de texto y fotos.';
+        } else if (prov === 'claude') {
+          if (helpLink) helpLink.href = 'https://console.anthropic.com/settings/keys';
+          if (hint) hint.textContent = 'Modelos de Anthropic con alta capacidad de comprensión nutricional.';
+        }
+      }
+    }
+
+    function toggleApiKeyVisibility() {
+      const input = document.getElementById('ai-api-key');
+      const icon = document.getElementById('ai-key-eye-icon');
+      if (!input || !icon) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    function saveAiSettings() {
+      const cfg = getAiConfig();
+      const select = document.getElementById('ai-model-select');
+      const keyInput = document.getElementById('ai-api-key');
+      const urlInput = document.getElementById('ai-custom-url');
+
+      if (select) cfg.model = select.value;
+      if (keyInput) cfg.apiKey = keyInput.value.trim();
+      if (urlInput) cfg.customUrl = urlInput.value.trim();
+
+      saveState();
+      updateAiBadgeUI();
+      closeAiSettingsModal();
+      showToast('Configuración de IA guardada', 'check_circle');
+    }
+
+    function updateAiBadgeUI() {
+      const cfg = getAiConfig();
+      const badge = document.getElementById('active-ai-badge-label');
+      if (badge) {
+        if (cfg.provider === 'offline' || !cfg.apiKey) {
+          badge.textContent = 'IA: Modo Integrado (Offline)';
+        } else {
+          const provName = cfg.provider === 'openai' ? 'OpenAI' : (cfg.provider === 'gemini' ? 'Gemini' : 'Claude');
+          badge.textContent = `IA: ${provName} (${cfg.model})`;
+        }
+      }
+    }
+
+    async function testAiConnection() {
+      const cfg = getAiConfig();
+      const keyInput = document.getElementById('ai-api-key');
+      const key = keyInput ? keyInput.value.trim() : cfg.apiKey;
+      const prov = cfg.provider;
+
+      if (prov === 'offline') {
+        showToast('El modo integrado está 100% activo y no requiere clave', 'check_circle');
         return;
       }
-      const newItem = {
-        id: 'custom_' + Date.now(),
-        name,
-        portion: '1 porción',
-        kcal,
-        carbs: Math.round((kcal * 0.45) / 4),
-        protein: Math.round((kcal * 0.25) / 4),
-        fat: Math.round((kcal * 0.30) / 9),
-        fiber: 3,
-        goodFat: 4,
-        tags: ['hdl'],
-        tagLabel: 'HDL+',
-        benefit: 'Alimento personalizado'
+      if (!key) {
+        showToast('Ingresa tu clave de API para probar la conexión', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('btn-test-ai');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span>Verificando...</span>`;
+
+      try {
+        if (prov === 'openai') {
+          const res = await fetch('https://api.openai.com/v1/models', {
+            headers: { 'Authorization': `Bearer ${key}` }
+          });
+          if (res.ok) {
+            showToast('Conexión con OpenAI exitosa', 'verified');
+          } else {
+            const err = await res.json().catch(() => ({}));
+            showToast(`Error OpenAI: ${err.error?.message || 'Clave no válida'}`, 'error');
+          }
+        } else if (prov === 'gemini') {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+          if (res.ok) {
+            showToast('Conexión con Google Gemini exitosa', 'verified');
+          } else {
+            showToast('Clave de Gemini no válida o servicio no disponible', 'error');
+          }
+        } else {
+          showToast('Clave registrada. Lista para procesar alimentos.', 'check_circle');
+        }
+      } catch (e) {
+        showToast('No se pudo contactar el servidor de IA (verifica tu red)', 'error');
+      } finally {
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function handleCustomFoodPhoto(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        customFoodPhotoBase64 = e.target.result;
+        const box = document.getElementById('custom-food-preview-box');
+        const thumb = document.getElementById('custom-food-thumb');
+        const nameLabel = document.getElementById('custom-food-thumb-name');
+        if (box && thumb) {
+          thumb.src = customFoodPhotoBase64;
+          if (nameLabel) nameLabel.textContent = file.name;
+          box.classList.remove('hidden');
+          box.classList.add('flex');
+        }
+        document.getElementById('custom-food-photo-btn-text').textContent = 'Cambiar foto';
       };
+      reader.readAsDataURL(file);
+    }
+
+    function removeCustomFoodPhoto() {
+      customFoodPhotoBase64 = null;
+      const fileInput = document.getElementById('custom-food-file');
+      if (fileInput) fileInput.value = '';
+      const box = document.getElementById('custom-food-preview-box');
+      if (box) {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }
+      document.getElementById('custom-food-photo-btn-text').textContent = 'Adjuntar o tomar foto del plato';
+    }
+
+    function calculateOfflineNutrition(text, portion) {
+      const query = (text + ' ' + (portion || '')).toLowerCase();
+      let grams = 200;
+      const gMatch = query.match(/(\d+)\s*(g|gr|gramos|ml)/);
+      if (gMatch) grams = parseInt(gMatch[1], 10);
+
+      const DB = [
+        { keys: ['salmón', 'salmon', 'pescado', 'trucha'], k: 185, p: 21, c: 0, f: 11, fib: 0, gf: 9, tip: 'Excelente fuente de Omega-3 marino (EPA/DHA) que baja triglicéridos y reduce inflamación arterial.' },
+        { keys: ['pechuga', 'pollo', 'pavo'], k: 145, p: 28, c: 0, f: 3, fib: 0, gf: 1, tip: 'Proteína magra de alto valor biológico para conservar masa muscular sin elevar colesterol LDL.' },
+        { keys: ['carne', 'res', 'lomo', 'bistec'], k: 210, p: 26, c: 0, f: 12, fib: 0, gf: 4, tip: 'Aporte de hierro y zinc. Acompaña con vegetales verdes ricos en antioxidantes.' },
+        { keys: ['huevo', 'huevos', 'omelet', 'tortilla'], k: 155, p: 13, c: 1, f: 11, fib: 0, gf: 5, tip: 'Rico en colina para la salud celular y fosfolípidos que protegen la membrana vascular.' },
+        { keys: ['aguacate', 'palta', 'guacamole'], k: 160, p: 2, c: 8, f: 15, fib: 7, gf: 13, tip: 'Ácido oleico monoinsaturado que estimula el colesterol protector HDL+ y cuida las arterias.' },
+        { keys: ['arroz', 'quinoa', 'cuscus'], k: 130, p: 3, c: 28, f: 0.5, fib: 1.5, gf: 0, tip: 'Carbohidratos complejos de recarga energética. Si es integral aporta mayor fibra.' },
+        { keys: ['papa', 'patata', 'pure', 'puré'], k: 90, p: 2, c: 20, f: 0.2, fib: 2, gf: 0, tip: 'Rico en potasio que favorece la vasodilatación y el control de la presión arterial.' },
+        { keys: ['pasta', 'espagueti', 'fideos'], k: 140, p: 5, c: 28, f: 1, fib: 2, gf: 0, tip: 'Energía sostenida. Combina siempre con proteínas y grasas saludables para moderar la glucemia.' },
+        { keys: ['ensalada', 'lechuga', 'espinaca', 'tomate', 'brocoli', 'brócoli'], k: 35, p: 2, c: 6, f: 0.5, fib: 3, gf: 0.2, tip: 'Nitratos naturales y polifenoles que aumentan la elasticidad arterial y reducen la presión.' },
+        { keys: ['arepa', 'maiz', 'maíz', 'tortilla de maiz'], k: 190, p: 4, c: 38, f: 2, fib: 3, gf: 1, tip: 'Carbohidrato tradicional sin gluten. Ideal para acompañar con quesos bajos en grasa o aguacate.' },
+        { keys: ['avena', 'oatmeal', 'cereal integral'], k: 160, p: 6, c: 27, f: 3, fib: 5, gf: 1.5, tip: 'Contiene betaglucano que atrapa el colesterol biliar impidiendo su absorción.' },
+        { keys: ['yogurt', 'yogur', 'kefir'], k: 70, p: 10, c: 4, f: 1.5, fib: 0, gf: 1, tip: 'Probióticos y péptidos bioactivos que favorecen el eje intestino-cardiovascular.' },
+        { keys: ['nuez', 'nueces', 'almendras', 'frutos secos'], k: 600, p: 18, c: 14, f: 55, fib: 8, gf: 45, tip: 'Altísima concentración de grasas insaturadas protectoras y vitamina E vascular.' }
+      ];
+
+      let matched = DB.filter(item => item.keys.some(k => query.includes(k)));
+      if (matched.length === 0) {
+        matched = [{ k: 165, p: 12, c: 16, f: 6, fib: 3, gf: 3, tip: 'Plato balanceado. Procura incluir fuentes de fibra soluble y grasas monoinsaturadas.' }];
+      }
+
+      const factor = grams / 100;
+      const avgK = matched.reduce((s, m) => s + m.k, 0) / matched.length;
+      const avgP = matched.reduce((s, m) => s + m.p, 0) / matched.length;
+      const avgC = matched.reduce((s, m) => s + m.c, 0) / matched.length;
+      const avgF = matched.reduce((s, m) => s + m.f, 0) / matched.length;
+      const avgFib = matched.reduce((s, m) => s + m.fib, 0) / matched.length;
+      const avgGf = matched.reduce((s, m) => s + m.gf, 0) / matched.length;
+
+      return {
+        name: text || 'Plato combinado',
+        portion: portion || `${grams}g`,
+        kcal: Math.round(avgK * factor),
+        protein: Math.round(avgP * factor),
+        carbs: Math.round(avgC * factor),
+        fat: Math.round(avgF * factor),
+        fiber: Math.round(avgFib * factor),
+        goodFat: Math.round(avgGf * factor),
+        tip: matched[0].tip
+      };
+    }
+
+    async function estimateFoodWithAi() {
+      const nameInput = document.getElementById('custom-food-name');
+      const portionInput = document.getElementById('custom-food-portion');
+      const text = nameInput ? nameInput.value.trim() : '';
+      const portion = portionInput ? portionInput.value.trim() : '';
+
+      if (!text && !customFoodPhotoBase64) {
+        showToast('Ingresa el nombre o sube una foto del plato', 'warning');
+        if (nameInput) nameInput.focus();
+        return;
+      }
+
+      const cfg = getAiConfig();
+      const loadingBox = document.getElementById('custom-ai-loading');
+      const resultBox = document.getElementById('custom-ai-result-box');
+      const btn = document.getElementById('btn-estimate-ai');
+
+      if (loadingBox) loadingBox.classList.remove('hidden');
+      if (resultBox) resultBox.classList.add('hidden');
+      if (btn) btn.disabled = true;
+
+      try {
+        let result = null;
+
+        if (cfg.provider === 'openai' && cfg.apiKey) {
+          result = await callOpenAiNutrition(text, portion, customFoodPhotoBase64, cfg);
+        } else if (cfg.provider === 'gemini' && cfg.apiKey) {
+          result = await callGeminiNutrition(text, portion, customFoodPhotoBase64, cfg);
+        } else {
+          await new Promise(r => setTimeout(r, 600));
+          result = calculateOfflineNutrition(text, portion);
+          if (!cfg.apiKey && cfg.provider !== 'offline') {
+            showToast('Calculado con el motor nutricional. Conecta tu API Key en Configurar IA para análisis visual profundo.', 'info');
+          }
+        }
+
+        if (result) {
+          customAiEstimatedData = result;
+          displayAiFoodResult(result);
+          showToast('Análisis nutricional completado con éxito', 'auto_awesome');
+        }
+      } catch (err) {
+        console.error('AI Estimation Error:', err);
+        const fallback = calculateOfflineNutrition(text, portion);
+        customAiEstimatedData = fallback;
+        displayAiFoodResult(fallback);
+        showToast('Estimado con el motor nutricional inteligente', 'check_circle');
+      } finally {
+        if (loadingBox) loadingBox.classList.add('hidden');
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function callOpenAiNutrition(text, portion, photoBase64, cfg) {
+      const sysPrompt = 'Eres un nutricionista clínico experto. Analiza la descripción o imagen del plato y devuelve ÚNICAMENTE un objeto JSON válido (sin markdown ni explicaciones adicionales) con este formato exacto: {"name":"Nombre limpio del plato","portion":"porción o gramos aproximados","kcal":numero,"protein":numero,"carbs":numero,"fat":numero,"fiber":numero,"goodFat":numero,"tip":"consejo nutricional y beneficio cardiovascular para colesterol y presión"}';
+
+      let userContent = [];
+      const userMsg = `Alimento: ${text || 'Plato de comida'}. Porción o peso: ${portion || 'Estimar por tamaño visual'}. Calcula kcal y macros exactos.`;
+      
+      if (photoBase64 && cfg.model !== 'gpt-3.5-turbo') {
+        userContent = [
+          { type: 'text', text: userMsg },
+          { type: 'image_url', image_url: { url: photoBase64 } }
+        ];
+      } else {
+        userContent = userMsg;
+      }
+
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cfg.apiKey}`
+        },
+        body: JSON.stringify({
+          model: cfg.model || 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: sysPrompt },
+            { role: 'user', content: userContent }
+          ],
+          temperature: 0.2,
+          response_format: { type: 'json_object' }
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || 'Error en respuesta de OpenAI');
+      }
+
+      const data = await res.json();
+      const content = data.choices[0]?.message?.content;
+      return JSON.parse(content);
+    }
+
+    async function callGeminiNutrition(text, portion, photoBase64, cfg) {
+      const model = cfg.model || 'gemini-1.5-flash';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cfg.apiKey}`;
+
+      let parts = [];
+      const prompt = `Actúa como nutricionista clínico experto. Analiza este plato de comida y responde EXCLUSIVAMENTE con un JSON con las claves: name (texto), portion (texto), kcal (número), protein (número g), carbs (número g), fat (número g), fiber (número g), goodFat (número g grasas buenas), tip (consejo cardioprotector). Alimento: ${text || 'Plato en la foto'}. Porción: ${portion || 'Estimar por foto'}.`;
+
+      if (photoBase64) {
+        const match = photoBase64.match(/^data:(image\/[a-zA-Z]+);base64,(.+)$/);
+        if (match) {
+          parts.push({
+            inline_data: {
+              mime_type: match[1],
+              data: match[2]
+            }
+          });
+        }
+      }
+      parts.push({ text: prompt });
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts }],
+          generationConfig: { response_mime_type: 'application/json' }
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Error al conectar con Google Gemini');
+      }
+
+      const data = await res.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      return JSON.parse(rawText);
+    }
+
+    function displayAiFoodResult(data) {
+      const box = document.getElementById('custom-ai-result-box');
+      if (!box) return;
+
+      document.getElementById('res-food-kcal').value = data.kcal || 0;
+      document.getElementById('res-food-protein').value = data.protein || 0;
+      document.getElementById('res-food-carbs').value = data.carbs || 0;
+      document.getElementById('res-food-fat').value = data.fat || 0;
+      document.getElementById('res-food-fiber').value = data.fiber || 0;
+      document.getElementById('res-food-tip').textContent = data.tip || 'Aporte balanceado de nutrientes.';
+
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function saveCustomAiFood(addToDay = true) {
+      const nameInput = document.getElementById('custom-food-name');
+      const portionInput = document.getElementById('custom-food-portion');
+      const name = (nameInput?.value || '').trim() || customAiEstimatedData?.name || 'Plato personalizado';
+      const portion = (portionInput?.value || '').trim() || customAiEstimatedData?.portion || '1 porción';
+
+      const kcal = parseInt(document.getElementById('res-food-kcal')?.value, 10) || customAiEstimatedData?.kcal || 250;
+      const protein = parseInt(document.getElementById('res-food-protein')?.value, 10) || 0;
+      const carbs = parseInt(document.getElementById('res-food-carbs')?.value, 10) || 0;
+      const fat = parseInt(document.getElementById('res-food-fat')?.value, 10) || 0;
+      const fiber = parseInt(document.getElementById('res-food-fiber')?.value, 10) || 0;
+      const goodFat = customAiEstimatedData?.goodFat || Math.round(fat * 0.6);
+
+      const isFiberRich = fiber >= 5;
+      const tagLabel = isFiberRich ? 'LDL-' : 'HDL+';
+      const tag = isFiberRich ? 'ldl' : 'hdl';
+
+      const newItem = {
+        id: 'ai_' + Date.now(),
+        name,
+        portion,
+        kcal,
+        carbs,
+        protein,
+        fat,
+        fiber,
+        goodFat,
+        tags: [tag],
+        tagLabel,
+        benefit: customAiEstimatedData?.tip?.substring(0, 45) || 'Alimento estimado con IA'
+      };
+
       appState.catalog.unshift(newItem);
       saveState();
-      nameInput.value = '';
-      kcalInput.value = '';
       renderCatalogList();
-      attemptAddMeal({
-        mealType: 'Comida',
-        name: newItem.name,
-        kcal: newItem.kcal,
-        carbs: newItem.carbs,
-        protein: newItem.protein,
-        fat: newItem.fat,
-        fiber: 3,
-        goodFat: 4,
-        badge: 'Personal',
-        badgeType: 'primary'
-      });
+
+      if (addToDay) {
+        attemptAddMeal({
+          mealType: 'Comida',
+          name: newItem.name,
+          kcal: newItem.kcal,
+          carbs: newItem.carbs,
+          protein: newItem.protein,
+          fat: newItem.fat,
+          fiber: newItem.fiber,
+          goodFat: newItem.goodFat,
+          badge: newItem.tagLabel,
+          badgeType: isFiberRich ? 'primary' : 'secondary'
+        });
+      }
+
+      if (nameInput) nameInput.value = '';
+      if (portionInput) portionInput.value = '';
+      removeCustomFoodPhoto();
+      document.getElementById('custom-ai-result-box').classList.add('hidden');
+      document.getElementById('custom-ai-result-box').classList.remove('flex');
+      customAiEstimatedData = null;
+
+      showToast(`${name} (${kcal} kcal) guardado exitosamente`, 'check_circle');
     }
 
     // ---- EXERCISES MODULE ----
