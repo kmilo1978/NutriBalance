@@ -2282,9 +2282,9 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div>
-              <label class="text-[11px] font-bold text-outline block mb-1">Grupo Sanguíneo</label>
-              <select id="prof-blood-type" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
-                <option value="O+" selected>O Positivo (O+)</option>
+              <label class="text-[11px] font-bold text-outline block mb-1">Grupo Sanguíneo & Rh</label>
+              <select id="prof-blood-type" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer border border-transparent focus:border-primary transition-colors">
+                <option value="O+">O Positivo (O+)</option>
                 <option value="O-">O Negativo (O-)</option>
                 <option value="A+">A Positivo (A+)</option>
                 <option value="A-">A Negativo (A-)</option>
@@ -2297,6 +2297,24 @@
             <div>
               <label class="text-[11px] font-bold text-outline block mb-1">Alergias o Intolerancias Médicas</label>
               <input id="prof-allergies-summary" type="text" placeholder="Ej. Penicilina, AINEs, Lactosa" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none border border-transparent focus:border-primary transition-colors" />
+            </div>
+          </div>
+
+          <!-- Contacto de Emergencia Editable en Perfil -->
+          <div class="p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-2.5">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-primary">contact_emergency</span>
+              <h5 class="text-[12px] font-bold text-on-surface">Contacto de Emergencia</h5>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="text-[10px] font-bold text-outline block mb-1">Nombre y Parentesco</label>
+                <input id="prof-emergency-name" type="text" placeholder="Ej. Carlos Mendoza (Cónyuge)" class="w-full px-3 py-2 rounded-xl bg-surface text-[12px] font-bold outline-none border border-outline-variant/30 focus:border-primary transition-colors" />
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-outline block mb-1">Teléfono o WhatsApp</label>
+                <input id="prof-emergency-phone" type="tel" placeholder="Ej. +57 312 456 7890" class="w-full px-3 py-2 rounded-xl bg-surface text-[12px] font-bold outline-none border border-outline-variant/30 focus:border-primary transition-colors" />
+              </div>
             </div>
           </div>
 
@@ -2495,6 +2513,61 @@
           <button onclick="saveUserProfile()" class="w-full h-12 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-bold text-[14px] shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">
             <span class="material-symbols-outlined text-[20px]">check_circle</span>
             <span>Guardar Mi Perfil y Actualizar Metas</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+        <!-- MODAL: EDITAR GRUPO SANGUÍNEO Y CONTACTO DE EMERGENCIA -->
+    <div id="edit-clinical-id-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-error-container text-on-error-container flex items-center justify-center shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-[22px]">contact_emergency</span>
+            </div>
+            <div>
+              <h3 class="font-display text-[17px] font-bold text-on-surface">Datos de Contacto & Sangre</h3>
+              <p class="text-[12px] text-on-surface-variant">Información clínica esencial para emergencias</p>
+            </div>
+          </div>
+          <button onclick="closeClinicalIdModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Grupo Sanguíneo & Factor Rh</label>
+            <select id="modal-blood-type" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer border border-transparent focus:border-primary transition-colors">
+              <option value="O+">O Positivo (O+)</option>
+              <option value="O-">O Negativo (O-)</option>
+              <option value="A+">A Positivo (A+)</option>
+              <option value="A-">A Negativo (A-)</option>
+              <option value="B+">B Positivo (B+)</option>
+              <option value="B-">B Negativo (B-)</option>
+              <option value="AB+">AB Positivo (AB+)</option>
+              <option value="AB-">AB Negativo (AB-)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Nombre y Parentesco del Contacto</label>
+            <input id="modal-emergency-name" type="text" placeholder="Ej. Carlos Mendoza (Cónyuge)" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none border border-transparent focus:border-primary transition-colors" />
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Teléfono o WhatsApp de Contacto</label>
+            <input id="modal-emergency-phone" type="tel" placeholder="Ej. +57 312 456 7890" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none border border-transparent focus:border-primary transition-colors" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/20">
+          <button type="button" onclick="closeClinicalIdModal()" class="flex-1 h-11 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface font-bold text-[13px] transition-all">
+            Cancelar
+          </button>
+          <button type="button" onclick="saveClinicalIdModal()" class="flex-1 h-11 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-[13px] shadow-sm active:scale-95 transition-all">
+            Guardar Cambios
           </button>
         </div>
       </div>
@@ -4245,7 +4318,8 @@
     }
 
     function openProfileModal() {
-      const p = appState.profile;
+      const p = appState.profile || {};
+      const mh = getSafeMedicalHistory();
       if (document.getElementById('prof-fullname')) document.getElementById('prof-fullname').value = p.fullname || '';
       if (document.getElementById('prof-displayname')) document.getElementById('prof-displayname').value = p.displayName || '';
       if (document.getElementById('prof-gender')) document.getElementById('prof-gender').value = p.gender || 'female';
@@ -4257,7 +4331,13 @@
       if (document.getElementById('prof-deficit')) document.getElementById('prof-deficit').value = p.deficitPace || 450;
       if (document.getElementById('prof-work-activity')) document.getElementById('prof-work-activity').value = p.workActivity || 'sitting';
       
-      if (document.getElementById('prof-blood-type')) document.getElementById('prof-blood-type').value = p.bloodType || 'O+';
+      const currentBt = p.bloodType || mh.bloodType || 'O+';
+      const currentContactName = p.emergencyContact?.name || mh.emergencyContact?.name || 'Carlos Mendoza';
+      const currentContactPhone = p.emergencyContact?.phone || mh.emergencyContact?.phone || '+57 312 456 7890';
+
+      if (document.getElementById('prof-blood-type')) document.getElementById('prof-blood-type').value = currentBt;
+      if (document.getElementById('prof-emergency-name')) document.getElementById('prof-emergency-name').value = currentContactName;
+      if (document.getElementById('prof-emergency-phone')) document.getElementById('prof-emergency-phone').value = currentContactPhone;
       if (document.getElementById('prof-allergies-summary')) document.getElementById('prof-allergies-summary').value = p.allergiesSummary || 'Penicilina, AINEs';
       if (document.getElementById('prof-sleep-hours')) document.getElementById('prof-sleep-hours').value = p.sleepHours || 7.5;
       if (document.getElementById('prof-diet-type')) document.getElementById('prof-diet-type').value = p.dietType || 'cardio';
@@ -4307,6 +4387,8 @@
       const workActivity = document.getElementById('prof-work-activity')?.value || 'sitting';
 
       const bloodType = document.getElementById('prof-blood-type')?.value || 'O+';
+      const emergencyName = document.getElementById('prof-emergency-name')?.value.trim() || 'Carlos Mendoza';
+      const emergencyPhone = document.getElementById('prof-emergency-phone')?.value.trim() || '+57 312 456 7890';
       const allergiesSummary = document.getElementById('prof-allergies-summary')?.value.trim() || 'Penicilina, AINEs';
       const sleepHours = parseFloat(document.getElementById('prof-sleep-hours')?.value) || 7.5;
       const dietType = document.getElementById('prof-diet-type')?.value || 'cardio';
@@ -4330,6 +4412,8 @@
       const weeklyLossKg = (deficitPace * 7) / 7700;
       const projectedWeeks = weeklyLossKg > 0 ? Math.ceil(diffKg / weeklyLossKg) : 0;
 
+      const emergencyContactObj = { name: emergencyName, phone: emergencyPhone };
+
       appState.profile = {
         fullname,
         displayName,
@@ -4342,6 +4426,7 @@
         deficitPace,
         workActivity,
         bloodType,
+        emergencyContact: emergencyContactObj,
         allergiesSummary,
         sleepHours,
         dietType,
@@ -4352,11 +4437,17 @@
         projectedWeeks
       };
 
+      // Sync seamlessly with medicalHistory as well
+      const mh = getSafeMedicalHistory();
+      mh.bloodType = bloodType;
+      mh.emergencyContact = emergencyContactObj;
+
       const metrics = calculateMetabolicMetrics(appState.profile);
       appState.goalKcal = metrics.goalKcal;
 
       saveState();
       closeProfileModal();
+      renderMedicalHistoryUI();
       updateAllUI();
       showToast(`¡Perfil Inteligente actualizado! Nueva meta: ${appState.goalKcal} kcal`, 'verified_user');
     }
@@ -7832,27 +7923,61 @@
     }
 
     // Quick Prompts
-    function editBloodTypePrompt() {
-      const current = appState.medicalHistory?.bloodType || 'O+';
-      const res = prompt('Ingresa tu Grupo Sanguíneo y Factor Rh (ej. O+, A+, B+, AB-, etc.):', current);
-      if (res && res.trim()) {
-        getSafeMedicalHistory().bloodType = res.trim();
-        saveState();
-        renderMedicalHistoryUI();
-        showToast('Grupo sanguíneo actualizado', 'bloodtype');
+        // Clinical Identity Modal Handlers (Replaces prompt() completely)
+    function openClinicalIdModal() {
+      const mh = getSafeMedicalHistory();
+      const currentBt = mh.bloodType || appState.profile?.bloodType || 'O+';
+      const contact = mh.emergencyContact || appState.profile?.emergencyContact || {};
+      const currentName = contact.name || 'Carlos Mendoza';
+      const currentPhone = contact.phone || '+57 312 456 7890';
+
+      if (document.getElementById('modal-blood-type')) document.getElementById('modal-blood-type').value = currentBt;
+      if (document.getElementById('modal-emergency-name')) document.getElementById('modal-emergency-name').value = currentName;
+      if (document.getElementById('modal-emergency-phone')) document.getElementById('modal-emergency-phone').value = currentPhone;
+
+      const modal = document.getElementById('edit-clinical-id-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
       }
     }
-    function editEmergencyContactPrompt() {
-      const currentName = appState.medicalHistory?.emergencyContact?.name || '';
-      const currentPhone = appState.medicalHistory?.emergencyContact?.phone || '';
-      const name = prompt('Nombre y parentesco del contacto de emergencia:', currentName);
-      if (name === null) return;
-      const phone = prompt('Número telefónico de contacto:', currentPhone);
-      if (phone === null) return;
-      getSafeMedicalHistory().emergencyContact = { name: name.trim(), phone: phone.trim() };
+
+    function closeClinicalIdModal() {
+      const modal = document.getElementById('edit-clinical-id-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function saveClinicalIdModal() {
+      const bloodType = document.getElementById('modal-blood-type')?.value || 'O+';
+      const name = document.getElementById('modal-emergency-name')?.value.trim() || 'No asignado';
+      const phone = document.getElementById('modal-emergency-phone')?.value.trim() || '';
+
+      const emergencyContactObj = { name, phone };
+
+      const mh = getSafeMedicalHistory();
+      mh.bloodType = bloodType;
+      mh.emergencyContact = emergencyContactObj;
+
+      if (!appState.profile) appState.profile = {};
+      appState.profile.bloodType = bloodType;
+      appState.profile.emergencyContact = emergencyContactObj;
+
       saveState();
+      closeClinicalIdModal();
       renderMedicalHistoryUI();
-      showToast('Contacto de emergencia actualizado', 'contact_phone');
+      updateAllUI();
+      showToast('Grupo sanguíneo y contacto de emergencia actualizados', 'verified_user');
+    }
+
+    function editBloodTypePrompt() {
+      openClinicalIdModal();
+    }
+
+    function editEmergencyContactPrompt() {
+      openClinicalIdModal();
     }
 
     // WhatsApp and Clipboard Clinical Sharing
