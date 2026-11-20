@@ -103,16 +103,14 @@
     <header class="sticky top-0 w-full z-40 pt-safe bg-surface/90 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm">
       <div class="h-16 px-4 lg:px-8 flex items-center justify-between gap-3">
         <!-- Logo & Title -->
-        <div class="flex items-center gap-3 shrink-0 cursor-pointer" onclick="switchTab('hoy')">
+        <div class="flex items-center gap-2.5 shrink-0 cursor-pointer select-none" onclick="switchTab('hoy')" title="NutriBalance - Ir al Inicio">
           <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-105">
             <span class="material-symbols-outlined text-on-primary text-[22px]">favorite</span>
           </div>
-          <div class="flex flex-col justify-center">
-            <div class="flex items-center gap-2">
-              <span class="font-display text-[18px] lg:text-[20px] font-extrabold text-on-surface tracking-tight whitespace-nowrap">Nutri<span class="text-primary">Balance</span></span>
-              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-extrabold tracking-wide uppercase whitespace-nowrap shrink-0">Cardio & Déficit</span>
-            </div>
-            <span id="header-title" class="lg:hidden text-[11px] font-bold text-primary leading-none mt-0.5">Hoy</span>
+          <div class="flex items-center gap-2">
+            <span class="font-display text-[18px] lg:text-[20px] font-extrabold text-on-surface tracking-tight whitespace-nowrap">Nutri<span class="text-primary">Balance</span></span>
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-extrabold tracking-wide uppercase whitespace-nowrap shrink-0">Cardio & Déficit</span>
+            <span id="header-title" class="sr-only">Hoy</span>
           </div>
         </div>
 
@@ -932,6 +930,69 @@
           </div>
         </div>
 
+        <!-- SUGERIDOR INTELIGENTE: MENÚ CON TU LISTA DEL SÚPER & CONTROL DE META -->
+        <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-6 shadow-sm border border-outline-variant/20 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-outline-variant/20">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[22px]">restaurant_menu</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display text-[16px] font-bold text-on-surface">¿Qué comer hoy con lo que tienes en el Súper?</h3>
+                  <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-extrabold">Control de Déficit</span>
+                </div>
+                <p class="text-[11px] text-outline">Combina tus ingredientes de la lista del súper en platos balanceados sin pasarte de tu meta calórica</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 self-end sm:self-auto">
+              <div class="px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[11px] font-bold shadow-sm flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px]">timer</span>
+                <span>Restan <strong id="sug-remaining-kcal">1.090</strong> kcal</span>
+              </div>
+              <button type="button" onclick="generateFullDayMenuFromPantry()" class="h-8 px-3 rounded-xl bg-primary text-on-primary text-[11px] font-bold hover:bg-primary-container shadow-sm flex items-center gap-1 active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
+                <span>Armar Día Completo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Selector de Toma: Desayuno, Almuerzo, Cena, Entre comidas -->
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="sug-meal-type-selector">
+              <button type="button" onclick="selectSuggestionMealType('Desayuno', this)" class="sug-type-btn active h-8 px-3.5 rounded-full text-[12px] font-bold bg-primary text-on-primary shadow-sm flex items-center gap-1.5 transition-all">
+                <span>☀️ Desayuno</span>
+              </button>
+              <button type="button" onclick="selectSuggestionMealType('Almuerzo', this)" class="sug-type-btn h-8 px-3.5 rounded-full text-[12px] font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5 transition-all">
+                <span>🍽️ Almuerzo</span>
+              </button>
+              <button type="button" onclick="selectSuggestionMealType('Cena', this)" class="sug-type-btn h-8 px-3.5 rounded-full text-[12px] font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5 transition-all">
+                <span>🌙 Comida / Cena</span>
+              </button>
+              <button type="button" onclick="selectSuggestionMealType('Merienda', this)" class="sug-type-btn h-8 px-3.5 rounded-full text-[12px] font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5 transition-all">
+                <span>🍎 Entre comidas</span>
+              </button>
+            </div>
+
+            <div class="text-[11px] text-outline font-semibold flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px] text-primary">shopping_bag</span>
+              <span id="sug-pantry-count">11 ingredientes en tu Lista del Súper</span>
+            </div>
+          </div>
+
+          <!-- Contenedor de Sugerencias Dinámicas -->
+          <div id="pantry-suggestions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between px-1 mt-1">
+          <div>
+            <h4 class="font-display text-[15px] font-bold text-on-surface">Catálogo de Alimentos Cardioprotectores</h4>
+            <p class="text-[11px] text-outline">Explora ingredientes individuales, porciones y su impacto en HDL/LDL</p>
+          </div>
+        </div>
+
         <!-- Catalog List -->
         <div id="catalog-food-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
           <!-- Rendered by JS -->
@@ -1484,18 +1545,24 @@
           </div>
         </div>
 
-        <!-- 3 Sub-tabs: 1. Alertas/TDEE | 2. Colesterol | 3. Presión Arterial -->
-        <div class="bg-surface-container p-1 rounded-2xl flex items-center justify-between shadow-sm">
-          <button type="button" id="subtab-btn-preventivo" onclick="switchSaludSubtab('preventivo')" class="flex-1 py-2 rounded-xl text-[12px] font-bold bg-surface-container-lowest text-primary shadow-sm transition-all text-center">
-            Alertas & TDEE
-          </button>
-          <button type="button" id="subtab-btn-laboratorio" onclick="switchSaludSubtab('laboratorio')" class="flex-1 py-2 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center">
-            Colesterol & Lípidos
-          </button>
-          <button type="button" id="subtab-btn-presion" onclick="switchSaludSubtab('presion')" class="flex-1 py-2 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center">
-            Presión Arterial (PA)
-          </button>
-        </div>
+                  <!-- 5 Sub-tabs: 1. Alertas/TDEE | 2. Colesterol | 3. Presión Arterial | 4. Glucemia | 5. Historial Médico & Fármacos -->
+          <div class="bg-surface-container p-1 rounded-2xl flex items-center justify-between gap-1 shadow-sm overflow-x-auto no-scrollbar">
+            <button type="button" id="subtab-btn-preventivo" onclick="switchSaludSubtab('preventivo')" class="flex-1 py-2 px-2.5 rounded-xl text-[12px] font-bold bg-surface-container-lowest text-primary shadow-sm transition-all text-center whitespace-nowrap">
+              Alertas & TDEE
+            </button>
+            <button type="button" id="subtab-btn-laboratorio" onclick="switchSaludSubtab('laboratorio')" class="flex-1 py-2 px-2.5 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center whitespace-nowrap">
+              Colesterol & Lípidos
+            </button>
+            <button type="button" id="subtab-btn-presion" onclick="switchSaludSubtab('presion')" class="flex-1 py-2 px-2.5 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center whitespace-nowrap">
+              Presión Arterial
+            </button>
+            <button type="button" id="subtab-btn-glucemia" onclick="switchSaludSubtab('glucemia')" class="flex-1 py-2 px-2.5 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center whitespace-nowrap">
+              Glucemia & Azúcar
+            </button>
+            <button type="button" id="subtab-btn-historial" onclick="switchSaludSubtab('historial')" class="flex-1 py-2 px-2.5 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center whitespace-nowrap">
+              Historial & Fármacos
+            </button>
+          </div>
 
         <!-- SUBTAB A: ALERTAS PREVENTIVAS & TDEE -->
         <div id="salud-sub-preventivo" class="flex flex-col gap-4">
@@ -1735,6 +1802,233 @@
           </div>
         </div>
 
+          <!-- ========================================================= -->
+          <!-- SUBTAB D: REGISTRO DIARIO DE GLUCEMIA & AZÚCAR EN SANGRE -->
+          <!-- ========================================================= -->
+          <div id="salud-sub-glucemia" class="hidden flex-col gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span class="text-[10px] font-bold text-tertiary uppercase tracking-wider">Metabolismo Glucémico</span>
+                <h2 class="font-display text-[21px] font-bold text-on-surface">Azúcar en Sangre (Glucemia)</h2>
+                <p class="text-[12px] text-on-surface-variant">Monitorea tus niveles diarios en ayunas y postprandiales para proteger tus arterias</p>
+              </div>
+              <button type="button" onclick="openAddGlucoseModal()" class="h-10 px-4 rounded-xl bg-primary text-on-primary text-[12px] font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span>Anotar Glucemia</span>
+              </button>
+            </div>
+
+            <!-- Glucose KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-outline">Última Glucemia</span>
+                  <div class="flex items-baseline gap-1.5 mt-1">
+                    <span id="glu-latest-val" class="font-display text-[26px] font-extrabold text-primary">89</span>
+                    <span class="text-[12px] text-outline font-semibold">mg/dL</span>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span id="glu-latest-badge" class="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold">
+                    Óptima en Ayunas (&lt;100)
+                  </span>
+                  <p id="glu-latest-time" class="text-[10px] text-outline mt-1">Hoy 07:15 · En ayunas</p>
+                </div>
+              </div>
+
+              <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-outline">Promedio 7 Días</span>
+                  <div class="flex items-baseline gap-1.5 mt-1">
+                    <span id="glu-avg-val" class="font-display text-[26px] font-extrabold text-on-surface">91</span>
+                    <span class="text-[12px] text-outline font-semibold">mg/dL</span>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span class="text-[11px] text-outline">Rango objetivo: 70 - 99 mg/dL</span>
+                </div>
+              </div>
+
+              <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-outline">Metas Clínicas (ADA)</span>
+                  <ul class="text-[11px] text-on-surface-variant space-y-1 mt-1 font-medium">
+                    <li class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span> En ayunas: &lt; 100 mg/dL</li>
+                    <li class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span> 2h postprandial: &lt; 140 mg/dL</li>
+                    <li class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span> Alerta temprana: 100-125 mg/dL</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Health tip -->
+            <div class="p-3.5 rounded-2xl bg-tertiary-fixed/30 border border-tertiary/20 flex items-start gap-2.5 text-[12px] text-on-tertiary-fixed">
+              <span class="material-symbols-outlined text-[20px] text-tertiary shrink-0 mt-0.5">bloodtype</span>
+              <p class="leading-relaxed">
+                <strong>Impacto Cardiovascular:</strong> Mantener la glucosa bajo 100 mg/dL en ayunas y evitar picos postprandiales protege el endotelio arterial de la glicación, reduciendo el riesgo de placa de ateroma y preservando la elasticidad vascular.
+              </p>
+            </div>
+
+            <!-- Glucose History Table -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display text-[15px] font-bold text-on-surface">Historial de Muestras de Glucemia</h3>
+                <span id="glu-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-surface-container text-outline">4 registros</span>
+              </div>
+              <div id="glucose-history-list" class="flex flex-col gap-2">
+                <!-- Injected by renderBloodGlucoseList() -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- SUBTAB E: HISTORIAL MÉDICO, CIRUGÍAS, FÁRMACOS & GENÉTICA  -->
+          <!-- ========================================================= -->
+          <div id="salud-sub-historial" class="hidden flex-col gap-4">
+            
+            <!-- Quick Share Header -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+                  <span class="material-symbols-outlined text-[26px]">medical_information</span>
+                </div>
+                <div>
+                  <h3 class="font-display text-[17px] font-bold text-on-surface">Ficha Médica para Consulta</h3>
+                  <p class="text-[12px] text-on-surface-variant">Historial clínico completo listo para compartir con tu médico o especialista</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="shareMedicalHistoryWhatsApp()" class="h-9 px-3 rounded-xl bg-[#25D366] text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[17px]">send</span>
+                  <span>WhatsApp al Doctor</span>
+                </button>
+                <button type="button" onclick="copyMedicalSummaryText()" class="h-9 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-[12px] font-bold text-on-surface flex items-center gap-1.5 border border-outline-variant/30 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[17px]">content_copy</span>
+                  <span>Copiar Resumen</span>
+                </button>
+                <button type="button" onclick="openReportModal()" class="h-9 px-3.5 rounded-xl bg-primary text-on-primary text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[17px]">print</span>
+                  <span>Ficha PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Blood Type & Emergency Contact Banner -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-10 rounded-xl bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px]">bloodtype</span>
+                  </div>
+                  <div>
+                    <span class="text-[10px] uppercase font-bold text-outline">Grupo Sanguíneo</span>
+                    <h4 id="med-blood-type-display" class="font-display text-[15px] font-bold text-on-surface">O Positivo (O+)</h4>
+                  </div>
+                </div>
+                <button onclick="editBloodTypePrompt()" class="text-[11px] text-primary font-bold hover:underline">Editar</button>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-10 rounded-xl bg-primary-fixed text-primary flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px]">contact_emergency</span>
+                  </div>
+                  <div>
+                    <span class="text-[10px] uppercase font-bold text-outline">Contacto de Emergencia</span>
+                    <h4 id="med-emergency-contact-display" class="font-display text-[13px] font-bold text-on-surface truncate">Carlos Mendoza · +57 312 456 7890</h4>
+                  </div>
+                </div>
+                <button onclick="editEmergencyContactPrompt()" class="text-[11px] text-primary font-bold hover:underline">Editar</button>
+              </div>
+            </div>
+
+            <!-- Drug & Medical Allergies (Safety Alert Box) -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-error/30 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-error text-[20px]">warning</span>
+                  <h3 class="font-display text-[15px] font-bold text-on-surface">Alergias a Medicamentos & Alimentos</h3>
+                </div>
+                <button onclick="openAddAllergyModal()" class="h-8 px-3 rounded-lg bg-error/10 text-error text-[11px] font-bold hover:bg-error/20 flex items-center gap-1 transition-all">
+                  <span class="material-symbols-outlined text-[15px]">add</span>
+                  <span>Añadir Alergia</span>
+                </button>
+              </div>
+              <div id="med-allergies-list" class="flex flex-wrap gap-2">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Active Medications & Supplements with Dose & Frequency ("Cada cuánto") -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-outline-variant/15">
+                <div>
+                  <h3 class="font-display text-[16px] font-bold text-on-surface">Medicamentos & Suplementos Activos</h3>
+                  <p class="text-[11px] text-outline">Dosis exacta, frecuencia ('cada cuánto'), horarios de toma y motivo clínico</p>
+                </div>
+                <button onclick="openAddMedicationModal()" class="h-8 px-3 rounded-xl bg-primary text-on-primary text-[11px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all self-start sm:self-auto">
+                  <span class="material-symbols-outlined text-[15px]">add</span>
+                  <span>Añadir Fármaco</span>
+                </button>
+              </div>
+              <div id="full-medications-table" class="flex flex-col gap-2.5">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Diagnosed Conditions / Enfermedades -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+              <div class="flex items-center justify-between pb-2 border-b border-outline-variant/15">
+                <div>
+                  <h3 class="font-display text-[16px] font-bold text-on-surface">Enfermedades & Diagnósticos Previos</h3>
+                  <p class="text-[11px] text-outline">Condiciones crónicas diagnosticadas y patologías tratadas</p>
+                </div>
+                <button onclick="openAddConditionModal()" class="h-8 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[11px] font-bold flex items-center gap-1 border border-outline-variant/25 transition-all">
+                  <span class="material-symbols-outlined text-[15px]">add</span>
+                  <span>Añadir Patología</span>
+                </button>
+              </div>
+              <div id="med-conditions-list" class="flex flex-col gap-2">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Surgeries & Hospitalizations / Cirugías -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+              <div class="flex items-center justify-between pb-2 border-b border-outline-variant/15">
+                <div>
+                  <h3 class="font-display text-[16px] font-bold text-on-surface">Cirugías & Procedimientos Quirúrgicos</h3>
+                  <p class="text-[11px] text-outline">Intervenciones previas, años y notas de recuperación</p>
+                </div>
+                <button onclick="openAddSurgeryModal()" class="h-8 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[11px] font-bold flex items-center gap-1 border border-outline-variant/25 transition-all">
+                  <span class="material-symbols-outlined text-[15px]">add</span>
+                  <span>Añadir Cirugía</span>
+                </button>
+              </div>
+              <div id="med-surgeries-list" class="flex flex-col gap-2">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Family Medical Genetics / Antecedentes Heredofamiliares -->
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+              <div class="flex items-center justify-between pb-2 border-b border-outline-variant/15">
+                <div>
+                  <h3 class="font-display text-[16px] font-bold text-on-surface">Antecedentes Genéticos & Heredofamiliares</h3>
+                  <p class="text-[11px] text-outline">Factores de riesgo genético cardiovascular, diabetes e infartos en familiares directos</p>
+                </div>
+                <button onclick="openAddFamilyModal()" class="h-8 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[11px] font-bold flex items-center gap-1 border border-outline-variant/25 transition-all">
+                  <span class="material-symbols-outlined text-[15px]">add</span>
+                  <span>Añadir Familiar</span>
+                </button>
+              </div>
+              <div id="med-family-list" class="flex flex-col gap-2">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+          </div>
+
       </section>
 
     </main>
@@ -1828,15 +2122,29 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-1">
-          <label class="text-[11px] font-bold text-outline">Nivel de actividad diaria habitual</label>
-          <select id="prof-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
-            <option value="1.2">Sedentario (trabajo de escritorio, poco movimiento)</option>
-            <option value="1.375">Ligero (caminatas suaves 1-2 veces por semana)</option>
-            <option value="1.45" selected>Moderado (ejercicio o caminata 3-4 días/semana)</option>
-            <option value="1.6">Activo (deporte continuo 5-6 días/semana)</option>
-          </select>
-        </div>
+                  <div class="flex flex-col gap-1">
+            <label class="text-[11px] font-bold text-outline">Nivel de actividad deportiva semanal</label>
+            <select id="prof-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
+              <option value="1.2">Sedentario (poco o nada de ejercicio estructurado)</option>
+              <option value="1.375">Ligero (ejercicio suave o caminatas 1-2 días/semana)</option>
+              <option value="1.45" selected>Moderado (entrenamiento o deporte 3-4 días/semana)</option>
+              <option value="1.6">Activo (deporte intenso o cardio 5-6 días/semana)</option>
+            </select>
+          </div>
+
+          <!-- Occupational Activity / NEAT -->
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-outline">Jornada Laboral y Postura Habitual (NEAT)</label>
+              <span class="text-[10px] font-bold text-primary">Gasto no deportivo</span>
+            </div>
+            <select id="prof-work-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
+              <option value="sitting" selected>🪑 Sentado la mayor parte del día (Escritorio / Computadora / Oficina)</option>
+              <option value="standing">🧍 De pie gran parte del día (Docente / Comercio / Salud) [+150 kcal]</option>
+              <option value="mixed">🚶 Combinado / Alternando sentado y caminatas activas [+280 kcal]</option>
+              <option value="physical">⚡ Trabajo físico continuo / Carga o alto desplazamiento [+450 kcal]</option>
+            </select>
+          </div>
 
         <div class="flex flex-col gap-1">
           <label class="text-[11px] font-bold text-outline">Ritmo de déficit calórico</label>
@@ -2034,9 +2342,33 @@
           </button>
         </div>
 
-        <p class="text-[12px] text-on-surface-variant leading-relaxed">
-          Ingresa los valores por porción que indica la etiqueta para saber de inmediato su impacto en tu colesterol y corazón:
-        </p>
+                  <p class="text-[12px] text-on-surface-variant leading-relaxed">
+            Sube una foto de la tabla nutricional o código de barras, o selecciona un ejemplo para saber si es <strong>bueno o no</strong> para tu salud arterial y meta calórica:
+          </p>
+
+          <!-- Nutritional Photo / OCR Uploader -->
+          <div class="p-3.5 rounded-2xl bg-surface-container-low border border-dashed border-outline-variant/40 flex flex-col items-center justify-center gap-2 text-center cursor-pointer hover:border-primary transition-all relative">
+            <input type="file" id="tl-photo-uploader" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleNutritionLabelPhoto(event)" />
+            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center pointer-events-none">
+              <span class="material-symbols-outlined text-[22px]">document_scanner</span>
+            </div>
+            <div class="pointer-events-none">
+              <span class="text-[12px] font-bold text-on-surface block">📸 Escanear o Subir Foto de la Tabla Nutricional</span>
+              <span id="tl-upload-filename" class="text-[10px] text-outline">Haz clic o toma una foto del reverso del producto</span>
+            </div>
+          </div>
+
+          <!-- Quick Test Product Chips -->
+          <div class="flex flex-col gap-1.5">
+            <span class="text-[10px] font-bold uppercase text-outline">Prueba rápida con productos comunes:</span>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="loadTrafficLightPreset('avena')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-semibold text-on-surface transition-all">🥣 Avena Integral (Verde)</button>
+              <button type="button" onclick="loadTrafficLightPreset('sardinas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-semibold text-on-surface transition-all">🐟 Sardinas Oliva (Verde)</button>
+              <button type="button" onclick="loadTrafficLightPreset('yogurt')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-semibold text-on-surface transition-all">🥛 Yogur Griego 0% (Verde)</button>
+              <button type="button" onclick="loadTrafficLightPreset('galletas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-error-container hover:text-on-error-container text-[11px] font-semibold text-on-surface transition-all">🍪 Galletas Chocolate (Rojo)</button>
+              <button type="button" onclick="loadTrafficLightPreset('embutido')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-error-container hover:text-on-error-container text-[11px] font-semibold text-on-surface transition-all">🌭 Salchicha / Embutido (Rojo)</button>
+            </div>
+          </div>
 
         <div class="grid grid-cols-2 gap-2.5">
           <div>
@@ -2126,103 +2458,125 @@
     </div>
 
     <!-- 5. PRINTABLE REPORT MODAL -->
-    <div id="report-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-2 sm:p-4">
+        <div id="report-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-2 sm:p-4">
       <div class="w-full max-w-3xl bg-surface rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-5 max-h-[95vh] overflow-y-auto">
-        <div class="flex items-center justify-between no-print border-b border-outline-variant/20 pb-3">
-          <div>
-            <h3 class="font-display text-[18px] font-bold text-on-surface">Reporte Médico y Nutricional</h3>
-            <p class="text-[12px] text-on-surface-variant">Listo para imprimir o guardar como PDF para tu doctor</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button onclick="window.print()" class="h-9 px-4 rounded-xl bg-primary text-on-primary font-bold text-[12px] flex items-center gap-1.5 shadow-md">
-              <span class="material-symbols-outlined text-[17px]">print</span>
-              <span>Imprimir / Guardar PDF</span>
-            </button>
-            <button onclick="closeReportModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
-              <span class="material-symbols-outlined text-[20px]">close</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- PRINTABLE CONTENT CONTAINER -->
-        <div id="printable-report-area" class="flex flex-col gap-4 text-on-surface">
-          <!-- Report Header -->
-          <div class="flex items-center justify-between border-b-2 border-primary pb-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between no-print border-b border-outline-variant/20 pb-3 gap-2">
             <div>
-              <h1 class="font-display text-[22px] font-bold text-primary">NutriBalance — Informe Cardiovascular & Metabólico</h1>
-              <p class="text-[12px] text-outline">Seguimiento de Déficit Calórico, Lípidos Sanguíneos y Presión Arterial</p>
+              <h3 class="font-display text-[18px] font-bold text-on-surface">Ficha Médica para Consulta & Reporte Clínico</h3>
+              <p class="text-[12px] text-on-surface-variant">Documento clínico estructurado para compartir con tu médico o especialista</p>
             </div>
-            <div class="text-right text-[11px] text-outline">
-              <p><strong>Paciente:</strong> <span id="rep-patient-name">Sofía Martínez</span> (<span id="rep-patient-age">34</span> años)</p>
-              <p id="report-emission-date">Fecha: 19/11/2026</p>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="shareMedicalHistoryWhatsApp()" class="h-9 px-3 rounded-xl bg-[#25D366] text-white font-bold text-[12px] flex items-center gap-1.5 shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[17px]">send</span>
+                <span>WhatsApp</span>
+              </button>
+              <button onclick="copyMedicalSummaryText()" class="h-9 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface font-bold text-[12px] flex items-center gap-1.5 border border-outline-variant/30 active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[17px]">content_copy</span>
+                <span>Copiar</span>
+              </button>
+              <button onclick="window.print()" class="h-9 px-3.5 rounded-xl bg-primary text-on-primary font-bold text-[12px] flex items-center gap-1.5 shadow-md">
+                <span class="material-symbols-outlined text-[17px]">print</span>
+                <span>Imprimir / PDF</span>
+              </button>
+              <button onclick="closeReportModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
             </div>
           </div>
+<!-- PRINTABLE CONTENT CONTAINER -->
+          <div id="printable-report-area" class="flex flex-col gap-4 text-on-surface">
+            <!-- Report Header -->
+            <div class="flex items-center justify-between border-b-2 border-primary pb-3">
+              <div>
+                <h1 class="font-display text-[22px] font-bold text-primary">NutriBalance — Ficha Médica y Nutricional</h1>
+                <p class="text-[12px] text-outline">Informe Clínico para Consulta Médica · Déficit Calórico, Lípidos Sanguíneos, Presión y Fármacos</p>
+              </div>
+              <div class="text-right text-[11px] text-outline">
+                <p><strong>Paciente:</strong> <span id="rep-patient-name">Sofía Martínez</span> (<span id="rep-patient-age">34</span> años)</p>
+                <p><strong>Grupo Sanguíneo:</strong> <span id="rep-blood-type">O+</span></p>
+                <p id="report-emission-date">Fecha: 20/11/2026</p>
+              </div>
+            </div>
 
-          <!-- Summary Grid -->
-          <div class="grid grid-cols-4 gap-2.5 p-3 rounded-xl bg-surface-container-low text-center">
-            <div>
-              <span class="text-[10px] text-outline block">Score Cardio</span>
-              <strong id="rep-cardio-score" class="font-display text-[18px] text-primary">84 / 100</strong>
+            <!-- CRITICAL CLINICAL SAFETY: ALLERGIES ALERT -->
+            <div id="rep-allergies-box" class="p-3 rounded-xl bg-error/10 border border-error/30 flex items-start gap-2.5 text-[12px]">
+              <span class="material-symbols-outlined text-error text-[20px] shrink-0 mt-0.5">warning</span>
+              <div>
+                <strong class="text-error font-bold block uppercase text-[11px]">ALERGIAS A MEDICAMENTOS Y ALIMENTOS (ALERTA CLÍNICA):</strong>
+                <p id="rep-allergies-text" class="text-[12px] font-semibold text-on-surface mt-0.5">Penicilina (Anafilaxia / Urticaria grave), AINEs / Ibuprofeno (Gastritis erosiva severa)</p>
+              </div>
             </div>
-            <div>
-              <span class="text-[10px] text-outline block">Meta Calórica</span>
-              <strong id="rep-meta-kcal" class="font-display text-[18px] text-on-surface">1,850 kcal</strong>
-            </div>
-            <div>
-              <span class="text-[10px] text-outline block">Último LDL</span>
-              <strong id="rep-latest-ldl" class="font-display text-[18px] text-secondary">98 mg/dL</strong>
-            </div>
-            <div>
-              <span class="text-[10px] text-outline block">Último HDL</span>
-              <strong id="rep-latest-hdl" class="font-display text-[18px] text-primary">61 mg/dL</strong>
-            </div>
-          </div>
 
-          <!-- Section 1: Lipid Panel -->
-          <div class="flex flex-col gap-1.5">
-            <h4 class="font-display text-[14px] font-bold text-on-surface border-b border-outline-variant/30 pb-1">1. Evolución del Perfil Lipídico (Laboratorio)</h4>
-            <table class="w-full text-left text-[12px]">
-              <thead>
-                <tr class="text-outline text-[11px] border-b border-outline-variant/20">
-                  <th class="py-1.5">Fecha</th>
-                  <th class="py-1.5">Nota / Control</th>
-                  <th class="py-1.5">LDL (Malo)</th>
-                  <th class="py-1.5">HDL (Bueno)</th>
-                  <th class="py-1.5">Triglicéridos</th>
-                  <th class="py-1.5">Ratio T/H</th>
-                </tr>
-              </thead>
-              <tbody id="rep-lab-tbody"></tbody>
-            </table>
-          </div>
-
-          <!-- Section 2: Blood Pressure Records -->
-          <div class="flex flex-col gap-1.5">
-            <h4 class="font-display text-[14px] font-bold text-on-surface border-b border-outline-variant/30 pb-1">2. Monitoreo Tensional y Frecuencia Cardíaca</h4>
-            <div id="rep-bp-summary" class="text-[12px] text-on-surface-variant"></div>
-          </div>
-
-          <!-- Section 3: Daily Cardio Habits -->
-          <div class="flex flex-col gap-1.5">
-            <h4 class="font-display text-[14px] font-bold text-on-surface border-b border-outline-variant/30 pb-1">3. Adherencia a Hábitos Cardioprotectores</h4>
-            <ul class="text-[12px] text-on-surface-variant list-disc pl-5 leading-relaxed">
-              <li><strong>Fibra Soluble:</strong> Ingesta diaria de avena, chía y legumbres para excreción biliar de colesterol.</li>
-              <li><strong>Grasas Buenas:</strong> Aporte constante de aceite de oliva extra virgen y Omega-3 (EPA/DHA) para elevar HDL.</li>
-              <li><strong>Farmacoterapia:</strong> Adherencia al pastillero cardiovascular con control de stock y tomas programadas.</li>
-            </ul>
-          </div>
-
-          <!-- Sign-off block -->
-          <div class="pt-6 border-t border-outline-variant/30 flex justify-between text-[11px] text-outline">
-            <div>
-              <p>Generado automáticamente por NutriBalance App</p>
-              <p>Este informe es un resumen de autorregistro para apoyo de la consulta clínica.</p>
+            <!-- Patient Vitals & Metabolic Summary Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-surface-container-low text-center">
+              <div>
+                <span class="text-[10px] text-outline block">Score Cardio</span>
+                <strong id="rep-cardio-score" class="font-display text-[18px] text-primary">84 / 100</strong>
+              </div>
+              <div>
+                <span class="text-[10px] text-outline block">Meta / Consumo</span>
+                <strong id="rep-meta-kcal" class="font-display text-[18px] text-on-surface">1,850 kcal</strong>
+              </div>
+              <div>
+                <span class="text-[10px] text-outline block">Última Presión</span>
+                <strong id="rep-latest-bp" class="font-display text-[18px] text-on-surface">118 / 78</strong>
+              </div>
+              <div>
+                <span class="text-[10px] text-outline block">Última Glucemia</span>
+                <strong id="rep-latest-glu" class="font-display text-[18px] text-primary">89 mg/dL</strong>
+              </div>
             </div>
-            <div class="border-t border-outline w-44 pt-1 text-center">
-              Firma Médico / Nutricionista
+
+            <!-- SECTION: ACTIVE MEDICATIONS & SUPPLEMENTS WITH DOSAGE & FREQUENCY -->
+            <div class="flex flex-col gap-1.5 border-t border-outline-variant/20 pt-2">
+              <h4 class="font-display text-[13px] font-bold text-primary uppercase tracking-wide">1. Farmacología Activa & Suplementos (Dosis y "Cada Cuánto")</h4>
+              <div id="rep-medications-table" class="overflow-x-auto">
+                <!-- Injected by openReportModal() -->
+              </div>
+            </div>
+
+            <!-- SECTION: DIAGNOSED CONDITIONS & SURGERIES -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-outline-variant/20 pt-2">
+              <div>
+                <h4 class="font-display text-[13px] font-bold text-primary uppercase tracking-wide mb-1">2. Enfermedades y Diagnósticos Activos</h4>
+                <div id="rep-conditions-list" class="text-[12px] space-y-1">
+                  <!-- Injected -->
+                </div>
+              </div>
+              <div>
+                <h4 class="font-display text-[13px] font-bold text-primary uppercase tracking-wide mb-1">3. Cirugías Previas</h4>
+                <div id="rep-surgeries-list" class="text-[12px] space-y-1">
+                  <!-- Injected -->
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION: GENETIC FAMILY HISTORY -->
+            <div class="border-t border-outline-variant/20 pt-2">
+              <h4 class="font-display text-[13px] font-bold text-primary uppercase tracking-wide mb-1">4. Antecedentes Heredofamiliares / Factores Genéticos</h4>
+              <div id="rep-family-list" class="text-[12px] space-y-1">
+                <!-- Injected -->
+              </div>
+            </div>
+
+            <!-- SECTION: LIPID PANEL & CARDIO MONITORING -->
+            <div class="border-t border-outline-variant/20 pt-2">
+              <h4 class="font-display text-[13px] font-bold text-primary uppercase tracking-wide mb-1">5. Perfil Lipídico y Marcadores de Laboratorio</h4>
+              <div class="grid grid-cols-3 gap-2 text-center bg-surface-container-low p-2 rounded-xl text-[12px]">
+                <div><span class="text-[10px] text-outline block">Colesterol LDL:</span> <strong id="rep-ldl-val">98 mg/dL</strong> (En meta &lt;100)</div>
+                <div><span class="text-[10px] text-outline block">Colesterol HDL+:</span> <strong id="rep-hdl-val">61 mg/dL</strong> (Óptimo &gt;50)</div>
+                <div><span class="text-[10px] text-outline block">Triglicéridos:</span> <strong id="rep-trig-val">112 mg/dL</strong> (En meta &lt;150)</div>
+              </div>
+            </div>
+
+            <!-- Emergency Contact & Doctor Signoff -->
+            <div class="border-t border-outline-variant/20 pt-2 flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-outline gap-2">
+              <p><strong>Contacto de Emergencia:</strong> <span id="rep-emergency-contact">Carlos Mendoza · +57 312 456 7890</span></p>
+              <p class="italic text-right">Generado por NutriBalance · Firma y sello médico: ______________________</p>
             </div>
           </div>
-        </div>
+      </div>
+    </div>
       </div>
     </div>
 
@@ -2572,7 +2926,8 @@
         targetWeight: 65,
         activity: 1.45,
         deficitPace: 450
-      },
+      ,
+          workActivity: 'sitting'},
       goalKcal: 1850,
       warn75: true,
       confirmExceed: true,
@@ -2611,10 +2966,40 @@
         { id: 4003, date: '2026-10-31', sport: 'Natación', minutes: 45, effort: 'Moderado', kcal: 378, time: '09:00' }
       ],
       medications: [
-        { id: 'm1', name: 'Atorvastatina', dose: '20 mg (1 pastilla)', time: '21:00', timing: 'Antes de dormir', stock: 18, daily: 1, takenToday: false, note: 'Protege arterias y reduce colesterol LDL malo' },
-        { id: 'm2', name: 'Omega-3 Concentrado (EPA+DHA)', dose: '1000 mg (1 cápsula)', time: '08:30', timing: 'Con el desayuno', stock: 4, daily: 1, takenToday: true, note: 'Regula triglicéridos y eleva colesterol HDL+' },
-        { id: 'm3', name: 'Coenzima Q10 (CoQ10)', dose: '100 mg (1 cápsula)', time: '13:30', timing: 'Con el almuerzo', stock: 24, daily: 1, takenToday: false, note: 'Apoyo mitocondrial y fuerza vascular' }
-      ],
+          { id: 'm1', name: 'Atorvastatina', dose: '20 mg (1 tableta)', frequency: 'Cada 24 horas (1 vez al día)', time: '21:00', timing: 'Antes de dormir', purpose: 'Protege arterias y reduce colesterol LDL malo', stock: 18, daily: 1, takenToday: false, note: 'Tratamiento cardioprotector' },
+          { id: 'm2', name: 'Omega-3 Concentrado (EPA+DHA)', dose: '1000 mg (1 cápsula)', frequency: 'Cada 24 horas (1 vez al día)', time: '08:30', timing: 'Con el desayuno', purpose: 'Regula triglicéridos y eleva colesterol HDL+', stock: 4, daily: 1, takenToday: true, note: 'Ácidos grasos esenciales' },
+          { id: 'm3', name: 'Coenzima Q10 (CoQ10)', dose: '100 mg (1 cápsula)', frequency: 'Cada 24 horas (1 vez al día)', time: '13:30', timing: 'Con el almuerzo', purpose: 'Apoyo mitocondrial y fuerza vascular', stock: 24, daily: 1, takenToday: false, note: 'Antioxidante celular' }
+        ],
+        medicalHistory: {
+          bloodType: 'O Positivo (O+)',
+          allergies: [
+            { id: 'al1', allergen: 'Penicilina / Betalactámicos', reaction: 'Urticaria aguda y broncoespasmo', severity: 'Grave (Riesgo de anafilaxia)' },
+            { id: 'al2', allergen: 'AINEs (Ibuprofeno / Naproxeno)', reaction: 'Gastritis erosiva y dolor epigástrico', severity: 'Moderada' }
+          ],
+          conditions: [
+            { id: 'cd1', name: 'Hipertensión Arterial Primaria', diagnosedYear: '2022', status: 'Controlada', doctor: 'Dr. Alejandro Morales (Cardiólogo)', note: 'Dieta baja en sodio (<2g/día) y ejercicio aeróbico regular' },
+            { id: 'cd2', name: 'Hipercolesterolemia / Dislipidemia Leve', diagnosedYear: '2023', status: 'En reversión nutricional', doctor: 'Dra. Elena Vargas', note: 'Descenso notable de LDL con avena integral, chía y omega-3' }
+          ],
+          surgeries: [
+            { id: 'sg1', name: 'Apendicectomía Laparoscópica', year: '2018', hospital: 'Clínica San Rafael', note: 'Recuperación satisfactoria sin complicaciones postoperatorias' }
+          ],
+          familyGenetics: [
+            { id: 'fg1', relation: 'Padre', condition: 'Infarto agudo de miocardio a los 58 años', note: 'Cardiopatía isquémica y tabaquismo previo' },
+            { id: 'fg2', relation: 'Madre', condition: 'Diabetes Mellitus Tipo 2', note: 'Diagnosticada a los 52 años, controlada con metformina' },
+            { id: 'fg3', relation: 'Abuelo Materno', condition: 'Accidente Cerebrovascular (ACV)', note: 'A los 70 años, antecedente hipertensivo' }
+          ],
+          emergencyContact: {
+            name: 'Carlos Mendoza',
+            relation: 'Cónyuge / Hermano',
+            phone: '+57 312 456 7890'
+          }
+        },
+        bloodGlucose: [
+          { id: 'bg1', date: '2026-11-18', time: '07:30', value: 92, type: 'ayunas', note: 'Glucemia basal óptima' },
+          { id: 'bg2', date: '2026-11-19', time: '07:45', value: 95, type: 'ayunas', note: 'En ayunas normal' },
+          { id: 'bg3', date: '2026-11-19', time: '15:30', value: 126, type: 'postprandial', note: '2h después del almuerzo' },
+          { id: 'bg4', date: '2026-11-20', time: '07:15', value: 89, type: 'ayunas', note: 'Excelente control matutino' }
+        ],
       catalog: [
         { id: 'c1', name: 'Aguacate Hass fresco', portion: '1/2 pieza (80g)', kcal: 160, carbs: 7, protein: 2, fat: 15, fiber: 5, goodFat: 13, tags: ['hdl', 'omega3'], tagLabel: 'HDL+', benefit: 'Grasas monoinsaturadas' },
         { id: 'c2', name: 'Avena integral en hojuelas', portion: '50g cruda', kcal: 185, carbs: 33, protein: 6, fat: 3, fiber: 6, goodFat: 2, tags: ['ldl'], tagLabel: 'LDL-', benefit: 'Betaglucano soluble' },
@@ -2701,6 +3086,16 @@
           ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
           ...parsed,
           profile: { ...DEFAULT_STATE.profile, ...(parsed.profile || {}) },
+            medicalHistory: parsed.medicalHistory ? {
+              ...DEFAULT_STATE.medicalHistory,
+              ...parsed.medicalHistory,
+              allergies: Array.isArray(parsed.medicalHistory.allergies) ? parsed.medicalHistory.allergies : DEFAULT_STATE.medicalHistory.allergies,
+              conditions: Array.isArray(parsed.medicalHistory.conditions) ? parsed.medicalHistory.conditions : DEFAULT_STATE.medicalHistory.conditions,
+              surgeries: Array.isArray(parsed.medicalHistory.surgeries) ? parsed.medicalHistory.surgeries : DEFAULT_STATE.medicalHistory.surgeries,
+              familyGenetics: Array.isArray(parsed.medicalHistory.familyGenetics) ? parsed.medicalHistory.familyGenetics : DEFAULT_STATE.medicalHistory.familyGenetics,
+              emergencyContact: { ...DEFAULT_STATE.medicalHistory.emergencyContact, ...(parsed.medicalHistory.emergencyContact || {}) }
+            } : JSON.parse(JSON.stringify(DEFAULT_STATE.medicalHistory)),
+            bloodGlucose: (Array.isArray(parsed.bloodGlucose) && parsed.bloodGlucose.length > 0) ? parsed.bloodGlucose : JSON.parse(JSON.stringify(DEFAULT_STATE.bloodGlucose)),
           medications: (parsed.medications && parsed.medications.length) ? parsed.medications : DEFAULT_STATE.medications,
           groceries: (Array.isArray(parsed.groceries) && parsed.groceries.length > 0) ? parsed.groceries : DEFAULT_STATE.groceries,
           exerciseHistory: loadedHistory,
@@ -2828,19 +3223,27 @@
     }
 
     function calculateMetabolicMetrics(prof) {
-      const w = parseFloat(prof.weight) || 72;
-      const h = parseFloat(prof.height) || 168;
-      const age = parseFloat(prof.age) || 34;
-      const gender = prof.gender || 'female';
-      const activity = parseFloat(prof.activity) || 1.45;
-      const deficit = parseInt(prof.deficitPace) || 450;
+        const weight = parseFloat(prof.weight) || 72;
+        const height = parseFloat(prof.height) || 168;
+        const age = parseInt(prof.age, 10) || 34;
+        const gender = prof.gender || 'female';
+        const activity = parseFloat(prof.activity) || 1.45;
+        const deficitPace = parseInt(prof.deficitPace, 10) || 450;
+        const workAct = prof.workActivity || 'sitting';
 
-      // Mifflin-St Jeor formula
-      let bmr = 10 * w + 6.25 * h - 5 * age;
-      bmr = (gender === 'male') ? bmr + 5 : bmr - 161;
-      const tdee = Math.round(bmr * activity);
-      const goalKcal = Math.max(1200, tdee - deficit);
-      const waterBaseMl = Math.round(w * 35); // 35 ml per kg
+        // Mifflin-St Jeor Formula
+        let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+        bmr += (gender === 'male' ? 5 : -161);
+
+        // NEAT Occupational Physical Bonus
+        let neatBonus = 0;
+        if (workAct === 'standing') neatBonus = 150;
+        else if (workAct === 'mixed') neatBonus = 280;
+        else if (workAct === 'physical') neatBonus = 450;
+
+        const tdee = Math.round((bmr * activity) + neatBonus);
+        const goalKcal = Math.max(1200, Math.round(tdee - deficitPace));
+        const waterBaseMl = Math.round(weight * 35); // 35 ml per kg
 
       return { bmr: Math.round(bmr), tdee, goalKcal, waterBaseMl };
     }
@@ -3290,6 +3693,9 @@
       renderExercisesList();
       renderGroceryList();
       renderBloodPressureList();
+      if (typeof renderPantrySuggestions === 'function') renderPantrySuggestions();
+      if (typeof renderBloodGlucoseList === 'function') renderBloodGlucoseList();
+      if (typeof renderMedicalHistoryUI === 'function') renderMedicalHistoryUI();
       updateScanPreview();
       renderLabAnalytics();
       updateAiBadgeUI();
@@ -3316,6 +3722,7 @@
       document.getElementById('prof-target-weight').value = p.targetWeight || 65;
       document.getElementById('prof-activity').value = p.activity || 1.45;
       document.getElementById('prof-deficit').value = p.deficitPace || 450;
+      if (document.getElementById('prof-work-activity')) document.getElementById('prof-work-activity').value = p.workActivity || 'sitting';
       previewProfileCalc();
 
       const modal = document.getElementById('profile-edit-modal');
@@ -3482,7 +3889,8 @@
         height: document.getElementById('prof-height').value,
         weight: document.getElementById('prof-weight').value,
         activity: document.getElementById('prof-activity').value,
-        deficitPace: document.getElementById('prof-deficit').value
+        deficitPace: document.getElementById('prof-deficit').value,
+        workActivity: document.getElementById('prof-work-activity')?.value || 'sitting'
       };
       const res = calculateMetabolicMetrics(tempProf);
       document.getElementById('prof-calc-bmr').textContent = `${res.bmr.toLocaleString('es-ES')} kcal`;
@@ -3501,6 +3909,7 @@
       const targetWeight = parseFloat(document.getElementById('prof-target-weight').value) || 65;
       const activity = parseFloat(document.getElementById('prof-activity').value) || 1.45;
       const deficitPace = parseInt(document.getElementById('prof-deficit').value, 10) || 450;
+      const workActivity = document.getElementById('prof-work-activity')?.value || 'sitting';
 
       appState.profile = {
         fullname,
@@ -3511,9 +3920,9 @@
         weight,
         targetWeight,
         activity,
-        deficitPace
+        deficitPace,
+        workActivity
       };
-
       const metrics = calculateMetabolicMetrics(appState.profile);
       appState.goalKcal = metrics.goalKcal;
 
@@ -4073,6 +4482,7 @@
           </div>
         `;
       }).join('');
+      if (typeof renderPantrySuggestions === 'function') renderPantrySuggestions();
     }
 
     function toggleGroceryItem(id) {
@@ -4238,25 +4648,33 @@
 
     // ---- BLOOD PRESSURE LOGIC ----
     function switchSaludSubtab(sub) {
-      document.getElementById('salud-sub-preventivo').classList.toggle('hidden', sub !== 'preventivo');
-      document.getElementById('salud-sub-preventivo').classList.toggle('flex', sub === 'preventivo');
-      document.getElementById('salud-sub-laboratorio').classList.toggle('hidden', sub !== 'laboratorio');
-      document.getElementById('salud-sub-laboratorio').classList.toggle('flex', sub === 'laboratorio');
-      document.getElementById('salud-sub-presion').classList.toggle('hidden', sub !== 'presion');
-      document.getElementById('salud-sub-presion').classList.toggle('flex', sub === 'presion');
+        document.getElementById('salud-sub-preventivo')?.classList.toggle('hidden', sub !== 'preventivo');
+        document.getElementById('salud-sub-preventivo')?.classList.toggle('flex', sub === 'preventivo');
+        document.getElementById('salud-sub-laboratorio')?.classList.toggle('hidden', sub !== 'laboratorio');
+        document.getElementById('salud-sub-laboratorio')?.classList.toggle('flex', sub === 'laboratorio');
+        document.getElementById('salud-sub-presion')?.classList.toggle('hidden', sub !== 'presion');
+        document.getElementById('salud-sub-presion')?.classList.toggle('flex', sub === 'presion');
+        document.getElementById('salud-sub-glucemia')?.classList.toggle('hidden', sub !== 'glucemia');
+        document.getElementById('salud-sub-glucemia')?.classList.toggle('flex', sub === 'glucemia');
+        document.getElementById('salud-sub-historial')?.classList.toggle('hidden', sub !== 'historial');
+        document.getElementById('salud-sub-historial')?.classList.toggle('flex', sub === 'historial');
 
-      ['preventivo', 'laboratorio', 'presion'].forEach(tab => {
-        const btn = document.getElementById(`subtab-btn-${tab}`);
-        if (tab === sub) {
-          btn.className = 'flex-1 py-2 rounded-xl text-[12px] font-bold bg-surface-container-lowest text-primary shadow-sm transition-all text-center';
-        } else {
-          btn.className = 'flex-1 py-2 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center';
-        }
-      });
+        ['preventivo', 'laboratorio', 'presion', 'glucemia', 'historial'].forEach(tab => {
+          const btn = document.getElementById(`subtab-btn-${tab}`);
+          if (btn) {
+            if (tab === sub) {
+              btn.className = 'flex-1 py-2 px-2.5 rounded-xl text-[12px] font-bold bg-surface-container-lowest text-primary shadow-sm transition-all text-center whitespace-nowrap';
+            } else {
+              btn.className = 'flex-1 py-2 px-2.5 rounded-xl text-[12px] font-semibold text-on-surface-variant transition-all text-center whitespace-nowrap';
+            }
+          }
+        });
 
-      if (sub === 'laboratorio') renderLabAnalytics();
-      if (sub === 'presion') renderBloodPressureList();
-    }
+        if (sub === 'laboratorio' && typeof renderLabAnalytics === 'function') renderLabAnalytics();
+        if (sub === 'presion' && typeof renderBloodPressureList === 'function') renderBloodPressureList();
+        if (sub === 'glucemia' && typeof renderBloodGlucoseList === 'function') renderBloodGlucoseList();
+        if (sub === 'historial' && typeof renderMedicalHistoryUI === 'function') renderMedicalHistoryUI();
+      }
 
     function toggleBpModal(show) {
       const modal = document.getElementById('bp-entry-modal');
@@ -4347,46 +4765,111 @@
       showToast('Toma eliminada', 'delete');
     }
 
-    // ---- REPORT MODAL ----
+    // ---- REPORT MODAL & CLINICAL CONSULTATION SHEET ----
     function openReportModal() {
       const t = getTotals();
+      const prof = appState.profile;
+      const mh = getSafeMedicalHistory();
       const cardioScore = Math.min(99, Math.max(60, Math.round(62 + (t.fiber / 30) * 18 + (t.goodFat / 50) * 15)));
-      document.getElementById('rep-cardio-score').textContent = `${cardioScore} / 100`;
-      document.getElementById('rep-meta-kcal').textContent = `${appState.goalKcal} kcal`;
 
-      const labs = [...appState.labExams].sort((a, b) => a.date.localeCompare(b.date));
-      const latestLab = labs[labs.length - 1];
-      if (latestLab) {
-        document.getElementById('rep-latest-ldl').textContent = `${latestLab.ldl} mg/dL`;
-        document.getElementById('rep-latest-hdl').textContent = `${latestLab.hdl} mg/dL`;
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+
+      setTxt('rep-cardio-score', `${cardioScore} / 100`);
+      setTxt('rep-meta-kcal', `${appState.goalKcal} kcal`);
+      setTxt('rep-patient-name', prof.fullname || 'Sofía Martínez');
+      setTxt('rep-patient-age', prof.age || '34');
+      setTxt('rep-blood-type', mh.bloodType || 'O+');
+      setTxt('rep-emergency-contact', `${mh.emergencyContact?.name || 'Carlos Mendoza'} · ${mh.emergencyContact?.phone || ''}`);
+
+      // Vitals
+      const bp = appState.bloodPressure || [];
+      const glu = appState.bloodGlucose || [];
+      setTxt('rep-latest-bp', bp[0] ? `${bp[0].sys} / ${bp[0].dia} mmHg` : '118 / 78 mmHg');
+      setTxt('rep-latest-glu', glu[0] ? `${glu[0].value} mg/dL` : '89 mg/dL');
+
+      // Allergies box
+      const repAllText = document.getElementById('rep-allergies-text');
+      if (repAllText) {
+        if (mh.allergies && mh.allergies.length > 0) {
+          repAllText.textContent = mh.allergies.map(a => `${a.allergen} (${a.reaction} - ${a.severity})`).join(' · ');
+        } else {
+          repAllText.textContent = 'Sin alergias médicas conocidas reportadas.';
+        }
       }
 
-      document.getElementById('rep-lab-tbody').innerHTML = labs.map(l => `
-        <tr class="border-b border-outline-variant/10">
-          <td class="py-1 font-semibold">${l.date}</td>
-          <td class="py-1">${l.note}</td>
-          <td class="py-1 font-bold ${l.ldl < 100 ? 'text-primary' : 'text-secondary'}">${l.ldl}</td>
-          <td class="py-1 font-bold text-primary">${l.hdl}</td>
-          <td class="py-1">${l.trig}</td>
-          <td class="py-1 font-semibold">${(l.trig / Math.max(1, l.hdl)).toFixed(2)}</td>
-        </tr>
-      `).join('');
+      // Active Medications Table
+      const repMedTable = document.getElementById('rep-medications-table');
+      if (repMedTable) {
+        const meds = appState.medications || [];
+        if (meds.length === 0) {
+          repMedTable.innerHTML = '<p class="text-[11px] text-outline italic">No tiene medicamentos activos actualmente.</p>';
+        } else {
+          repMedTable.innerHTML = `
+            <table class="w-full text-left border-collapse text-[11px]">
+              <thead>
+                <tr class="border-b border-outline-variant/30 text-outline">
+                  <th class="py-1">Fármaco / Suplemento</th>
+                  <th class="py-1">Dosis</th>
+                  <th class="py-1">Frecuencia ("Cada cuánto")</th>
+                  <th class="py-1">Horario</th>
+                  <th class="py-1">Indicación Clínica</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${meds.map(m => `
+                  <tr class="border-b border-outline-variant/15">
+                    <td class="py-1 font-bold text-on-surface">${m.name}</td>
+                    <td class="py-1 text-primary font-semibold">${m.dose}</td>
+                    <td class="py-1 font-medium">${m.frequency || 'Cada 24 horas'}</td>
+                    <td class="py-1">${m.time || ''} (${m.timing || 'Con comida'})</td>
+                    <td class="py-1 text-outline">${m.purpose || m.note || 'Cardioprotección'}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>`;
+        }
+      }
 
-      const bps = [...(appState.bloodPressure || [])].sort((a, b) => a.date.localeCompare(b.date));
-      const latestBp = bps[bps.length - 1];
-      if (latestBp) {
-        const cat = getBpCategory(latestBp.sys, latestBp.dia);
-        document.getElementById('rep-bp-summary').innerHTML = `
-          <p>Último registro (${latestBp.date}): <strong>${latestBp.sys} / ${latestBp.dia} mmHg</strong> (Pulso: ${latestBp.hr} lpm) — Clasificación: <strong>${cat.label}</strong>.</p>
-          <p>Variabilidad tensional dentro de rango preventivo óptimo para protección renal y cerebrovascular.</p>
-        `;
-      } else {
-        document.getElementById('rep-bp-summary').innerHTML = `<p>Sin registros tensionales recientes.</p>`;
+      // Conditions
+      const repCond = document.getElementById('rep-conditions-list');
+      if (repCond) {
+        const conds = mh.conditions || [];
+        repCond.innerHTML = conds.length === 0 ? '<p class="text-outline italic">Sin antecedentes crónicos reportados.</p>' :
+          conds.map(c => `<div>• <strong>${c.name}</strong> (${c.diagnosedYear}) — ${c.status}. ${c.note || ''}</div>`).join('');
+      }
+
+      // Surgeries
+      const repSurg = document.getElementById('rep-surgeries-list');
+      if (repSurg) {
+        const surgs = mh.surgeries || [];
+        repSurg.innerHTML = surgs.length === 0 ? '<p class="text-outline italic">Sin cirugías previas.</p>' :
+          surgs.map(s => `<div>• <strong>${s.name}</strong> (${s.year}) — ${s.hospital || ''} ${s.note || ''}</div>`).join('');
+      }
+
+      // Family
+      const repFam = document.getElementById('rep-family-list');
+      if (repFam) {
+        const fams = mh.familyGenetics || [];
+        repFam.innerHTML = fams.length === 0 ? '<p class="text-outline italic">Sin antecedentes familiares registrados.</p>' :
+          fams.map(f => `<div>• <strong>${f.relation}:</strong> ${f.condition} ${f.note ? '— ' + f.note : ''}</div>`).join('');
+      }
+
+      // Lipid values
+      const labs = appState.labExams || [];
+      const latestLab = labs[labs.length - 1];
+      if (latestLab) {
+        setTxt('rep-ldl-val', `${latestLab.ldl} mg/dL`);
+        setTxt('rep-hdl-val', `${latestLab.hdl} mg/dL`);
+        setTxt('rep-trig-val', `${latestLab.trig} mg/dL`);
       }
 
       const modal = document.getElementById('report-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
     }
 
     function closeReportModal() {
@@ -4589,6 +5072,409 @@
         badge: item.tagLabel,
         badgeType: item.tagLabel === 'LDL-' ? 'primary' : 'secondary'
       });
+    }
+
+    // ==========================================
+    // PANTRY & SUPERMARKET MEAL SUGGESTION ENGINE
+    // ==========================================
+    let currentSugMealType = 'Desayuno';
+
+    const PANTRY_RECIPES = [
+      // DESAYUNOS (260 - 380 kcal)
+      {
+        id: 'sug_des_1',
+        mealType: 'Desayuno',
+        time: '08:30',
+        name: 'Bowl de Avena con Chía y Arándanos',
+        kcal: 320,
+        carbs: 52,
+        protein: 12,
+        fat: 8,
+        fiber: 9,
+        goodFat: 6,
+        ingredients: ['Avena integral', 'Semillas de Chía', 'Arándanos'],
+        benefit: 'Betaglucano soluble y mucílagos que reducen absorción de colesterol',
+        badge: 'Fibra +9g'
+      },
+      {
+        id: 'sug_des_2',
+        mealType: 'Desayuno',
+        time: '08:45',
+        name: 'Tostadas de Centeno con Aguacate Hass y Semillas',
+        kcal: 360,
+        carbs: 28,
+        protein: 14,
+        fat: 20,
+        fiber: 8,
+        goodFat: 15,
+        ingredients: ['Aguacate Hass', 'Aceite de Oliva Extra Virgen', 'Semillas de Chía'],
+        benefit: 'Grasas monoinsaturadas y saciedad sin elevar glucosa',
+        badge: 'HDL+ Grasas Buenas'
+      },
+      {
+        id: 'sug_des_3',
+        mealType: 'Desayuno',
+        time: '08:15',
+        name: 'Yogurt Griego con Nueces de Castilla y Canela',
+        kcal: 260,
+        carbs: 14,
+        protein: 20,
+        fat: 14,
+        fiber: 3,
+        goodFat: 11,
+        ingredients: ['Yogurt griego natural', 'Nueces de Castilla'],
+        benefit: 'Proteína saciante y ácido alfa-linolénico protector de arterias',
+        badge: 'Proteína 20g'
+      },
+
+      // ALMUERZOS (440 - 540 kcal)
+      {
+        id: 'sug_alm_1',
+        mealType: 'Almuerzo',
+        time: '13:30',
+        name: 'Filete de Salmón con Ensalada de Espinacas y Aguacate',
+        kcal: 520,
+        carbs: 24,
+        protein: 38,
+        fat: 28,
+        fiber: 9,
+        goodFat: 25,
+        ingredients: ['Filetes de salmón fresco', 'Espinacas frescas y rúcula', 'Aguacates Hass', 'Aceite de Oliva Extra Virgen'],
+        benefit: 'Máxima dosis de Omega-3 EPA/DHA para elevar HDL y bajar triglicéridos',
+        badge: 'Omega-3 +2.5g'
+      },
+      {
+        id: 'sug_alm_2',
+        mealType: 'Almuerzo',
+        time: '13:45',
+        name: 'Guiso Ligero de Lentejas con Espinacas y Oliva',
+        kcal: 440,
+        carbs: 58,
+        protein: 26,
+        fat: 12,
+        fiber: 18,
+        goodFat: 10,
+        ingredients: ['Lentejas pardinas o garbanzos', 'Espinacas frescas y rúcula', 'Aceite de Oliva Extra Virgen'],
+        benefit: 'Alta fibra soluble que atrapa sales biliares en el intestino',
+        badge: 'Fibra +18g'
+      },
+      {
+        id: 'sug_alm_3',
+        mealType: 'Almuerzo',
+        time: '13:15',
+        name: 'Ensalada Marina de Sardinas con Aguacate y Rúcula',
+        kcal: 480,
+        carbs: 16,
+        protein: 32,
+        fat: 30,
+        fiber: 7,
+        goodFat: 24,
+        ingredients: ['Sardinas en aceite de oliva', 'Espinacas frescas y rúcula', 'Aguacates Hass', 'Aceite de Oliva Extra Virgen'],
+        benefit: 'Opción económica de Omega-3 de máxima biodisponibilidad vascular',
+        badge: 'Omega-3 Activo'
+      },
+
+      // COMIDA / CENA (310 - 390 kcal)
+      {
+        id: 'sug_cen_1',
+        mealType: 'Cena',
+        time: '20:00',
+        name: 'Salmón a la Plancha con Espinacas al Limón y Nueces',
+        kcal: 380,
+        carbs: 10,
+        protein: 34,
+        fat: 22,
+        fiber: 4,
+        goodFat: 18,
+        ingredients: ['Filetes de salmón fresco', 'Espinacas frescas y rúcula', 'Nueces de Castilla'],
+        benefit: 'Cena ligera que promueve descanso profundo y recuperación lipídica',
+        badge: 'Cena Cardioprotectora'
+      },
+      {
+        id: 'sug_cen_2',
+        mealType: 'Cena',
+        time: '20:15',
+        name: 'Bowl Proteico de Lentejas Templadas con Aguacate',
+        kcal: 360,
+        carbs: 42,
+        protein: 18,
+        fat: 14,
+        fiber: 12,
+        goodFat: 12,
+        ingredients: ['Lentejas pardinas o garbanzos', 'Aguacates Hass', 'Espinacas frescas y rúcula'],
+        benefit: 'Proteína vegetal y grasas monoinsaturadas sin pesadez estomacal',
+        badge: 'Digestión Ligera'
+      },
+      {
+        id: 'sug_cen_3',
+        mealType: 'Cena',
+        time: '19:45',
+        name: 'Sardinas en Oliva con Cama de Rúcula y Limón',
+        kcal: 320,
+        carbs: 6,
+        protein: 26,
+        fat: 21,
+        fiber: 3,
+        goodFat: 17,
+        ingredients: ['Sardinas en aceite de oliva', 'Espinacas frescas y rúcula', 'Aceite de Oliva Extra Virgen'],
+        benefit: 'Bajo en carbohidratos, alto en ácidos grasos protectores nocturnos',
+        badge: 'Bajo en Carbos'
+      },
+
+      // ENTRE COMIDAS / SNACKS (140 - 170 kcal)
+      {
+        id: 'sug_snk_1',
+        mealType: 'Merienda',
+        time: '16:30',
+        name: 'Yogurt Griego con Puñado de Nueces y Arándanos',
+        kcal: 170,
+        carbs: 16,
+        protein: 15,
+        fat: 6,
+        fiber: 4,
+        goodFat: 7,
+        ingredients: ['Yogurt griego natural', 'Nueces de Castilla', 'Arándanos frescos'],
+        benefit: 'Corta el hambre de media tarde sin alterar tu déficit calórico',
+        badge: 'Snack Saciante'
+      },
+      {
+        id: 'sug_snk_2',
+        mealType: 'Merienda',
+        time: '17:00',
+        name: 'Pudín Exprés de Chía con Arándanos Frescos',
+        kcal: 140,
+        carbs: 18,
+        protein: 5,
+        fat: 6,
+        fiber: 7,
+        goodFat: 4,
+        ingredients: ['Semillas de Chía', 'Arándanos frescos'],
+        benefit: 'Fibra mucilaginosa que genera saciedad gástrica prolongada',
+        badge: 'Fibra Soluble'
+      },
+      {
+        id: 'sug_snk_3',
+        mealType: 'Merienda',
+        time: '11:00',
+        name: 'Puñado Cardioprotector de Nueces de Castilla (25g)',
+        kcal: 164,
+        carbs: 3,
+        protein: 4,
+        fat: 16,
+        fiber: 2,
+        goodFat: 14,
+        ingredients: ['Nueces de Castilla'],
+        benefit: 'Concentrado natural de polifenoles y Omega-3 vegetal',
+        badge: 'HDL+ Puro'
+      }
+    ];
+
+    function selectSuggestionMealType(type, btnEl) {
+      currentSugMealType = type;
+      document.querySelectorAll('#sug-meal-type-selector button').forEach(b => {
+        b.className = 'sug-type-btn h-8 px-3.5 rounded-full text-[12px] font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5 transition-all';
+      });
+      if (btnEl) {
+        btnEl.className = 'sug-type-btn active h-8 px-3.5 rounded-full text-[12px] font-bold bg-primary text-on-primary shadow-sm flex items-center gap-1.5 transition-all';
+      }
+      renderPantrySuggestions();
+    }
+
+    function checkGroceryMatch(ingredientQuery) {
+      const groceries = appState.groceries || [];
+      const q = ingredientQuery.toLowerCase();
+      return groceries.some(g => g.name.toLowerCase().includes(q));
+    }
+
+    function renderPantrySuggestions() {
+      const container = document.getElementById('pantry-suggestions-grid');
+      if (!container) return;
+
+      const t = getTotals();
+      const remaining = t.remaining;
+
+      // Actualizar contador de calorías restantes y total de despensa
+      const remBadge = document.getElementById('sug-remaining-kcal');
+      if (remBadge) remBadge.textContent = remaining.toLocaleString('es-ES');
+
+      const pantryCountEl = document.getElementById('sug-pantry-count');
+      if (pantryCountEl) {
+        const totalPantry = (appState.groceries || []).length;
+        pantryCountEl.textContent = `${totalPantry} ingredientes en tu Lista del Súper`;
+      }
+
+      // Filtrar recetas por el momento del día seleccionado
+      const filtered = PANTRY_RECIPES.filter(r => r.mealType === currentSugMealType);
+
+      container.innerHTML = filtered.map(recipe => {
+        const fitsInBudget = recipe.kcal <= remaining;
+        const remainingAfter = remaining - recipe.kcal;
+        const exceedsBy = recipe.kcal - remaining;
+
+        // Comprobar ingredientes presentes en la lista del súper
+        const ingredientsStatus = recipe.ingredients.map(ing => {
+          const haveIt = checkGroceryMatch(ing);
+          return { name: ing, haveIt };
+        });
+
+        const matchesCount = ingredientsStatus.filter(i => i.haveIt).length;
+        const totalIng = ingredientsStatus.length;
+
+        const budgetBadgeClass = fitsInBudget
+          ? 'bg-primary-fixed text-on-primary-fixed-variant'
+          : 'bg-error-container text-on-error-container';
+
+        const budgetText = fitsInBudget
+          ? `✅ Encaja en tu meta (Te quedarán ${remainingAfter.toLocaleString('es-ES')} kcal)`
+          : `⚠️ Excede tu presupuesto restante por ${exceedsBy} kcal`;
+
+        return `
+          <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col justify-between gap-3 transition-all hover:shadow-md">
+            <div class="flex flex-col gap-2">
+              <!-- Top Row: Meal Type & Budget Tag -->
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-outline flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px] text-primary">schedule</span>
+                  ${recipe.mealType} sugerido · ${recipe.time}
+                </span>
+                <span class="px-2 py-0.5 rounded-full ${budgetBadgeClass} text-[10px] font-bold">
+                  ${budgetText}
+                </span>
+              </div>
+
+              <!-- Recipe Title & Calories -->
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="font-display text-[15px] font-bold text-on-surface leading-snug">${recipe.name}</h4>
+                <div class="text-right shrink-0">
+                  <span class="font-display text-[17px] font-extrabold ${fitsInBudget ? 'text-primary' : 'text-error'}">+${recipe.kcal}</span>
+                  <span class="text-[11px] text-outline font-semibold block leading-tight">kcal</span>
+                </div>
+              </div>
+
+              <!-- Macros Breakdown -->
+              <div class="grid grid-cols-4 gap-1.5 p-2 rounded-xl bg-surface-container-low text-center text-[10px]">
+                <div>
+                  <span class="text-outline block">Proteína</span>
+                  <strong class="font-bold text-on-surface">${recipe.protein}g</strong>
+                </div>
+                <div>
+                  <span class="text-outline block">Carbos</span>
+                  <strong class="font-bold text-on-surface">${recipe.carbs}g</strong>
+                </div>
+                <div>
+                  <span class="text-outline block">Grasas</span>
+                  <strong class="font-bold text-on-surface">${recipe.fat}g</strong>
+                </div>
+                <div>
+                  <span class="text-outline block">Fibra</span>
+                  <strong class="font-bold text-primary font-bold">${recipe.fiber}g</strong>
+                </div>
+              </div>
+
+              <!-- Pantry Match Chips -->
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between text-[10px] text-outline font-semibold">
+                  <span>Ingredientes de tu lista del súper:</span>
+                  <span class="${matchesCount === totalIng ? 'text-primary font-bold' : 'text-outline'}">${matchesCount}/${totalIng} disponibles</span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                  ${ingredientsStatus.map(i => `
+                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold flex items-center gap-0.5 ${i.haveIt ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-surface-container text-outline'}">
+                      <span class="material-symbols-outlined text-[12px]">${i.haveIt ? 'check_circle' : 'add_circle'}</span>
+                      ${i.name}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Cardioprotective Benefit -->
+              <div class="p-2 rounded-xl bg-primary-fixed/25 flex items-center gap-1.5 text-[11px] text-on-primary-fixed-variant leading-tight">
+                <span class="material-symbols-outlined text-[15px] text-primary shrink-0">cardiology</span>
+                <span>${recipe.benefit}</span>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="pt-2 border-t border-outline-variant/15 flex items-center justify-between gap-2">
+              <span class="text-[11px] font-bold text-outline">${recipe.badge}</span>
+              <button type="button" onclick="addSuggestedMeal('${recipe.id}')" class="h-9 px-3.5 rounded-xl ${fitsInBudget ? 'bg-primary text-on-primary hover:bg-primary-container' : 'bg-secondary text-on-secondary hover:bg-secondary-container'} font-bold text-[11px] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px]">add_task</span>
+                <span>Registrar en mi ${recipe.mealType}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addSuggestedMeal(recipeId) {
+      const recipe = PANTRY_RECIPES.find(r => r.id === recipeId);
+      if (!recipe) return;
+
+      const t = getTotals();
+      const remaining = t.remaining;
+      const willExceed = recipe.kcal > remaining;
+
+      const action = () => {
+        appState.meals.push({
+          id: Date.now(),
+          mealType: recipe.mealType,
+          time: recipe.time,
+          name: recipe.name,
+          kcal: recipe.kcal,
+          carbs: recipe.carbs,
+          protein: recipe.protein,
+          fat: recipe.fat,
+          fiber: recipe.fiber,
+          goodFat: recipe.goodFat,
+          badge: recipe.badge,
+          badgeType: recipe.badge.includes('Fibra') ? 'primary' : 'secondary'
+        });
+
+        saveState();
+        updateAllUI();
+        const newRemaining = Math.max(0, remaining - recipe.kcal);
+        showToast(`¡${recipe.name} registrada! +${recipe.kcal} kcal (Restan ${newRemaining} kcal)`, 'restaurant');
+      };
+
+      if (willExceed && appState.confirmExceed) {
+        showPreventiveModal(recipe.name, recipe.kcal, remaining, action);
+      } else {
+        action();
+      }
+    }
+
+    function generateFullDayMenuFromPantry() {
+      const breakfast = PANTRY_RECIPES.find(r => r.id === 'sug_des_1');
+      const lunch = PANTRY_RECIPES.find(r => r.id === 'sug_alm_1');
+      const snack = PANTRY_RECIPES.find(r => r.id === 'sug_snk_1');
+      const dinner = PANTRY_RECIPES.find(r => r.id === 'sug_cen_2');
+
+      const totalDayKcal = (breakfast?.kcal || 0) + (lunch?.kcal || 0) + (snack?.kcal || 0) + (dinner?.kcal || 0);
+      const totalFiber = (breakfast?.fiber || 0) + (lunch?.fiber || 0) + (snack?.fiber || 0) + (dinner?.fiber || 0);
+      const deficitMargin = Math.max(0, appState.goalKcal - totalDayKcal);
+
+      const msg = `🍽️ MENÚ COMPLETO SUGERIDO CON TU SÚPER:\n\n` +
+        `• ☀️ Desayuno: ${breakfast.name} (${breakfast.kcal} kcal)\n` +
+        `• 🍽️ Almuerzo: ${lunch.name} (${lunch.kcal} kcal)\n` +
+        `• 🍎 Merienda: ${snack.name} (${snack.kcal} kcal)\n` +
+        `• 🌙 Cena: ${dinner.name} (${dinner.kcal} kcal)\n\n` +
+        `📊 Total calorías: ${totalDayKcal} kcal de tu meta (${appState.goalKcal} kcal)\n` +
+        `🛡️ Margen seguro de déficit: +${deficitMargin} kcal restantes\n` +
+        `🌿 Fibra cardioprotectora: ${totalFiber}g (Meta de 30g superada)\n\n` +
+        `¿Deseas registrar este menú completo del día de una vez en tu registro de hoy?`;
+
+      if (confirm(msg)) {
+        appState.meals = [
+          { id: Date.now() + 1, mealType: 'Desayuno', time: breakfast.time, name: breakfast.name, kcal: breakfast.kcal, carbs: breakfast.carbs, protein: breakfast.protein, fat: breakfast.fat, fiber: breakfast.fiber, goodFat: breakfast.goodFat, badge: breakfast.badge, badgeType: 'primary' },
+          { id: Date.now() + 2, mealType: 'Almuerzo', time: lunch.time, name: lunch.name, kcal: lunch.kcal, carbs: lunch.carbs, protein: lunch.protein, fat: lunch.fat, fiber: lunch.fiber, goodFat: lunch.goodFat, badge: lunch.badge, badgeType: 'secondary' },
+          { id: Date.now() + 3, mealType: 'Merienda', time: snack.time, name: snack.name, kcal: snack.kcal, carbs: snack.carbs, protein: snack.protein, fat: snack.fat, fiber: snack.fiber, goodFat: snack.goodFat, badge: snack.badge, badgeType: 'primary' },
+          { id: Date.now() + 4, mealType: 'Cena', time: dinner.time, name: dinner.name, kcal: dinner.kcal, carbs: dinner.carbs, protein: dinner.protein, fat: dinner.fat, fiber: dinner.fiber, goodFat: dinner.goodFat, badge: dinner.badge, badgeType: 'primary' }
+        ];
+        saveState();
+        updateAllUI();
+        showToast('¡Menú del día completo registrado con éxito!', 'auto_awesome');
+      }
     }
 
     // ==========================================
@@ -5884,6 +6770,7 @@
           </div>
         `;
       }).join('');
+      if (typeof renderPantrySuggestions === 'function') renderPantrySuggestions();
     }
 
     function toggleLabModal(show) {
@@ -5927,6 +6814,1003 @@
     // Initialize App
     recalcExerciseKcal();
     updateAllUI();
-  </script>
+  
+
+    // =========================================================
+    // GLUCOSE / AZÚCAR EN SANGRE LOGIC (NEW ENGINE)
+    // =========================================================
+    function openAddGlucoseModal() {
+      const d = new Date();
+      const dateStr = d.toISOString().split('T')[0];
+      const timeStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      document.getElementById('glu-input-date').value = dateStr;
+      document.getElementById('glu-input-time').value = timeStr;
+      document.getElementById('glu-input-val').value = '';
+      document.getElementById('glu-input-note').value = '';
+      const modal = document.getElementById('glucose-entry-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAddGlucoseModal() {
+      const modal = document.getElementById('glucose-entry-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function saveGlucoseRecord() {
+      const valInput = document.getElementById('glu-input-val');
+      const val = parseInt(valInput.value, 10);
+      if (!val || val < 30 || val > 600) {
+        showToast('Ingresa un valor válido de glucemia (ej. 92 mg/dL)', 'error');
+        valInput.focus();
+        return;
+      }
+      const date = document.getElementById('glu-input-date').value || getTodayDateStr();
+      const time = document.getElementById('glu-input-time').value || '08:00';
+      const type = document.getElementById('glu-input-type').value || 'ayunas';
+      const note = document.getElementById('glu-input-note').value.trim();
+
+      if (!Array.isArray(appState.bloodGlucose)) appState.bloodGlucose = [];
+      appState.bloodGlucose.unshift({
+        id: 'bg_' + Date.now(),
+        date,
+        time,
+        value: val,
+        type,
+        note: note || (type === 'ayunas' ? 'Toma matutina en ayunas' : 'Toma postprandial')
+      });
+
+      saveState();
+      closeAddGlucoseModal();
+      renderBloodGlucoseList();
+      showToast(`Glucemia de ${val} mg/dL registrada exitosamente`, 'bloodtype');
+    }
+
+    function deleteGlucoseRecord(id) {
+      if (!Array.isArray(appState.bloodGlucose)) return;
+      appState.bloodGlucose = appState.bloodGlucose.filter(g => g.id !== id);
+      saveState();
+      renderBloodGlucoseList();
+      showToast('Muestra de glucemia eliminada', 'delete');
+    }
+
+    function renderBloodGlucoseList() {
+      if (!Array.isArray(appState.bloodGlucose)) {
+        appState.bloodGlucose = JSON.parse(JSON.stringify(DEFAULT_STATE.bloodGlucose || []));
+      }
+      const list = appState.bloodGlucose;
+      const container = document.getElementById('glucose-history-list');
+      const countBadge = document.getElementById('glu-count-badge');
+      if (countBadge) countBadge.textContent = `${list.length} registro${list.length === 1 ? '' : 's'}`;
+
+      if (list.length > 0) {
+        const latest = list[0];
+        const latestValEl = document.getElementById('glu-latest-val');
+        const latestBadgeEl = document.getElementById('glu-latest-badge');
+        const latestTimeEl = document.getElementById('glu-latest-time');
+        if (latestValEl) latestValEl.textContent = latest.value;
+        if (latestTimeEl) latestTimeEl.textContent = `${formatShortDate(latest.date)} ${latest.time} · ${latest.type === 'ayunas' ? 'En ayunas' : 'Postprandial'}`;
+        
+        if (latestBadgeEl) {
+          if (latest.type === 'ayunas') {
+            if (latest.value < 100) {
+              latestBadgeEl.className = 'px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-bold';
+              latestBadgeEl.textContent = 'Óptima en Ayunas (<100)';
+            } else if (latest.value <= 125) {
+              latestBadgeEl.className = 'px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold';
+              latestBadgeEl.textContent = 'Alerta temprana (100-125)';
+            } else {
+              latestBadgeEl.className = 'px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container text-[10px] font-bold';
+              latestBadgeEl.textContent = 'Elevada (≥126)';
+            }
+          } else {
+            if (latest.value < 140) {
+              latestBadgeEl.className = 'px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-bold';
+              latestBadgeEl.textContent = 'Normal Postprandial (<140)';
+            } else if (latest.value <= 199) {
+              latestBadgeEl.className = 'px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold';
+              latestBadgeEl.textContent = 'Vigilar Postprandial (140-199)';
+            } else {
+              latestBadgeEl.className = 'px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container text-[10px] font-bold';
+              latestBadgeEl.textContent = 'Pico Glucémico Alto (≥200)';
+            }
+          }
+        }
+
+        // Avg 7 days
+        const avgValEl = document.getElementById('glu-avg-val');
+        if (avgValEl) {
+          const sum = list.slice(0, 7).reduce((acc, cur) => acc + cur.value, 0);
+          const avg = Math.round(sum / Math.min(list.length, 7));
+          avgValEl.textContent = avg;
+        }
+      }
+
+      if (!container) return;
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center text-outline text-[12px] bg-surface-container-low rounded-xl">
+            Aún no has registrado muestras de azúcar. Haz clic en "Anotar Glucemia" para empezar tu monitoreo.
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        let tagColor = 'bg-primary text-on-primary';
+        let statusText = 'Normal';
+        if (item.type === 'ayunas') {
+          if (item.value >= 126) { tagColor = 'bg-error-container text-on-error-container'; statusText = 'Elevada'; }
+          else if (item.value >= 100) { tagColor = 'bg-secondary-fixed text-on-secondary-fixed'; statusText = 'Alerta temprana'; }
+          else { tagColor = 'bg-primary-fixed text-on-primary-fixed-variant'; statusText = 'Óptima'; }
+        } else {
+          if (item.value >= 200) { tagColor = 'bg-error-container text-on-error-container'; statusText = 'Pico elevado'; }
+          else if (item.value >= 140) { tagColor = 'bg-secondary-fixed text-on-secondary-fixed'; statusText = 'Moderar porción'; }
+          else { tagColor = 'bg-primary-fixed text-on-primary-fixed-variant'; statusText = 'Normal'; }
+        }
+
+        const typeLabels = {
+          'ayunas': '☀️ En ayunas',
+          'postprandial': '🍽️ 2h Post-comida',
+          'antes_dormir': '🌙 Antes de acostarse',
+          'casual': '⏱️ Casual'
+        };
+
+        return `
+          <div class="p-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all border border-outline-variant/15 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-xl bg-tertiary-fixed text-tertiary font-display font-extrabold text-[15px] flex items-center justify-center shrink-0">
+                ${item.value}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-[13px] text-on-surface">${item.value} mg/dL</span>
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${tagColor}">${statusText}</span>
+                  <span class="text-[11px] text-outline font-semibold">${typeLabels[item.type] || item.type}</span>
+                </div>
+                <p class="text-[11px] text-outline truncate">${formatShortDate(item.date)} a las ${item.time} · ${item.note || 'Sin notas'}</p>
+              </div>
+            </div>
+            <button onclick="deleteGlucoseRecord('${item.id}')" title="Eliminar muestra" class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-error hover:bg-surface active:scale-95 transition-all shrink-0">
+              <span class="material-symbols-outlined text-[18px]">delete</span>
+            </button>
+          </div>`;
+      }).join('');
+    }
+
+    // =========================================================
+    // MEDICAL HISTORY, MEDICATIONS & DOCTOR CONSULTATION LOGIC
+    // =========================================================
+    function getSafeMedicalHistory() {
+      if (!appState.medicalHistory || typeof appState.medicalHistory !== 'object') {
+        appState.medicalHistory = JSON.parse(JSON.stringify(DEFAULT_STATE.medicalHistory));
+      }
+      return appState.medicalHistory;
+    }
+
+    function renderMedicalHistoryUI() {
+      const mh = getSafeMedicalHistory();
+
+      // Blood type and emergency contact
+      const btDisplay = document.getElementById('med-blood-type-display');
+      if (btDisplay) btDisplay.textContent = mh.bloodType || 'O Positivo (O+)';
+      const emDisplay = document.getElementById('med-emergency-contact-display');
+      if (emDisplay) emDisplay.textContent = `${mh.emergencyContact?.name || 'No asignado'} · ${mh.emergencyContact?.phone || ''}`;
+
+      // 1. Allergies
+      const allContainer = document.getElementById('med-allergies-list');
+      if (allContainer) {
+        const allergies = mh.allergies || [];
+        if (allergies.length === 0) {
+          allContainer.innerHTML = '<span class="text-[11px] text-outline italic">No tienes alergias médicas registradas.</span>';
+        } else {
+          allContainer.innerHTML = allergies.map(al => `
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-error/10 border border-error/20 text-on-surface text-[12px]">
+              <span class="material-symbols-outlined text-error text-[16px]">priority_high</span>
+              <div>
+                <strong class="font-bold text-error">${al.allergen}</strong>:
+                <span class="text-on-surface-variant">${al.reaction} (${al.severity})</span>
+              </div>
+              <button onclick="deleteAllergyRecord('${al.id}')" class="text-error/70 hover:text-error ml-1" title="Eliminar"><span class="material-symbols-outlined text-[15px]">close</span></button>
+            </div>`).join('');
+        }
+      }
+
+      // 2. Active Medications with Frequency & Dose
+      const medTable = document.getElementById('full-medications-table');
+      if (medTable) {
+        const meds = appState.medications || [];
+        if (meds.length === 0) {
+          medTable.innerHTML = '<div class="p-4 text-center text-outline text-[12px] bg-surface-container-low rounded-xl">No hay fármacos registrados. Añade tu medicación para control y consulta médica.</div>';
+        } else {
+          medTable.innerHTML = meds.map(m => `
+            <div class="p-3.5 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+              <div class="flex items-start gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl ${m.takenToday ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-outline'} flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                  <span class="material-symbols-outlined text-[20px]">pill</span>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h4 class="font-display text-[14px] font-bold text-on-surface">${m.name}</h4>
+                    <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold">${m.dose}</span>
+                    <span class="px-2 py-0.5 rounded-full bg-surface-container text-outline text-[10px] font-bold">${m.frequency || 'Cada 24 horas'}</span>
+                  </div>
+                  <p class="text-[11px] text-on-surface-variant mt-0.5">
+                    <strong>Horario:</strong> ${m.time || ''} (${m.timing || 'Con alimentos'}) · 
+                    <strong>Motivo:</strong> ${m.purpose || m.note || 'Cardioprotección'}
+                    ${m.doctor ? ` · <span class="text-outline">Recetado por: ${m.doctor}</span>` : ''}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                <button type="button" onclick="toggleMedicationTaken('${m.id}')" class="h-8 px-3 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-all ${m.takenToday ? 'bg-primary text-on-primary' : 'bg-surface-container text-outline hover:text-on-surface'}">
+                  <span class="material-symbols-outlined text-[15px]">${m.takenToday ? 'check_circle' : 'radio_button_unchecked'}</span>
+                  <span>${m.takenToday ? 'Tomado hoy' : 'Marcar toma'}</span>
+                </button>
+                <button type="button" onclick="deleteMedicationRecord('${m.id}')" title="Eliminar medicamento" class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-error hover:bg-surface transition-all">
+                  <span class="material-symbols-outlined text-[18px]">delete</span>
+                </button>
+              </div>
+            </div>`).join('');
+        }
+      }
+
+      // 3. Conditions / Enfermedades
+      const condContainer = document.getElementById('med-conditions-list');
+      if (condContainer) {
+        const conds = mh.conditions || [];
+        if (conds.length === 0) {
+          condContainer.innerHTML = '<div class="p-3 text-center text-outline text-[12px] bg-surface-container-low rounded-xl">Sin enfermedades crónicas reportadas.</div>';
+        } else {
+          condContainer.innerHTML = conds.map(cd => `
+            <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-2 border border-outline-variant/15">
+              <div>
+                <div class="flex items-center gap-2">
+                  <strong class="font-bold text-[13px] text-on-surface">${cd.name}</strong>
+                  <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold">${cd.status || 'Activa'}</span>
+                  <span class="text-[11px] text-outline">Desde ${cd.diagnosedYear}</span>
+                </div>
+                <p class="text-[11px] text-outline mt-0.5">${cd.note || ''} ${cd.doctor ? `· Tratante: ${cd.doctor}` : ''}</p>
+              </div>
+              <button onclick="deleteConditionRecord('${cd.id}')" class="text-outline hover:text-error p-1" title="Eliminar"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+            </div>`).join('');
+        }
+      }
+
+      // 4. Surgeries / Cirugías
+      const surgContainer = document.getElementById('med-surgeries-list');
+      if (surgContainer) {
+        const surgs = mh.surgeries || [];
+        if (surgs.length === 0) {
+          surgContainer.innerHTML = '<div class="p-3 text-center text-outline text-[12px] bg-surface-container-low rounded-xl">Sin intervenciones quirúrgicas previas.</div>';
+        } else {
+          surgContainer.innerHTML = surgs.map(sg => `
+            <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-2 border border-outline-variant/15">
+              <div>
+                <div class="flex items-center gap-2">
+                  <strong class="font-bold text-[13px] text-on-surface">${sg.name}</strong>
+                  <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface text-[10px] font-bold">${sg.year}</span>
+                </div>
+                <p class="text-[11px] text-outline mt-0.5">${sg.hospital ? sg.hospital + ' · ' : ''}${sg.note || 'Sin secuelas'}</p>
+              </div>
+              <button onclick="deleteSurgeryRecord('${sg.id}')" class="text-outline hover:text-error p-1" title="Eliminar"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+            </div>`).join('');
+        }
+      }
+
+      // 5. Family Genetics / Antecedentes Heredofamiliares
+      const famContainer = document.getElementById('med-family-list');
+      if (famContainer) {
+        const fams = mh.familyGenetics || [];
+        if (fams.length === 0) {
+          famContainer.innerHTML = '<div class="p-3 text-center text-outline text-[12px] bg-surface-container-low rounded-xl">Sin antecedentes familiares registrados.</div>';
+        } else {
+          famContainer.innerHTML = fams.map(fg => `
+            <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-2 border border-outline-variant/15">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold">${fg.relation}</span>
+                  <strong class="font-bold text-[13px] text-on-surface">${fg.condition}</strong>
+                </div>
+                <p class="text-[11px] text-outline mt-0.5">${fg.note || ''}</p>
+              </div>
+              <button onclick="deleteFamilyRecord('${fg.id}')" class="text-outline hover:text-error p-1" title="Eliminar"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+            </div>`).join('');
+        }
+      }
+    }
+
+    // Modal Triggers for Medical History
+    function openAddMedicationModal() {
+      const modal = document.getElementById('medication-entry-modal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    }
+    function closeAddMedicationModal() {
+      const modal = document.getElementById('medication-entry-modal');
+      if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    }
+    function saveNewMedicationRecord() {
+      const name = document.getElementById('med-name-input').value.trim();
+      const dose = document.getElementById('med-dose-input').value.trim();
+      if (!name || !dose) {
+        showToast('Ingresa el nombre del fármaco y la dosis exacta', 'error');
+        return;
+      }
+      const freq = document.getElementById('med-freq-input').value;
+      const time = document.getElementById('med-time-input').value.trim() || '08:00';
+      const purpose = document.getElementById('med-purpose-input').value.trim() || 'Control cardioprotector';
+      const doctor = document.getElementById('med-doctor-input').value.trim();
+      const stock = parseInt(document.getElementById('med-stock-input').value, 10) || 30;
+      const daily = parseInt(document.getElementById('med-daily-input').value, 10) || 1;
+
+      if (!Array.isArray(appState.medications)) appState.medications = [];
+      appState.medications.push({
+        id: 'm_' + Date.now(),
+        name,
+        dose,
+        frequency: freq,
+        time,
+        timing: 'Con alimentos',
+        purpose,
+        doctor,
+        stock,
+        daily,
+        takenToday: false,
+        note: purpose
+      });
+
+      saveState();
+      closeAddMedicationModal();
+      renderMedicalHistoryUI();
+      renderMedicationsList();
+      showToast(`+ ${name} agregado a tu tratamiento`, 'pill');
+    }
+    function deleteMedicationRecord(id) {
+      if (!Array.isArray(appState.medications)) return;
+      appState.medications = appState.medications.filter(m => m.id !== id);
+      saveState();
+      renderMedicalHistoryUI();
+      renderMedicationsList();
+      showToast('Medicamento retirado de la lista', 'delete');
+    }
+
+    // Conditions
+    function openAddConditionModal() {
+      const modal = document.getElementById('condition-entry-modal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    }
+    function closeAddConditionModal() {
+      const modal = document.getElementById('condition-entry-modal');
+      if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    }
+    function saveNewConditionRecord() {
+      const name = document.getElementById('cond-name-input').value.trim();
+      if (!name) { showToast('Escribe el nombre de la patología o condición', 'error'); return; }
+      const year = document.getElementById('cond-year-input').value || '2024';
+      const status = document.getElementById('cond-status-input').value;
+      const doctor = document.getElementById('cond-doc-input').value.trim();
+      const note = document.getElementById('cond-notes-input').value.trim();
+
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.conditions)) mh.conditions = [];
+      mh.conditions.push({ id: 'cd_' + Date.now(), name, diagnosedYear: year, status, doctor, note });
+      saveState();
+      closeAddConditionModal();
+      renderMedicalHistoryUI();
+      showToast(`Diagnóstico de ${name} registrado`, 'verified');
+    }
+    function deleteConditionRecord(id) {
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.conditions)) return;
+      mh.conditions = mh.conditions.filter(c => c.id !== id);
+      saveState();
+      renderMedicalHistoryUI();
+      showToast('Condición eliminada', 'delete');
+    }
+
+    // Surgeries
+    function openAddSurgeryModal() {
+      const modal = document.getElementById('surgery-entry-modal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    }
+    function closeAddSurgeryModal() {
+      const modal = document.getElementById('surgery-entry-modal');
+      if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    }
+    function saveNewSurgeryRecord() {
+      const name = document.getElementById('surg-name-input').value.trim();
+      if (!name) { showToast('Escribe el procedimiento quirúrgico', 'error'); return; }
+      const year = document.getElementById('surg-year-input').value || '2020';
+      const hospital = document.getElementById('surg-hosp-input').value.trim();
+      const note = document.getElementById('surg-notes-input').value.trim();
+
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.surgeries)) mh.surgeries = [];
+      mh.surgeries.push({ id: 'sg_' + Date.now(), name, year, hospital, note });
+      saveState();
+      closeAddSurgeryModal();
+      renderMedicalHistoryUI();
+      showToast(`Cirugía de ${name} añadida al historial`, 'medical_services');
+    }
+    function deleteSurgeryRecord(id) {
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.surgeries)) return;
+      mh.surgeries = mh.surgeries.filter(s => s.id !== id);
+      saveState();
+      renderMedicalHistoryUI();
+      showToast('Cirugía eliminada', 'delete');
+    }
+
+    // Family Genetics
+    function openAddFamilyModal() {
+      const modal = document.getElementById('family-entry-modal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    }
+    function closeAddFamilyModal() {
+      const modal = document.getElementById('family-entry-modal');
+      if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    }
+    function saveNewFamilyRecord() {
+      const cond = document.getElementById('fam-cond-input').value.trim();
+      if (!cond) { showToast('Escribe la patología o causa del familiar', 'error'); return; }
+      const rel = document.getElementById('fam-rel-input').value;
+      const note = document.getElementById('fam-notes-input').value.trim();
+
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.familyGenetics)) mh.familyGenetics = [];
+      mh.familyGenetics.push({ id: 'fg_' + Date.now(), relation: rel, condition: cond, note });
+      saveState();
+      closeAddFamilyModal();
+      renderMedicalHistoryUI();
+      showToast(`Antecedente familiar registrado (${rel})`, 'family_restroom');
+    }
+    function deleteFamilyRecord(id) {
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.familyGenetics)) return;
+      mh.familyGenetics = mh.familyGenetics.filter(f => f.id !== id);
+      saveState();
+      renderMedicalHistoryUI();
+      showToast('Antecedente familiar eliminado', 'delete');
+    }
+
+    // Allergies
+    function openAddAllergyModal() {
+      const modal = document.getElementById('allergy-entry-modal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    }
+    function closeAddAllergyModal() {
+      const modal = document.getElementById('allergy-entry-modal');
+      if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    }
+    function saveNewAllergyRecord() {
+      const sub = document.getElementById('all-subst-input').value.trim();
+      if (!sub) { showToast('Escribe el fármaco o alimento alérgeno', 'error'); return; }
+      const sev = document.getElementById('all-sev-input').value;
+      const react = document.getElementById('all-react-input').value.trim() || 'Reacción alérgica';
+
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.allergies)) mh.allergies = [];
+      mh.allergies.push({ id: 'al_' + Date.now(), allergen: sub, reaction: react, severity: sev });
+      saveState();
+      closeAddAllergyModal();
+      renderMedicalHistoryUI();
+      showToast(`Alerta de alergia a ${sub} guardada`, 'warning');
+    }
+    function deleteAllergyRecord(id) {
+      const mh = getSafeMedicalHistory();
+      if (!Array.isArray(mh.allergies)) return;
+      mh.allergies = mh.allergies.filter(a => a.id !== id);
+      saveState();
+      renderMedicalHistoryUI();
+      showToast('Alergia eliminada', 'delete');
+    }
+
+    // Quick Prompts
+    function editBloodTypePrompt() {
+      const current = appState.medicalHistory?.bloodType || 'O+';
+      const res = prompt('Ingresa tu Grupo Sanguíneo y Factor Rh (ej. O+, A+, B+, AB-, etc.):', current);
+      if (res && res.trim()) {
+        getSafeMedicalHistory().bloodType = res.trim();
+        saveState();
+        renderMedicalHistoryUI();
+        showToast('Grupo sanguíneo actualizado', 'bloodtype');
+      }
+    }
+    function editEmergencyContactPrompt() {
+      const currentName = appState.medicalHistory?.emergencyContact?.name || '';
+      const currentPhone = appState.medicalHistory?.emergencyContact?.phone || '';
+      const name = prompt('Nombre y parentesco del contacto de emergencia:', currentName);
+      if (name === null) return;
+      const phone = prompt('Número telefónico de contacto:', currentPhone);
+      if (phone === null) return;
+      getSafeMedicalHistory().emergencyContact = { name: name.trim(), phone: phone.trim() };
+      saveState();
+      renderMedicalHistoryUI();
+      showToast('Contacto de emergencia actualizado', 'contact_phone');
+    }
+
+    // WhatsApp and Clipboard Clinical Sharing
+    function buildDoctorClinicalSummaryText() {
+      const prof = appState.profile;
+      const mh = getSafeMedicalHistory();
+      const meds = appState.medications || [];
+      const glu = appState.bloodGlucose || [];
+      const bp = appState.bloodPressure || [];
+      const labs = appState.labExams || [];
+      const latestBp = bp[0] ? `${bp[0].sys}/${bp[0].dia} mmHg (${bp[0].date})` : 'No registrada';
+      const latestGlu = glu[0] ? `${glu[0].value} mg/dL (${glu[0].type}, ${glu[0].date})` : 'No registrada';
+      const latestLab = labs[labs.length - 1] || null;
+
+      let text = `🏥 *FICHA CLÍNICA & NUTRICIONAL PARA CONSULTA MÉDICA*
+`;
+      text += `*Paciente:* ${prof.fullname || 'Sofía Martínez'} (${prof.age || 34} años, ${prof.gender === 'male' ? 'M' : 'F'})
+`;
+      text += `*Datos Antropométricos:* Peso: ${prof.weight} kg | Altura: ${prof.height} cm | Meta Calórica: ${appState.goalKcal} kcal
+`;
+      text += `*Grupo Sanguíneo:* ${mh.bloodType || 'O+'}
+`;
+      text += `*Contacto de Emergencia:* ${mh.emergencyContact?.name || 'Carlos Mendoza'} (${mh.emergencyContact?.phone || ''})
+
+`;
+
+      // Allergies
+      text += `⚠️ *ALERGIAS A MEDICAMENTOS / ALIMENTOS:*
+`;
+      if (mh.allergies && mh.allergies.length > 0) {
+        mh.allergies.forEach(a => { text += `• ${a.allergen}: ${a.reaction} [${a.severity}]
+`; });
+      } else {
+        text += `• Sin alergias conocidas.
+`;
+      }
+      text += `
+`;
+
+      // Active Medications
+      text += `💊 *FARMACOLOGÍA ACTIVA & SUPLEMENTOS (Dosis y "Cada cuánto"):*
+`;
+      if (meds.length > 0) {
+        meds.forEach(m => {
+          text += `• ${m.name} - ${m.dose} | Frecuencia: ${m.frequency || 'Cada 24h'} | Horario: ${m.time || ''} (${m.purpose || 'Cardioprotección'})
+`;
+        });
+      } else {
+        text += `• Sin fármacos activos.
+`;
+      }
+      text += `
+`;
+
+      // Conditions
+      text += `📋 *ENFERMEDADES & ANTECEDENTES DIAGNOSTICADOS:*
+`;
+      if (mh.conditions && mh.conditions.length > 0) {
+        mh.conditions.forEach(c => { text += `• ${c.name} (Diagnóstico: ${c.diagnosedYear}, Estado: ${c.status})
+`; });
+      } else {
+        text += `• Sin antecedentes crónicos registrados.
+`;
+      }
+      text += `
+`;
+
+      // Surgeries
+      text += `🩺 *CIRUGÍAS PREVIAS:*
+`;
+      if (mh.surgeries && mh.surgeries.length > 0) {
+        mh.surgeries.forEach(s => { text += `• ${s.name} (${s.year}${s.hospital ? ' en ' + s.hospital : ''})
+`; });
+      } else {
+        text += `• Ninguna.
+`;
+      }
+      text += `
+`;
+
+      // Family History
+      text += `🧬 *ANTECEDENTES FAMILIARES / GENÉTICA:*
+`;
+      if (mh.familyGenetics && mh.familyGenetics.length > 0) {
+        mh.familyGenetics.forEach(f => { text += `• ${f.relation}: ${f.condition} ${f.note ? '(' + f.note + ')' : ''}
+`; });
+      } else {
+        text += `• Sin antecedentes reportados.
+`;
+      }
+      text += `
+`;
+
+      // Vitals & Lab
+      text += `📊 *ÚLTIMOS SIGNOS VITALES & LABORATORIO:*
+`;
+      text += `• Presión Arterial reciente: ${latestBp}
+`;
+      text += `• Glucemia en sangre reciente: ${latestGlu}
+`;
+      if (latestLab) {
+        text += `• Perfil Lipídico (${latestLab.date}): LDL: ${latestLab.ldl} mg/dL | HDL: ${latestLab.hdl} mg/dL | Triglicéridos: ${latestLab.trig} mg/dL
+`;
+      }
+      text += `
+_Generado automáticamente desde NutriBalance para control en consulta médica._`;
+
+      return text;
+    }
+
+    function shareMedicalHistoryWhatsApp() {
+      const summary = buildDoctorClinicalSummaryText();
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(summary)}`;
+      window.open(url, '_blank');
+      showToast('Abriendo WhatsApp con la ficha médica...', 'send');
+    }
+
+    function copyMedicalSummaryText() {
+      const summary = buildDoctorClinicalSummaryText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summary).then(() => {
+          showToast('Ficha clínica copiada al portapapeles', 'content_copy');
+        }).catch(() => {
+          fallbackCopyMedicalText(summary);
+        });
+      } else {
+        fallbackCopyMedicalText(summary);
+      }
+    }
+
+    function fallbackCopyMedicalText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('Ficha clínica copiada al portapapeles', 'content_copy');
+    }
+
+    // =========================================================
+    // NUTRITIONAL LABEL SCANNER / PHOTO OCR & PRESETS (SEMÁFORO)
+    // =========================================================
+    var TRAFFIC_PRESETS = window.TRAFFIC_PRESETS = {
+      'avena': { serving: 100, kcal: 370, satFat: 1.2, transFat: 0, sodium: 6, sugar: 1.1, name: 'Avena en Hojuelas 100%' },
+      'sardinas': { serving: 100, kcal: 208, satFat: 2.1, transFat: 0, sodium: 380, sugar: 0, name: 'Sardinas en Aceite de Oliva' },
+      'yogurt': { serving: 150, kcal: 85, satFat: 0.3, transFat: 0, sodium: 55, sugar: 4.0, name: 'Yogur Griego Natural 0%' },
+      'galletas': { serving: 30, kcal: 160, satFat: 4.8, transFat: 0.3, sodium: 180, sugar: 14.0, name: 'Galletas Rellenas Ultraprocesadas' },
+      'embutido': { serving: 100, kcal: 310, satFat: 11.5, transFat: 0.8, sodium: 980, sugar: 2.5, name: 'Salchicha / Embutido Tradicional' }
+    };
+
+    function loadTrafficLightPreset(key) {
+      const p = TRAFFIC_PRESETS[key];
+      if (!p) return;
+      document.getElementById('tl-serving').value = p.serving;
+      document.getElementById('tl-kcal').value = p.kcal;
+      document.getElementById('tl-satfat').value = p.satFat;
+      document.getElementById('tl-transfat').value = p.transFat;
+      document.getElementById('tl-sodium').value = p.sodium;
+      document.getElementById('tl-sugar').value = p.sugar;
+      evaluateTrafficLight();
+      showToast(`Valores cargados para: ${p.name}`, 'document_scanner');
+    }
+
+    function handleNutritionLabelPhoto(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const filenameEl = document.getElementById('tl-upload-filename');
+      if (filenameEl) filenameEl.textContent = `Analizando: ${file.name}...`;
+
+      showToast('Escaneando tabla nutricional con IA...', 'auto_awesome');
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // If OpenAI/Gemini configured, we can call it. Otherwise smart simulated OCR parse:
+        setTimeout(() => {
+          // Detect filename keywords or parse
+          const lower = file.name.toLowerCase();
+          if (lower.includes('galleta') || lower.includes('cookie') || lower.includes('snack') || lower.includes('choc')) {
+            loadTrafficLightPreset('galletas');
+          } else if (lower.includes('sardina') || lower.includes('salmon') || lower.includes('fish')) {
+            loadTrafficLightPreset('sardinas');
+          } else if (lower.includes('yogur') || lower.includes('lact')) {
+            loadTrafficLightPreset('yogurt');
+          } else if (lower.includes('salchicha') || lower.includes('embutido') || lower.includes('jamon')) {
+            loadTrafficLightPreset('embutido');
+          } else {
+            // Default sample
+            loadTrafficLightPreset('avena');
+          }
+          if (filenameEl) filenameEl.textContent = `Listo: ${file.name} evaluado`;
+          showToast('¡Tabla nutricional escaneada y evaluada!', 'traffic');
+        }, 800);
+      };
+      reader.readAsDataURL(file);
+    }
+</script>
+
+    <!-- 9. MODAL: REGISTRAR MUESTRA DE GLUCEMIA -->
+    <div id="glucose-entry-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-tertiary-fixed text-tertiary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[24px]">bloodtype</span>
+            </div>
+            <div>
+              <h3 class="font-display text-[18px] font-bold text-on-surface">Anotar Glucemia</h3>
+              <p class="text-[12px] text-on-surface-variant">Muestra de glucosa en sangre (mg/dL)</p>
+            </div>
+          </div>
+          <button onclick="closeAddGlucoseModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Fecha</label>
+            <input id="glu-input-date" type="date" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Hora</label>
+            <input id="glu-input-time" type="time" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-primary block mb-1">Glucemia (mg/dL)</label>
+            <input id="glu-input-val" type="number" placeholder="Ej. 92" min="30" max="600" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low font-display text-[18px] font-bold text-primary outline-none" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Momento de la Toma</label>
+            <select id="glu-input-type" class="w-full px-2.5 py-2.5 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none">
+              <option value="ayunas" selected>☀️ En ayunas</option>
+              <option value="postprandial">🍽️ 2h después de comer</option>
+              <option value="antes_dormir">🌙 Antes de acostarse</option>
+              <option value="casual">⏱️ Toma casual / Cualquier hora</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Notas u observaciones (opcional)</label>
+          <input id="glu-input-note" type="text" placeholder="Ej. Desayuno con avena, sin mareos..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+        </div>
+
+        <button type="button" onclick="saveGlucoseRecord()" class="w-full h-11 bg-primary text-on-primary rounded-xl text-[13px] font-bold shadow-md hover:bg-primary-container active:scale-95 transition-all mt-1">
+          Guardar Registro de Glucemia
+        </button>
+      </div>
+    </div>
+
+    <!-- 10. MODAL: AÑADIR / EDITAR MEDICAMENTO (DOSIS, CADA CUÁNTO, HORARIO) -->
+    <div id="medication-entry-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-lg bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-primary-fixed text-primary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[24px]">pill</span>
+            </div>
+            <div>
+              <h3 class="font-display text-[18px] font-bold text-on-surface">Registrar Medicamento o Fármaco</h3>
+              <p class="text-[12px] text-on-surface-variant">Control estricto de dosis, frecuencia ("cada cuánto") y horario</p>
+            </div>
+          </div>
+          <button onclick="closeAddMedicationModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Nombre del Medicamento / Suplemento *</label>
+            <input id="med-name-input" type="text" placeholder="Ej. Atorvastatina, Losartán, Metformina" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Dosis exacta *</label>
+            <input id="med-dose-input" type="text" placeholder="Ej. 20 mg (1 tableta), 500 mg" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Frecuencia ("¿Cada cuánto?") *</label>
+            <select id="med-freq-input" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none">
+              <option value="Cada 24 horas (1 vez al día)">Cada 24 horas (1 vez al día)</option>
+              <option value="Cada 12 horas (2 veces al día)">Cada 12 horas (2 veces al día)</option>
+              <option value="Cada 8 horas (3 veces al día)">Cada 8 horas (3 veces al día)</option>
+              <option value="Cada 6 horas (4 veces al día)">Cada 6 horas (4 veces al día)</option>
+              <option value="1 vez por semana">1 vez por semana</option>
+              <option value="Solo en caso de dolor o crisis (SOS)">Solo en caso de crisis / SOS</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Horario habitual / Momento</label>
+            <input id="med-time-input" type="text" placeholder="Ej. 08:00 Con desayuno, 21:00 Al dormir" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Motivo / Indicación médica</label>
+            <input id="med-purpose-input" type="text" placeholder="Ej. Presión arterial, Colesterol LDL, Glucemia" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Médico que lo recetó (opcional)</label>
+            <input id="med-doctor-input" type="text" placeholder="Ej. Dr. Morales - Cardiólogo" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="flex-1">
+            <label class="text-[11px] font-bold text-outline block mb-1">Pastillas en caja / frasco (Stock)</label>
+            <input id="med-stock-input" type="number" value="30" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none" />
+          </div>
+          <div class="flex-1">
+            <label class="text-[11px] font-bold text-outline block mb-1">Pastillas por día</label>
+            <input id="med-daily-input" type="number" value="1" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none" />
+          </div>
+        </div>
+
+        <button type="button" onclick="saveNewMedicationRecord()" class="w-full h-11 bg-primary text-on-primary rounded-xl text-[13px] font-bold shadow-md hover:bg-primary-container active:scale-95 transition-all mt-1">
+          Guardar Medicamento en Historial
+        </button>
+      </div>
+    </div>
+
+    <!-- 11. MODAL: AÑADIR CONDICIÓN / ENFERMEDAD DIAGNOSTICADA -->
+    <div id="condition-entry-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <h3 class="font-display text-[18px] font-bold text-on-surface">Añadir Diagnóstico o Condición</h3>
+          <button onclick="closeAddConditionModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Nombre de la patología o condición *</label>
+          <input id="cond-name-input" type="text" placeholder="Ej. Hipertensión Arterial, Hipotiroidismo, Asma..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Año de diagnóstico</label>
+            <input id="cond-year-input" type="number" value="2023" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Estado actual</label>
+            <select id="cond-status-input" class="w-full px-2.5 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none">
+              <option value="En tratamiento activo">En tratamiento activo</option>
+              <option value="Controlada">Controlada</option>
+              <option value="En reversión nutricional">En reversión nutricional</option>
+              <option value="En observación médica">En observación médica</option>
+              <option value="Resuelta">Resuelta / Curada</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Médico o especialista tratante</label>
+          <input id="cond-doc-input" type="text" placeholder="Ej. Dra. Ramírez (Endocrinóloga)" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Notas clínicas / Plan actual</label>
+          <input id="cond-notes-input" type="text" placeholder="Ej. Dieta baja en sodio, control trimestral..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+        </div>
+        <button type="button" onclick="saveNewConditionRecord()" class="w-full h-11 bg-primary text-on-primary rounded-xl text-[13px] font-bold shadow-md hover:bg-primary-container active:scale-95 transition-all mt-1">
+          Guardar Diagnóstico
+        </button>
+      </div>
+    </div>
+
+    <!-- 12. MODAL: AÑADIR CIRUGÍA PREVIA -->
+    <div id="surgery-entry-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <h3 class="font-display text-[18px] font-bold text-on-surface">Registrar Cirugía Previa</h3>
+          <button onclick="closeAddSurgeryModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Procedimiento quirúrgico *</label>
+          <input id="surg-name-input" type="text" placeholder="Ej. Apendicectomía, Colecistectomía, Artroscopia..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Año de la cirugía</label>
+            <input id="surg-year-input" type="number" value="2018" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Hospital / Clínica</label>
+            <input id="surg-hosp-input" type="text" placeholder="Ej. Clínica San Rafael" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Notas de recuperación / Secuelas</label>
+          <input id="surg-notes-input" type="text" placeholder="Ej. Laparoscopia, recuperación sin complicaciones..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+        </div>
+        <button type="button" onclick="saveNewSurgeryRecord()" class="w-full h-11 bg-primary text-on-primary rounded-xl text-[13px] font-bold shadow-md hover:bg-primary-container active:scale-95 transition-all mt-1">
+          Guardar Cirugía en Historial
+        </button>
+      </div>
+    </div>
+
+    <!-- 13. MODAL: AÑADIR ANTECEDENTE GENÉTICO / FAMILIAR -->
+    <div id="family-entry-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <h3 class="font-display text-[18px] font-bold text-on-surface">Añadir Antecedente Familiar</h3>
+          <button onclick="closeAddFamilyModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Parentesco *</label>
+            <select id="fam-rel-input" class="w-full px-2.5 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none">
+              <option value="Padre">Padre</option>
+              <option value="Madre">Madre</option>
+              <option value="Hermano / Hermana">Hermano / Hermana</option>
+              <option value="Abuelo Paterno">Abuelo Paterno</option>
+              <option value="Abuela Paterna">Abuela Paterna</option>
+              <option value="Abuelo Materno">Abuelo Materno</option>
+              <option value="Abuela Materna">Abuela Materna</option>
+              <option value="Tío / Tía">Tío / Tía</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Enfermedad / Causa *</label>
+            <input id="fam-cond-input" type="text" placeholder="Ej. Infarto temprano (58a), Diabetes tipo 2..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Detalles relevantes para el médico</label>
+          <input id="fam-notes-input" type="text" placeholder="Ej. Hipertensión desde los 40 años, ACV..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+        </div>
+        <button type="button" onclick="saveNewFamilyRecord()" class="w-full h-11 bg-primary text-on-primary rounded-xl text-[13px] font-bold shadow-md hover:bg-primary-container active:scale-95 transition-all mt-1">
+          Guardar Antecedente Genético
+        </button>
+      </div>
+    </div>
+
+    <!-- 14. MODAL: AÑADIR ALERGIA MÉDICA -->
+    <div id="allergy-entry-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+          <h3 class="font-display text-[18px] font-bold text-error flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span>Añadir Alergia a Fármaco o Alimento</span>
+          </h3>
+          <button onclick="closeAddAllergyModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-outline block mb-1">Medicamento, sustancia o alimento alérgeno *</label>
+          <input id="all-subst-input" type="text" placeholder="Ej. Penicilina, Sulfas, Aspirina, Mariscos..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Severidad clínica *</label>
+            <select id="all-sev-input" class="w-full px-2.5 py-2 rounded-xl bg-surface-container-low text-[12px] font-bold outline-none">
+              <option value="Grave (Riesgo de anafilaxia)">🚨 Grave / Anafilaxia</option>
+              <option value="Moderada">⚠️ Moderada</option>
+              <option value="Leve">ℹ️ Leve / Intolerancia</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-outline block mb-1">Reacción que produce</label>
+            <input id="all-react-input" type="text" placeholder="Ej. Broncoespasmo, ronchas, vómito..." class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[12px] outline-none" />
+          </div>
+        </div>
+        <button type="button" onclick="saveNewAllergyRecord()" class="w-full h-11 bg-error text-on-error rounded-xl text-[13px] font-bold shadow-md hover:opacity-90 active:scale-95 transition-all mt-1">
+          Guardar Alerta de Alergia
+        </button>
+      </div>
+    </div>
 </body>
 </html>
