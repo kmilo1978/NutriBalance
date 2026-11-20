@@ -13,7 +13,7 @@
     html, body {
       margin: 0;
       padding: 0;
-      background-color: #eae8e4;
+      background-color: #fbf9f5;
       color: #1b1c1a;
       font-family: 'Inter', sans-serif;
       -webkit-tap-highlight-color: transparent;
@@ -97,7 +97,7 @@
 <body class="min-h-screen bg-surface-bright text-on-surface antialiased flex flex-col items-center">
 
   <!-- APP SHELL CONTAINER (DESKTOP EXPANDED & SPACIOUS) -->
-  <div id="app-shell-container" class="w-full max-w-full xl:max-w-[1600px] 2xl:max-w-[1760px] min-h-screen bg-surface flex flex-col relative overflow-x-hidden shadow-sm border-x border-outline-variant/15 transition-all duration-300">
+  <div id="app-shell-container" class="w-full max-w-[1760px] min-h-screen bg-surface flex flex-col relative overflow-x-hidden transition-all duration-300 mx-auto">
 
     <!-- TOP HEADER -->
     <header class="sticky top-0 w-full z-40 pt-safe bg-surface/95 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm">
@@ -110,7 +110,7 @@
           <div class="flex items-center gap-2.5">
             <span class="font-display text-[20px] lg:text-[22px] font-extrabold text-on-surface tracking-tight whitespace-nowrap">Nutri<span class="text-primary">Balance</span></span>
             <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[11px] font-extrabold tracking-wide uppercase whitespace-nowrap shrink-0">Cardio & Déficit</span>
-            <span id="header-title" style="display: none !important;">Hoy</span>
+            <span id="header-title" class="hidden"></span>
           </div>
         </div>
 
@@ -141,10 +141,14 @@
         <!-- Header Actions: Clean Tool Clusters & Profile (Plenty of room!) -->
         <div class="flex items-center gap-2 xl:gap-3 shrink-0">
           <!-- Herramientas Rápidas -->
-          <div class="flex items-center gap-1.5 xl:gap-2 bg-surface-container-low/70 p-1 rounded-2xl border border-outline-variant/20">
-            <button onclick="openFoodTrafficLightModal()" title="Semáforo de Etiquetas Nutricionales" class="h-9 px-3 rounded-xl bg-surface hover:bg-surface-container-high flex items-center gap-1.5 text-on-surface text-[12px] font-bold transition-all shadow-sm active:scale-95 whitespace-nowrap">
+          <div class="flex items-center gap-1.5 xl:gap-2 bg-surface-container-low/80 p-1 rounded-2xl border border-outline-variant/20 shadow-xs">
+            <button onclick="openFoodTrafficLightModal()" title="Lector de Código de Barras, QR y Tabla Nutricional" class="h-9 px-3 rounded-xl bg-surface hover:bg-surface-container-high flex items-center gap-1.5 text-primary text-[12px] font-bold transition-all shadow-xs active:scale-95 whitespace-nowrap">
+              <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+              <span>Lector QR / Tabla</span>
+            </button>
+            <button onclick="openFoodTrafficLightModal()" title="Semáforo de Alimentos Cardioprotectores" class="h-9 px-2.5 rounded-xl bg-surface hover:bg-surface-container-high flex items-center gap-1 text-on-surface text-[12px] font-bold transition-all shadow-xs active:scale-95 whitespace-nowrap">
               <span class="material-symbols-outlined text-[18px] text-secondary">traffic</span>
-              <span>Semáforo</span>
+              <span class="hidden sm:inline">Semáforo</span>
             </button>
             <button onclick="openReportModal()" title="Exportar Reporte Médico PDF" class="h-9 px-3 rounded-xl bg-surface hover:bg-surface-container-high flex items-center gap-1.5 text-on-surface text-[12px] font-bold transition-all shadow-sm active:scale-95 whitespace-nowrap">
               <span class="material-symbols-outlined text-[18px] text-primary">print</span>
@@ -278,6 +282,10 @@
                 <button type="button" onclick="switchChartTab('peso')" id="chart-tab-peso" class="chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 whitespace-nowrap">
                   <span class="material-symbols-outlined text-[16px]">trending_down</span>
                   <span>Meta Peso</span>
+                </button>
+                <button type="button" onclick="switchChartTab('glucosa')" id="chart-tab-glucosa" class="chart-tab-btn px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 whitespace-nowrap">
+                  <span class="material-symbols-outlined text-[16px]">bloodtype</span>
+                  <span>Glucemia (Azúcar)</span>
                 </button>
               </div>
             </div>
@@ -450,6 +458,57 @@
                       <span class="text-[12px] font-bold text-on-surface">65.0 kg (IMC Óptimo)</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <!-- TAB 4: BLOOD GLUCOSE (AZÚCAR EN SANGRE) CHART & TRENDS -->
+            <div id="chart-panel-glucosa" class="chart-panel hidden flex-col gap-4">
+              <!-- Summary KPI Strip -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Última Glucemia</span>
+                  <span id="glu-kpi-latest" class="font-display text-[18px] font-bold text-primary mt-0.5">89 <span class="text-[11px] font-normal text-outline">mg/dL</span></span>
+                  <span class="text-[10px] text-primary font-semibold">☀️ En ayunas óptima</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Promedio Ayunas</span>
+                  <span id="glu-kpi-fasting-avg" class="font-display text-[18px] font-bold text-on-surface mt-0.5">92 <span class="text-[11px] font-normal text-outline">mg/dL</span></span>
+                  <span class="text-[10px] text-primary font-semibold">Meta ADA: &lt; 100</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Pico Postprandial</span>
+                  <span id="glu-kpi-peak" class="font-display text-[18px] font-bold text-secondary mt-0.5">126 <span class="text-[11px] font-normal text-outline">mg/dL</span></span>
+                  <span class="text-[10px] text-outline">Meta post: &lt; 140</span>
+                </div>
+                <div class="p-3 rounded-2xl bg-surface-container-low flex flex-col">
+                  <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Estatus Vascular</span>
+                  <span class="font-display text-[18px] font-bold text-primary mt-0.5">100% en Rango</span>
+                  <span class="text-[10px] text-outline">Sin daño endotelial</span>
+                </div>
+              </div>
+
+              <!-- Interactive Bezier Curve / Range Chart for Blood Glucose -->
+              <div class="relative w-full bg-surface-container-lowest rounded-2xl p-3 sm:p-4 border border-outline-variant/15 shadow-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] mb-2">
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1 font-semibold text-primary">
+                      <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span> En Ayunas (70-99 mg/dL)
+                    </span>
+                    <span class="flex items-center gap-1 font-semibold text-secondary">
+                      <span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span> Postprandial 2h (&lt;140 mg/dL)
+                    </span>
+                  </div>
+                  <button type="button" onclick="openAddGlucoseModal()" class="h-7 px-3 rounded-lg bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed-variant text-[11px] font-bold flex items-center gap-1 shadow-xs transition-all self-end sm:self-auto">
+                    <span class="material-symbols-outlined text-[14px]">add</span>
+                    <span>+ Anotar Glucemia</span>
+                  </button>
+                </div>
+                <div class="w-full overflow-x-auto no-scrollbar">
+                  <svg id="glucose-chart-svg" viewBox="0 0 650 200" class="w-full h-48 select-none"></svg>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between text-[10px] text-outline px-1 mt-1 gap-1">
+                  <span>🟢 Zona Verde Óptima: 70 - 100 mg/dL basal (AHA / ADA)</span>
+                  <span>Protege el endotelio arterial de la glicación y placa de ateroma</span>
                 </div>
               </div>
             </div>
@@ -689,6 +748,62 @@
 
               <!-- Medication list -->
               <div id="medications-list" class="flex flex-col gap-2.5">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- GLUCEMIA & AZÚCAR EN SANGRE (REGISTRO DIARIO) -->
+            <div class="dash-card bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-tertiary-fixed text-tertiary flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">bloodtype</span>
+                  </div>
+                  <div>
+                    <h3 class="font-display text-[16px] font-bold text-on-surface">Control de Glucemia & Azúcar</h3>
+                    <p class="text-[11px] text-outline">Muestras diarias, ayunas y picos postprandiales</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="switchChartTab('glucosa'); document.getElementById('chart-panel-glucosa')?.scrollIntoView({behavior:'smooth'})" class="h-8 px-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[11px] font-bold flex items-center gap-1 transition-all" title="Ver gráfica de tendencias de glucemia">
+                    <span class="material-symbols-outlined text-[15px]">show_chart</span>
+                    <span class="hidden sm:inline">Gráfica</span>
+                  </button>
+                  <button onclick="openAddGlucoseModal()" class="h-8 px-2.5 rounded-xl bg-tertiary text-on-tertiary text-[11px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all">
+                    <span class="material-symbols-outlined text-[15px]">add</span>
+                    <span>+ Medir Azúcar</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Main Glucose Reading Display -->
+              <div class="p-3.5 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-surface flex flex-col items-center justify-center shadow-xs border border-outline-variant/20 shrink-0">
+                    <span id="dash-glu-val" class="font-display font-extrabold text-[20px] text-primary leading-none">89</span>
+                    <span class="text-[9px] font-bold text-outline">mg/dL</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span id="dash-glu-badge" class="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-extrabold uppercase tracking-wide">Óptima en Ayunas</span>
+                      <span id="dash-glu-type" class="text-[11px] font-semibold text-outline">☀️ En ayunas</span>
+                    </div>
+                    <span id="dash-glu-time" class="text-[11px] text-outline mt-0.5 truncate">Hoy 07:15 · Glucemia basal normal</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex flex-col text-right sm:border-l sm:border-outline-variant/20 sm:pl-3">
+                    <span class="text-[10px] font-bold text-outline uppercase">Meta ADA / OMS</span>
+                    <span class="text-[12px] font-extrabold text-on-surface">70 - 99 mg/dL</span>
+                  </div>
+                  <button onclick="openAddGlucoseModal()" class="h-8 w-8 rounded-xl bg-surface hover:bg-surface-container text-primary flex items-center justify-center shadow-xs border border-outline-variant/20" title="Añadir nueva muestra de glucosa">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Recent Samples History Strip -->
+              <div id="dash-glu-recent-samples" class="flex flex-wrap items-center justify-between gap-1 text-[11px] pt-1 border-t border-outline-variant/10 text-outline">
                 <!-- Rendered dynamically -->
               </div>
             </div>
@@ -1166,54 +1281,84 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openFoodTrafficLightModal()" title="Escanear producto o tabla nutricional con la cámara" class="h-10 px-4 rounded-xl bg-secondary-fixed text-on-secondary-fixed-variant hover:bg-secondary-fixed-dim text-[12px] font-bold flex items-center gap-2 shadow-sm transition-all whitespace-nowrap">
+              <span class="material-symbols-outlined text-[19px]">qr_code_scanner</span>
+              <span>Escanear Producto / QR</span>
+            </button>
+            <button onclick="syncMealsToGroceryList()" title="Importar ingredientes de las comidas de hoy" class="h-10 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap">
+              <span class="material-symbols-outlined text-[18px]">sync_saved_locally</span>
+              <span class="hidden md:inline">Traer de Comidas</span>
+            </button>
             <button onclick="suggestAiGroceryBasket()" title="Generar canasta semanal cardioprotectora sugerida" class="h-10 px-3.5 rounded-xl bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary-fixed-dim text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap">
               <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
-              <span>Canasta IA Recomendada</span>
+              <span>Canasta IA</span>
             </button>
             <button onclick="copyGroceryListToClipboard()" class="h-10 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all">
               <span class="material-symbols-outlined text-[18px]">content_copy</span>
-              <span class="hidden sm:inline">Copiar lista</span>
+              <span class="hidden sm:inline">Copiar</span>
             </button>
             <button onclick="clearCheckedGroceries()" class="h-10 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-outline hover:text-error text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all">
               <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
-              <span class="hidden sm:inline">Limpiar comprados</span>
+              <span class="hidden sm:inline">Limpiar</span>
             </button>
           </div>
         </div>
 
-        <!-- Add item card with fast chips -->
+        <!-- Add item card with fast chips, quantity & scanner -->
         <div class="bg-surface-container-lowest p-4 sm:p-5 rounded-3xl shadow-sm border border-outline-variant/20 flex flex-col gap-3">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+              </div>
+              <span class="font-display text-[15px] font-bold text-on-surface">Añadir producto a tu lista de compras</span>
             </div>
-            <span class="font-display text-[14px] font-bold text-on-surface">Añadir producto a tu lista de compras</span>
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input id="new-grocery-input" type="text" placeholder="Escribe el alimento o producto (ej. Nueces, Espinacas, Salmón)..." class="flex-1 h-11 px-3.5 rounded-xl bg-surface-container-low text-[13px] outline-none border border-outline-variant/20 focus:border-primary transition-all text-on-surface" onkeydown="if(event.key==='Enter') addCustomGroceryItem()" />
-            <select id="new-grocery-category" class="h-11 px-3 rounded-xl bg-surface-container-low text-[12px] font-semibold outline-none border border-outline-variant/20 focus:border-primary text-on-surface">
-              <option value="Frutas & Verduras">🥬 Frutas & Verduras</option>
-              <option value="Granos & Semillas">🌾 Granos & Semillas</option>
-              <option value="Pescados & Proteínas">🐟 Pescados & Proteínas</option>
-              <option value="Grasas Buenas & Suplementos">🫒 Grasas & Suplementos</option>
-            </select>
-            <button onclick="addCustomGroceryItem()" class="h-11 px-5 rounded-xl bg-primary text-on-primary font-bold text-[13px] flex items-center justify-center gap-1.5 shrink-0 shadow-sm hover:opacity-95 active:scale-95 transition-all">
-              <span class="material-symbols-outlined text-[18px]">add</span>
-              <span>Añadir</span>
+            <button onclick="openFoodTrafficLightModal()" class="text-[11px] font-bold text-secondary flex items-center gap-1 hover:underline">
+              <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+              <span>¿Es bueno este alimento? Escanéalo</span>
             </button>
           </div>
 
-          <!-- Quick-Add Suggestion Chips -->
-          <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-outline-variant/15">
-            <span class="text-[11px] font-bold text-outline mr-1">Añadir rápido:</span>
-            <button type="button" onclick="quickAddGroceryChip('Aguacates Hass (3 piezas)', 'Frutas & Verduras')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🥑 Aguacate</button>
-            <button type="button" onclick="quickAddGroceryChip('Avena integral en hojuelas (500g)', 'Granos & Semillas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌾 Avena</button>
-            <button type="button" onclick="quickAddGroceryChip('Filetes de Salmón fresco', 'Pescados & Proteínas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🐟 Salmón</button>
-            <button type="button" onclick="quickAddGroceryChip('Nueces de Castilla sin sal (200g)', 'Grasas Buenas & Suplementos')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌰 Nueces</button>
-            <button type="button" onclick="quickAddGroceryChip('Semillas de Chía (250g)', 'Granos & Semillas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌱 Chía</button>
-            <button type="button" onclick="quickAddGroceryChip('Espinacas baby frescas (300g)', 'Frutas & Verduras')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🥬 Espinacas</button>
-            <button type="button" onclick="quickAddGroceryChip('Aceite de Oliva Extra Virgen (1L)', 'Grasas Buenas & Suplementos')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🫒 Aceite Oliva</button>
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+            <div class="sm:col-span-5">
+              <input id="new-grocery-input" type="text" placeholder="Nombre del alimento (ej. Nueces, Espinacas, Salmón)..." class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-[13px] outline-none border border-outline-variant/20 focus:border-primary transition-all text-on-surface" onkeydown="if(event.key==='Enter') addCustomGroceryItem()" />
+            </div>
+            <div class="sm:col-span-2">
+              <input id="new-grocery-qty" type="text" placeholder="Cant. (ej. 500g)" class="w-full h-11 px-3 rounded-xl bg-surface-container-low text-[12px] font-semibold outline-none border border-outline-variant/20 focus:border-primary transition-all text-on-surface" onkeydown="if(event.key==='Enter') addCustomGroceryItem()" />
+            </div>
+            <div class="sm:col-span-3">
+              <select id="new-grocery-category" class="w-full h-11 px-3 rounded-xl bg-surface-container-low text-[12px] font-semibold outline-none border border-outline-variant/20 focus:border-primary text-on-surface">
+                <option value="Frutas & Verduras">🥬 Frutas & Verduras</option>
+                <option value="Granos & Semillas">🌾 Granos & Semillas</option>
+                <option value="Pescados & Proteínas">🐟 Pescados & Proteínas</option>
+                <option value="Grasas Buenas & Suplementos">🫒 Grasas & Suplementos</option>
+                <option value="Lácteos & Huevos">🥛 Lácteos & Huevos</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <button onclick="addCustomGroceryItem()" class="w-full h-11 px-4 rounded-xl bg-primary text-on-primary font-bold text-[13px] flex items-center justify-center gap-1.5 shadow-sm hover:opacity-95 active:scale-95 transition-all whitespace-nowrap">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-outline-variant/15">
+            <!-- Quick-Add Suggestion Chips -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-[11px] font-bold text-outline mr-1">Rápidos:</span>
+              <button type="button" onclick="quickAddGroceryChip('Aguacates Hass (3 piezas)', 'Frutas & Verduras')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🥑 Aguacate</button>
+              <button type="button" onclick="quickAddGroceryChip('Avena integral en hojuelas (500g)', 'Granos & Semillas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌾 Avena</button>
+              <button type="button" onclick="quickAddGroceryChip('Filetes de Salmón fresco', 'Pescados & Proteínas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🐟 Salmón</button>
+              <button type="button" onclick="quickAddGroceryChip('Nueces de Castilla (200g)', 'Grasas Buenas & Suplementos')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌰 Nueces</button>
+              <button type="button" onclick="quickAddGroceryChip('Semillas de Chía (250g)', 'Granos & Semillas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌱 Chía</button>
+              <button type="button" onclick="quickAddGroceryChip('Espinacas baby (300g)', 'Frutas & Verduras')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🥬 Espinacas</button>
+              <button type="button" onclick="quickAddGroceryChip('Aceite de Oliva Extra Virgen (1L)', 'Grasas Buenas & Suplementos')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🫒 Aceite Oliva</button>
+            </div>
+            <button type="button" onclick="syncMealsToGroceryList()" class="text-[11px] font-bold text-primary flex items-center gap-1 hover:underline shrink-0">
+              <span class="material-symbols-outlined text-[15px]">fastfood</span>
+              <span>+ Enviar ingredientes del menú hoy al súper</span>
+            </button>
           </div>
         </div>
 
@@ -1241,6 +1386,91 @@
             <div class="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[12px] font-bold shadow-sm flex items-center gap-1.5">
               <span class="material-symbols-outlined text-[16px]">date_range</span>
               <span>+<span id="act-week-burned">1.166</span> kcal en la semana</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- NEAT OCCUPATIONAL POSTURE & METABOLIC CHECK               -->
+        <!-- ========================================================= -->
+        <div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/20 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px]">airline_seat_recline_normal</span>
+              </div>
+              <div>
+                <h3 class="font-display text-[16px] font-bold text-on-surface">Tu Rutina Laboral & Postura (Gasto Pasivo NEAT)</h3>
+                <p class="text-[12px] text-on-surface-variant">¿Cómo pasas tu jornada? Tu déficit se ajusta dinámicamente según estés sentado, parado o en movimiento</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="act-neat-burn-pill" class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[12px] font-extrabold shrink-0">+0 kcal/día</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <!-- Option 1: Sedentario / Sentado -->
+            <button type="button" onclick="setWorkActivityQuick('sedentary')" id="btn-neat-sedentary" class="neat-card-btn p-3.5 rounded-2xl border border-primary bg-primary/10 text-left flex flex-col gap-1 transition-all shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-[20px]">🪑</span>
+                <span class="text-[10px] font-bold text-primary">Base</span>
+              </div>
+              <span class="text-[13px] font-bold text-on-surface">Sentado todo el día</span>
+              <span class="text-[11px] text-outline">Oficina, escritorio, teletrabajo o conductor</span>
+              <span class="text-[11px] font-extrabold text-primary mt-1">+0 kcal extra</span>
+            </button>
+
+            <!-- Option 2: De pie -->
+            <button type="button" onclick="setWorkActivityQuick('standing')" id="btn-neat-standing" class="neat-card-btn p-3.5 rounded-2xl border border-outline-variant/20 bg-surface-container-low hover:border-primary text-left flex flex-col gap-1 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[20px]">🧍</span>
+                <span class="text-[10px] font-bold text-secondary">Medio</span>
+              </div>
+              <span class="text-[13px] font-bold text-on-surface">De pie gran parte</span>
+              <span class="text-[11px] text-outline">Comercio, docencia, mostrador, cocina</span>
+              <span class="text-[11px] font-extrabold text-secondary mt-1">+150 kcal extra</span>
+            </button>
+
+            <!-- Option 3: Combinado / Mixto -->
+            <button type="button" onclick="setWorkActivityQuick('mixed')" id="btn-neat-mixed" class="neat-card-btn p-3.5 rounded-2xl border border-outline-variant/20 bg-surface-container-low hover:border-primary text-left flex flex-col gap-1 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[20px]">🔄</span>
+                <span class="text-[10px] font-bold text-primary">Dinámico</span>
+              </div>
+              <span class="text-[13px] font-bold text-on-surface">Combinado / Mixto</span>
+              <span class="text-[11px] text-outline">Alternas sentado, de pie y caminatas</span>
+              <span class="text-[11px] font-extrabold text-primary mt-1">+280 kcal extra</span>
+            </button>
+
+            <!-- Option 4: Físico Activo -->
+            <button type="button" onclick="setWorkActivityQuick('physical')" id="btn-neat-physical" class="neat-card-btn p-3.5 rounded-2xl border border-outline-variant/20 bg-surface-container-low hover:border-primary text-left flex flex-col gap-1 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[20px]">🏃</span>
+                <span class="text-[10px] font-bold text-primary">Alto</span>
+              </div>
+              <span class="text-[13px] font-bold text-on-surface">Físico / Continuo</span>
+              <span class="text-[11px] text-outline">Reparto, construcción, enfermería, carga</span>
+              <span class="text-[11px] font-extrabold text-primary mt-1">+450 kcal extra</span>
+            </button>
+          </div>
+
+          <!-- Periodic Reminder Setting Strip -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-outline-variant/15 text-[12px]">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-primary">event_repeat</span>
+              <span class="text-on-surface font-semibold">Recordarme revisar si cambió mi rutina laboral:</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="neat-reminder-freq" onchange="updateNeatReminderFreq(this.value)" class="h-9 px-3 rounded-xl bg-surface-container-low border border-outline-variant/20 text-[12px] font-bold text-on-surface outline-none focus:border-primary">
+                <option value="weekly">📅 Cada semana</option>
+                <option value="biweekly">📅 Cada 15 días</option>
+                <option value="monthly">📅 Cada mes</option>
+                <option value="none">🔕 No preguntarme</option>
+              </select>
+              <button onclick="checkNeatNowPrompt()" class="h-9 px-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-bold text-[11px] transition-all">
+                Verificar Ahora
+              </button>
             </div>
           </div>
         </div>
@@ -1273,9 +1503,11 @@
             </div>
           </div>
 
-                    <!-- Tira de 7 Días: Lunes a Domingo (Calendario Horizontal Compacto) -->
-          <div id="weekly-days-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2 w-full" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px;">
-            <!-- Rendered by JS -->
+          <!-- Tira de 7 Días: Lunes a Domingo (Calendario Horizontal Compacto) -->
+          <div class="w-full overflow-x-auto no-scrollbar pb-1">
+            <div id="weekly-days-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2 min-w-[540px] sm:min-w-full w-full" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px;">
+              <!-- Rendered by JS -->
+            </div>
           </div>
 
           <!-- Inspector Interactivo: Detalle del Día Seleccionado -->
@@ -2707,17 +2939,17 @@
       </div>
     </div>
 
-    <!-- 3. NUTRITIONAL LABEL TRAFFIC LIGHT MODAL -->
-    <div id="food-traffic-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4">
-      <div class="w-full max-w-md bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+    <!-- 3. NUTRITIONAL LABEL & QR BARCODE SCANNER MODAL -->
+    <div id="food-traffic-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+      <div class="w-full max-w-lg bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[94vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
           <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-2xl bg-secondary-fixed text-secondary flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[22px]">traffic</span>
+            <div class="w-10 h-10 rounded-2xl bg-primary-fixed text-primary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
             </div>
             <div>
-              <h3 class="font-display text-[18px] font-bold text-on-surface">Semáforo de Etiquetas</h3>
-              <p class="text-[12px] text-on-surface-variant">Guía de decisión rápida para el supermercado</p>
+              <h3 class="font-display text-[18px] font-bold text-on-surface">Lector QR & Semáforo de Etiquetas</h3>
+              <p class="text-[12px] text-on-surface-variant">Determina al instante si un alimento es bueno o no</p>
             </div>
           </div>
           <button onclick="closeFoodTrafficLightModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
@@ -2725,73 +2957,134 @@
           </button>
         </div>
 
-                  <p class="text-[12px] text-on-surface-variant leading-relaxed">
-            Sube una foto de la tabla nutricional o código de barras, o selecciona un ejemplo para saber si es <strong>bueno o no</strong> para tu salud arterial y meta calórica:
-          </p>
+        <!-- Mode Switcher Tabs -->
+        <div class="grid grid-cols-2 gap-1 p-1 bg-surface-container-low rounded-2xl border border-outline-variant/20">
+          <button type="button" onclick="switchScannerMode('cam')" id="tab-scan-cam" class="scanner-mode-btn h-9 rounded-xl text-[12px] font-bold transition-all bg-surface text-primary shadow-xs flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[17px]">photo_camera</span>
+            <span>Escáner Cámara / Barcode</span>
+          </button>
+          <button type="button" onclick="switchScannerMode('manual')" id="tab-scan-manual" class="scanner-mode-btn h-9 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[17px]">edit_note</span>
+            <span>Tabla Manual (100g)</span>
+          </button>
+        </div>
 
-          <!-- Nutritional Photo / OCR Uploader -->
-          <div class="p-3.5 rounded-2xl bg-surface-container-low border border-dashed border-outline-variant/40 flex flex-col items-center justify-center gap-2 text-center cursor-pointer hover:border-primary transition-all relative">
-            <input type="file" id="tl-photo-uploader" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleNutritionLabelPhoto(event)" />
-            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center pointer-events-none">
-              <span class="material-symbols-outlined text-[22px]">document_scanner</span>
+        <!-- TAB A: CAMERA & BARCODE SCANNER SIMULATION -->
+        <div id="scanner-view-cam" class="flex flex-col gap-3.5">
+          <!-- Live Viewfinder Box -->
+          <div class="relative w-full h-44 rounded-2xl bg-black overflow-hidden flex flex-col items-center justify-center border-2 border-primary/50 shadow-inner group">
+            <!-- Simulated Camera Grid -->
+            <div class="absolute inset-4 border-2 border-dashed border-white/60 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2">
+              <div class="w-full flex justify-between text-white/70 text-[9px] font-mono">
+                <span>[SCAN_MODE: BARCODE/QR]</span>
+                <span class="animate-pulse">● EN VIVO</span>
+              </div>
+              <!-- Laser Line -->
+              <div class="w-full h-0.5 bg-red-500 shadow-[0_0_8px_#ff0000] animate-bounce"></div>
+              <span class="text-white/80 text-[10px] font-medium bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-xs">
+                Apunta al código de barras o tabla nutricional
+              </span>
             </div>
-            <div class="pointer-events-none">
-              <span class="text-[12px] font-bold text-on-surface block">📸 Escanear o Subir Foto de la Tabla Nutricional</span>
-              <span id="tl-upload-filename" class="text-[10px] text-outline">Haz clic o toma una foto del reverso del producto</span>
+
+            <!-- Fallback Cam Icon -->
+            <div class="flex flex-col items-center gap-1 text-white/50 pointer-events-none">
+              <span class="material-symbols-outlined text-[36px]">qr_code_scanner</span>
+              <span class="text-[11px]">Enfoca el empaque en el supermercado</span>
             </div>
+
+            <!-- Invisible File Picker over scanner -->
+            <input type="file" id="tl-photo-uploader" accept="image/*" capture="environment" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="handleNutritionLabelPhoto(event)" title="Tocar para tomar foto con la cámara" />
           </div>
 
-          <!-- Quick Test Product Chips -->
+          <!-- Direct Supermarket Product Simulation Buttons -->
           <div class="flex flex-col gap-1.5">
-            <span class="text-[10px] font-bold uppercase text-outline">Prueba rápida con productos comunes:</span>
-            <div class="flex flex-wrap gap-1.5">
-              <button type="button" onclick="loadTrafficLightPreset('avena')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-semibold text-on-surface transition-all">🥣 Avena Integral (Verde)</button>
-              <button type="button" onclick="loadTrafficLightPreset('sardinas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-semibold text-on-surface transition-all">🐟 Sardinas Oliva (Verde)</button>
-              <button type="button" onclick="loadTrafficLightPreset('yogurt')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-semibold text-on-surface transition-all">🥛 Yogur Griego 0% (Verde)</button>
-              <button type="button" onclick="loadTrafficLightPreset('galletas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-error-container hover:text-on-error-container text-[11px] font-semibold text-on-surface transition-all">🍪 Galletas Chocolate (Rojo)</button>
-              <button type="button" onclick="loadTrafficLightPreset('embutido')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-error-container hover:text-on-error-container text-[11px] font-semibold text-on-surface transition-all">🌭 Salchicha / Embutido (Rojo)</button>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Escanear productos del supermercado:</span>
+              <span class="text-[10px] text-primary font-semibold">1 clic para probar</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px]">
+              <button type="button" onclick="scanBarcodePreset('avena')" class="p-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🥣 Avena Quaker</span>
+                <span class="text-[9px] font-bold text-primary mt-0.5">🟢 Aprobado</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('yogurt')" class="p-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🥛 Yogur Griego 0%</span>
+                <span class="text-[9px] font-bold text-primary mt-0.5">🟢 Aprobado</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('salmon')" class="p-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🐟 Salmón s/ sal</span>
+                <span class="text-[9px] font-bold text-primary mt-0.5">🟢 Omega-3</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('aceite')" class="p-2 rounded-xl bg-surface-container-low hover:bg-primary-fixed text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🫒 Aceite Oliva EV</span>
+                <span class="text-[9px] font-bold text-primary mt-0.5">🟢 HDL+</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('galletas')" class="p-2 rounded-xl bg-surface-container-low hover:bg-error-container text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🍪 Galletas Rellenas</span>
+                <span class="text-[9px] font-bold text-error mt-0.5">🔴 3 Sellos</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('refresco')" class="p-2 rounded-xl bg-surface-container-low hover:bg-error-container text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🥤 Refresco de Cola</span>
+                <span class="text-[9px] font-bold text-error mt-0.5">🔴 2 Sellos</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('embutido')" class="p-2 rounded-xl bg-surface-container-low hover:bg-error-container text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🌭 Salchichas</span>
+                <span class="text-[9px] font-bold text-error mt-0.5">🔴 3 Sellos</span>
+              </button>
+              <button type="button" onclick="scanBarcodePreset('papas')" class="p-2 rounded-xl bg-surface-container-low hover:bg-error-container text-left font-semibold text-on-surface transition-all flex flex-col">
+                <span class="truncate">🍟 Papas Fritas</span>
+                <span class="text-[9px] font-bold text-error mt-0.5">🔴 3 Sellos</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB B: MANUAL NUTRITION TABLE ENTRY -->
+        <div id="scanner-view-manual" class="hidden flex-col gap-3">
+          <p class="text-[12px] text-on-surface-variant leading-relaxed">
+            Ingresa los valores reportados en la tabla nutricional (por 100g) para calcular automáticamente los <strong>Sellos Oficiales</strong> y el semáforo cardiovascular:
+          </p>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Porción analizada (g/ml)</label>
+              <input id="tl-serving" type="number" value="100" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Calorías (kcal)</label>
+              <input id="tl-kcal" type="number" placeholder="Ej. 180" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
             </div>
           </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Porción (g/ml)</label>
-            <input id="tl-serving" type="number" value="100" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="text-[11px] font-bold text-secondary block mb-1">Grasas Saturadas (g)</label>
+              <input id="tl-satfat" type="number" step="0.1" placeholder="Ej. 2.5" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-error block mb-1">Grasas Trans (g)</label>
+              <input id="tl-transfat" type="number" step="0.1" value="0" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
           </div>
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Calorías (kcal)</label>
-            <input id="tl-kcal" type="number" placeholder="Ej. 180" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Sodio (mg)</label>
+              <input id="tl-sodium" type="number" placeholder="Ej. 240" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Azúcares añadidos (g)</label>
+              <input id="tl-sugar" type="number" step="0.1" placeholder="Ej. 4.0" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
           </div>
+
+          <button onclick="evaluateTrafficLight()" class="w-full h-11 rounded-xl bg-primary text-on-primary font-bold text-[13px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">analytics</span>
+            <span>Evaluar Tabla Nutricional</span>
+          </button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="text-[11px] font-bold text-secondary block mb-1">Grasas Saturadas (g)</label>
-            <input id="tl-satfat" type="number" step="0.1" placeholder="Ej. 2.5" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-error block mb-1">Grasas Trans (g)</label>
-            <input id="tl-transfat" type="number" step="0.1" value="0" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Sodio (mg)</label>
-            <input id="tl-sodium" type="number" placeholder="Ej. 240" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Azúcares añadidos (g)</label>
-            <input id="tl-sugar" type="number" step="0.1" placeholder="Ej. 4.0" class="w-full px-3 py-2 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-        </div>
-
-        <button onclick="evaluateTrafficLight()" class="w-full h-11 rounded-xl bg-primary text-on-primary font-bold text-[13px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-          <span class="material-symbols-outlined text-[18px]">analytics</span>
-          <span>Analizar Alimento</span>
-        </button>
-
-        <div id="tl-result-card" class="hidden p-4 rounded-2xl flex-col gap-2 transition-all"></div>
+        <!-- Scan Result & Clinical Decision Card -->
+        <div id="tl-result-card" class="hidden p-4 rounded-2xl flex-col gap-3 transition-all"></div>
       </div>
     </div>
 
@@ -3687,7 +3980,7 @@
 
     function switchChartTab(tabKey) {
       currentChartTab = tabKey;
-      ['calorias', 'presion', 'peso'].forEach(k => {
+      ['calorias', 'presion', 'peso', 'glucosa'].forEach(k => {
         const panel = document.getElementById(`chart-panel-${k}`);
         const btn = document.getElementById(`chart-tab-${k}`);
         if (panel) {
@@ -3711,6 +4004,7 @@
       if (tabKey === 'calorias') renderWeeklyBarChart();
       if (tabKey === 'presion') renderPressureChart();
       if (tabKey === 'peso') renderWeightJourney();
+      if (tabKey === 'glucosa') renderGlucoseChart();
     }
 
     function animateNumber(elementId, targetValue, duration = 700) {
@@ -3863,6 +4157,137 @@
     function hideBarTooltip() {
       const tip = document.getElementById('chart-bar-tooltip');
       if (tip) tip.style.opacity = '0';
+    }
+
+
+    function renderGlucoseChart() {
+      const svg = document.getElementById('glucose-chart-svg');
+      if (!svg) return;
+
+      if (!Array.isArray(appState.bloodGlucose) || appState.bloodGlucose.length === 0) {
+        appState.bloodGlucose = JSON.parse(JSON.stringify(DEFAULT_STATE.bloodGlucose || []));
+      }
+
+      // Sort chronological ascending for chart
+      const rawList = [...appState.bloodGlucose].reverse().slice(-8);
+      if (rawList.length === 0) return;
+
+      const w = 650;
+      const h = 200;
+      const padLeft = 45;
+      const padRight = 25;
+      const padTop = 20;
+      const padBottom = 30;
+      const chartW = w - padLeft - padRight;
+      const chartH = h - padTop - padBottom;
+
+      const minVal = 50;
+      const maxVal = 200;
+      const getY = val => padTop + chartH - ((Math.min(maxVal, Math.max(minVal, val)) - minVal) / (maxVal - minVal)) * chartH;
+      const getX = idx => padLeft + (rawList.length > 1 ? (idx / (rawList.length - 1)) * chartW : chartW / 2);
+
+      let svgHtml = '';
+
+      // Shaded Target Zone: 70 - 100 mg/dL (Normal Fasting ADA / AHA)
+      const y100 = getY(100);
+      const y70 = getY(70);
+      const y140 = getY(140);
+
+      svgHtml += `
+        <defs>
+          <linearGradient id="gluGreenZone" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#006d44" stop-opacity="0.14" />
+            <stop offset="100%" stop-color="#006d44" stop-opacity="0.04" />
+          </linearGradient>
+          <linearGradient id="gluLineGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#006d44" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="#006d44" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        <!-- Target Zone 70-100 mg/dL -->
+        <rect x="${padLeft}" y="${y100}" width="${chartW}" height="${y70 - y100}" fill="url(#gluGreenZone)" rx="4" />
+        <line x1="${padLeft}" y1="${y100}" x2="${w - padRight}" y2="${y100}" stroke="#006d44" stroke-dasharray="3,3" stroke-width="1.2" stroke-opacity="0.5" />
+        <text x="${padLeft - 6}" y="${y100 + 3}" fill="#006d44" font-size="9" font-weight="bold" text-anchor="end" font-family="sans-serif">100</text>
+
+        <line x1="${padLeft}" y1="${y70}" x2="${w - padRight}" y2="${y70}" stroke="#006d44" stroke-dasharray="2,2" stroke-width="1" stroke-opacity="0.3" />
+        <text x="${padLeft - 6}" y="${y70 + 3}" fill="#006d44" font-size="9" text-anchor="end" font-family="sans-serif">70</text>
+
+        <!-- Postprandial Warning Line at 140 mg/dL -->
+        <line x1="${padLeft}" y1="${y140}" x2="${w - padRight}" y2="${y140}" stroke="#ba1a1a" stroke-dasharray="3,3" stroke-width="1" stroke-opacity="0.4" />
+        <text x="${padLeft - 6}" y="${y140 + 3}" fill="#ba1a1a" font-size="9" font-weight="bold" text-anchor="end" font-family="sans-serif">140</text>
+        <text x="${w - padRight}" y="${y140 - 4}" fill="#ba1a1a" font-size="8" text-anchor="end" font-family="sans-serif">Límite Postprandial (140)</text>
+      `;
+
+      // Draw Grid Baseline
+      svgHtml += `
+        <line x1="${padLeft}" y1="${padTop + chartH}" x2="${w - padRight}" y2="${padTop + chartH}" stroke="#707973" stroke-opacity="0.2" stroke-width="1" />
+      `;
+
+      // Build Bezier Curve for Points
+      const points = rawList.map((d, i) => ({
+        x: getX(i),
+        y: getY(d.value),
+        val: d.value,
+        type: d.type,
+        date: d.date,
+        time: d.time
+      }));
+
+      if (points.length > 1) {
+        let pathD = `M ${points[0].x} ${points[0].y}`;
+        for (let i = 0; i < points.length - 1; i++) {
+          const p0 = points[i];
+          const p1 = points[i + 1];
+          const cpX = (p0.x + p1.x) / 2;
+          pathD += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
+        }
+
+        const areaD = `${pathD} L ${points[points.length - 1].x} ${padTop + chartH} L ${points[0].x} ${padTop + chartH} Z`;
+        svgHtml += `
+          <path d="${areaD}" fill="url(#gluLineGrad)" />
+          <path d="${pathD}" fill="none" stroke="#006d44" stroke-width="2.5" stroke-linecap="round" />
+        `;
+      }
+
+      // Draw Data Circles & Labels
+      points.forEach(p => {
+        const isFasting = p.type === 'ayunas';
+        const color = isFasting ? '#006d44' : '#a14000';
+        const ring = p.val > 140 || (isFasting && p.val >= 126) ? '#ba1a1a' : color;
+
+        svgHtml += `
+          <g class="chart-point-group cursor-pointer">
+            <circle cx="${p.x}" cy="${p.y}" r="5" fill="#ffffff" stroke="${ring}" stroke-width="2.5" class="chart-point" />
+            <text x="${p.x}" y="${p.y - 8}" fill="${color}" font-size="10" font-weight="bold" text-anchor="middle" font-family="sans-serif">${p.val}</text>
+            <text x="${p.x}" y="${padTop + chartH + 16}" fill="#707973" font-size="9" text-anchor="middle" font-family="sans-serif">${formatShortDate(p.date)}</text>
+            <title>${p.val} mg/dL (${isFasting ? 'En Ayunas' : 'Postprandial'}) - ${formatShortDate(p.date)} ${p.time}</title>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = svgHtml;
+
+      // Update KPIs
+      const latest = appState.bloodGlucose[0];
+      if (latest) {
+        const kpiLatest = document.getElementById('glu-kpi-latest');
+        if (kpiLatest) kpiLatest.innerHTML = `${latest.value} <span class="text-[11px] font-normal text-outline">mg/dL</span>`;
+      }
+
+      const fastingReadings = appState.bloodGlucose.filter(r => r.type === 'ayunas');
+      if (fastingReadings.length > 0) {
+        const avg = Math.round(fastingReadings.reduce((acc, c) => acc + c.value, 0) / fastingReadings.length);
+        const kpiAvg = document.getElementById('glu-kpi-fasting-avg');
+        if (kpiAvg) kpiAvg.innerHTML = `${avg} <span class="text-[11px] font-normal text-outline">mg/dL</span>`;
+      }
+
+      const postReadings = appState.bloodGlucose.filter(r => r.type !== 'ayunas');
+      if (postReadings.length > 0) {
+        const peak = Math.max(...postReadings.map(r => r.value));
+        const kpiPeak = document.getElementById('glu-kpi-peak');
+        if (kpiPeak) kpiPeak.innerHTML = `${peak} <span class="text-[11px] font-normal text-outline">mg/dL</span>`;
+      }
     }
 
     function renderPressureChart() {
@@ -4099,6 +4524,29 @@
         renderPressureChart();
       } else if (currentChartTab === 'peso') {
         renderWeightJourney();
+      } else if (currentChartTab === 'glucosa') {
+        renderGlucoseChart();
+      }
+
+      // Sync NEAT Occupational Activity UI buttons
+      const curNeat = appState.profile?.neatWork || 'sedentary';
+      const neatTypes = ['sedentary', 'standing', 'mixed', 'physical'];
+      neatTypes.forEach(t => {
+        const btn = document.getElementById(`btn-neat-${t}`);
+        if (btn) {
+          if (t === curNeat) {
+            btn.className = 'neat-card-btn p-3.5 rounded-2xl border-2 border-primary bg-primary/10 text-left flex flex-col gap-1 transition-all shadow-xs';
+          } else {
+            btn.className = 'neat-card-btn p-3.5 rounded-2xl border border-outline-variant/20 bg-surface-container-low hover:border-primary text-left flex flex-col gap-1 transition-all';
+          }
+        }
+      });
+      const neatPill = document.getElementById('act-neat-burn-pill');
+      const neatBonusMap = { sedentary: 0, standing: 150, mixed: 280, physical: 450 };
+      if (neatPill) neatPill.textContent = `+${neatBonusMap[curNeat] || 0} kcal/día`;
+      const remSelect = document.getElementById('neat-reminder-freq');
+      if (remSelect && appState.profile?.neatReminderFreq) {
+        remSelect.value = appState.profile.neatReminderFreq;
       }
     }
 
@@ -4923,7 +5371,76 @@
       modal.classList.remove('flex');
     }
 
-    function evaluateTrafficLight() {
+
+    let currentScannedItem = null;
+
+    function switchScannerMode(mode) {
+      const viewCam = document.getElementById('scanner-view-cam');
+      const viewManual = document.getElementById('scanner-view-manual');
+      const tabCam = document.getElementById('tab-scan-cam');
+      const tabManual = document.getElementById('tab-scan-manual');
+
+      if (mode === 'cam') {
+        if (viewCam) { viewCam.classList.remove('hidden'); viewCam.classList.add('flex'); }
+        if (viewManual) { viewManual.classList.add('hidden'); viewManual.classList.remove('flex'); }
+        if (tabCam) tabCam.className = 'scanner-mode-btn h-9 rounded-xl text-[12px] font-bold transition-all bg-surface text-primary shadow-xs flex items-center justify-center gap-1.5';
+        if (tabManual) tabManual.className = 'scanner-mode-btn h-9 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1.5';
+      } else {
+        if (viewCam) { viewCam.classList.add('hidden'); viewCam.classList.remove('flex'); }
+        if (viewManual) { viewManual.classList.remove('hidden'); viewManual.classList.add('flex'); }
+        if (tabCam) tabCam.className = 'scanner-mode-btn h-9 rounded-xl text-[12px] font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1.5';
+        if (tabManual) tabManual.className = 'scanner-mode-btn h-9 rounded-xl text-[12px] font-bold transition-all bg-surface text-primary shadow-xs flex items-center justify-center gap-1.5';
+      }
+    }
+
+    const EXTENDED_TRAFFIC_PRESETS = {
+      'avena': { serving: 50, kcal: 185, satFat: 0.6, transFat: 0, sodium: 5, sugar: 0.8, fiber: 5.5, name: 'Avena Quaker Tradicional en Hojuelas', category: 'Granos & Semillas', alt: null },
+      'yogurt': { serving: 150, kcal: 90, satFat: 0.2, transFat: 0, sodium: 65, sugar: 4.0, fiber: 0, name: 'Yogurt Griego 0% Grasa Sin Azúcar', category: 'Pescados & Proteínas', alt: null },
+      'salmon': { serving: 100, kcal: 180, satFat: 1.5, transFat: 0, sodium: 120, sugar: 0, fiber: 0, name: 'Salmón Rosado al Agua Bajo en Sodio', category: 'Pescados & Proteínas', alt: null },
+      'aceite': { serving: 14, kcal: 119, satFat: 1.9, transFat: 0, sodium: 0, sugar: 0, fiber: 0, name: 'Aceite de Oliva Extra Virgen (Primera Prensa)', category: 'Grasas Buenas & Suplementos', alt: null },
+      'galletas': { serving: 100, kcal: 480, satFat: 9.8, transFat: 0.4, sodium: 490, sugar: 38.0, fiber: 1.2, name: 'Galletas Rellenas de Crema de Chocolate', category: 'Grasas Buenas & Suplementos', alt: 'Avena integral con cacao amargo y miel' },
+      'refresco': { serving: 100, kcal: 42, satFat: 0, transFat: 0, sodium: 15, sugar: 10.6, fiber: 0, name: 'Refresco de Cola Tradicional', category: 'Frutas & Verduras', alt: 'Agua con gas, limón exprimido y rodaja de jengibre' },
+      'embutido': { serving: 100, kcal: 310, satFat: 12.0, transFat: 0.8, sodium: 1100, sugar: 2.0, fiber: 0, name: 'Salchicha de Cerdo Tradicional', category: 'Pescados & Proteínas', alt: 'Pechuga de pavo desmechada o sardinas en oliva' },
+      'papas': { serving: 100, kcal: 540, satFat: 8.5, transFat: 0.3, sodium: 620, sugar: 1.5, fiber: 3.0, name: 'Papas Fritas de Paquete con Sal', category: 'Grasas Buenas & Suplementos', alt: 'Chips caseros de manzana o nueces tostadas sin sal' }
+    };
+
+    function scanBarcodePreset(key) {
+      const p = EXTENDED_TRAFFIC_PRESETS[key];
+      if (!p) return;
+      currentScannedItem = p;
+
+      document.getElementById('tl-serving').value = p.serving;
+      document.getElementById('tl-kcal').value = p.kcal;
+      document.getElementById('tl-satfat').value = p.satFat;
+      document.getElementById('tl-transfat').value = p.transFat;
+      document.getElementById('tl-sodium').value = p.sodium;
+      document.getElementById('tl-sugar').value = p.sugar;
+
+      evaluateTrafficLight(p.name, p.category, p.alt);
+      showToast(`Escaneado: ${p.name}`, 'qr_code_scanner');
+    }
+
+    function addScannedProductToGroceryList(name, category, note) {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
+      const safeName = decodeURIComponent(name);
+      const safeCat = decodeURIComponent(category || 'Frutas & Verduras');
+      const safeNote = decodeURIComponent(note || 'Aprobado por Semáforo');
+
+      appState.groceries.push({
+        id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        category: safeCat,
+        name: safeName,
+        checked: false,
+        note: safeNote
+      });
+
+      saveState();
+      renderGroceryList();
+      closeFoodTrafficLightModal();
+      showToast(`¡${safeName} agregado a tu Lista de Compras!`, 'shopping_cart');
+    }
+
+    function evaluateTrafficLight(customName, customCat, customAlt) {
       const serving = parseFloat(document.getElementById('tl-serving').value) || 100;
       const kcal = parseFloat(document.getElementById('tl-kcal').value) || 0;
       const satFat = parseFloat(document.getElementById('tl-satfat').value) || 0;
@@ -4935,39 +5452,106 @@
       const satFat100 = satFat * factor;
       const sodium100 = sodium * factor;
       const sugar100 = sugar * factor;
+      const kcal100 = kcal * factor;
 
-      let title = '🟢 Cardio Amigable (Excelente Elección)';
+      // Official Warning Octagons (Sellos de Advertencia Ley de Etiquetado)
+      const warningSeals = [];
+      if (sugar100 > 10) warningSeals.push('EXCESO AZÚCARES');
+      if (satFat100 > 4) warningSeals.push('EXCESO GRASAS SAT.');
+      if (sodium100 > 300) warningSeals.push('EXCESO SODIO');
+      if (kcal100 > 275) warningSeals.push('EXCESO CALORÍAS');
+      if (transFat > 0.1) warningSeals.push('CONTIENE GRASAS TRANS');
+
+      let title = '🟢 Cardio-Saludable (Excelente Elección)';
       let bg = 'bg-primary-fixed/40 text-on-primary-fixed-variant border-primary/30';
+      let isRecommended = true;
       let feedback = [];
 
       if (transFat > 0.1) {
-        title = '🔴 Alerta Roja: Evitar para Salud Arterial';
+        title = '🔴 ALERTA CRÍTICA: Daña Paredes Arteriales';
         bg = 'bg-error-container text-on-error-container border-error/30';
-        feedback.push('Contiene grasas trans industriales: el factor que más eleva el colesterol LDL malo y lesiona el endotelio vascular.');
-      } else if (satFat100 > 6 || sodium100 > 600 || sugar100 > 15) {
+        isRecommended = false;
+        feedback.push('Contiene grasas trans industriales: oxidan el colesterol LDL y provocan rigidez endotelial inmediata.');
+      } else if (warningSeals.length >= 2 || satFat100 > 6 || sodium100 > 600 || sugar100 > 15) {
         title = '🔴 No Recomendado para Déficit & Corazón';
         bg = 'bg-error-container text-on-error-container border-error/30';
-        if (satFat100 > 6) feedback.push(`Grasas saturadas altas (${satFat}g/porción): estimulan síntesis hepática de LDL.`);
-        if (sodium100 > 600) feedback.push(`Sodio excesivo (${sodium}mg): aumenta la tensión en las paredes arteriales.`);
-        if (sugar100 > 15) feedback.push(`Azúcares añadidos altos: elevan triglicéridos y resistencia a la insulina.`);
-      } else if (satFat100 > 2.5 || sodium100 > 350 || sugar100 > 8) {
+        isRecommended = false;
+        if (satFat100 > 6) feedback.push(`Grasas saturadas altas (${satFat}g): saturan receptores LDL hepáticos elevando el colesterol.`);
+        if (sodium100 > 600) feedback.push(`Sodio alto (${sodium}mg): retiene líquido y eleva la tensión sistólica.`);
+        if (sugar100 > 15) feedback.push(`Azúcares añadidos altos: disparan picos de glucosa y triglicéridos.`);
+      } else if (warningSeals.length === 1 || satFat100 > 2.5 || sodium100 > 350 || sugar100 > 8) {
         title = '🟡 Consumo Ocasional y Porción Moderada';
         bg = 'bg-tertiary-fixed text-on-tertiary-fixed border-tertiary/30';
-        feedback.push('Tiene valores medios. Puedes consumirlo cuidando que la porción no supere tu límite calórico del día.');
+        isRecommended = true;
+        feedback.push('Tiene valores intermedios. Es aceptable de forma esporádica cuidando que encaje en tus calorías restantes de hoy.');
       } else {
-        feedback.push('Bajo en grasas saturadas, sin grasas trans y con sodio controlado. Muy favorable para tu corazón y déficit calórico.');
+        feedback.push('Sin sellos nocivos, bajo en sodio y sin grasas trans. Protege tus arterias y encaja perfecto en tu déficit calórico.');
       }
 
+      const prodName = customName || (currentScannedItem ? currentScannedItem.name : 'Alimento Analizado');
+      const prodCat = customCat || (currentScannedItem ? currentScannedItem.category : 'Granos & Semillas');
+      const prodAlt = customAlt || (currentScannedItem ? currentScannedItem.alt : null);
+
       const card = document.getElementById('tl-result-card');
-      card.className = `p-4 rounded-2xl flex flex-col gap-2 border ${bg}`;
+      card.className = `p-4 rounded-2xl flex flex-col gap-3 border shadow-sm ${bg}`;
+
+      let sealsHtml = '';
+      if (warningSeals.length > 0) {
+        sealsHtml = `
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            ${warningSeals.map(s => `
+              <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-black text-white text-[9px] font-black uppercase tracking-wider shadow-xs">
+                🛑 ${s}
+              </span>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        sealsHtml = `
+          <div class="flex items-center gap-1 text-[11px] font-extrabold text-primary">
+            <span class="material-symbols-outlined text-[16px]">verified</span>
+            <span>Libre de sellos de advertencia nutricional</span>
+          </div>
+        `;
+      }
+
+      let actionBtnHtml = '';
+      if (isRecommended) {
+        actionBtnHtml = `
+          <button type="button" onclick="addScannedProductToGroceryList('${encodeURIComponent(prodName)}', '${encodeURIComponent(prodCat)}', '🟢 Aprobado por Semáforo Cardioprotector')" class="w-full h-11 rounded-xl bg-primary text-on-primary font-bold text-[13px] flex items-center justify-center gap-2 shadow-sm hover:opacity-95 active:scale-95 transition-all mt-1">
+            <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+            <span>Añadir "${prodName}" a mi Lista del Súper</span>
+          </button>
+        `;
+      } else if (prodAlt) {
+        actionBtnHtml = `
+          <div class="p-3 rounded-xl bg-surface/70 border border-outline-variant/20 flex flex-col gap-2 mt-1">
+            <div class="flex items-center gap-1.5 text-primary text-[12px] font-bold">
+              <span class="material-symbols-outlined text-[16px]">eco</span>
+              <span>Alternativa Cardioprotectora Sugerida:</span>
+            </div>
+            <p class="text-[12px] text-on-surface font-semibold">${prodAlt}</p>
+            <button type="button" onclick="addScannedProductToGroceryList('${encodeURIComponent(prodAlt)}', 'Granos & Semillas', '💡 Alternativa saludable sugerida')" class="h-9 px-3.5 rounded-xl bg-primary text-on-primary font-bold text-[11px] flex items-center justify-center gap-1.5 self-start shadow-xs active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span>
+              <span>Añadir Alternativa al Súper</span>
+            </button>
+          </div>
+        `;
+      }
+
       card.innerHTML = `
-        <h4 class="font-display text-[15px] font-bold">${title}</h4>
-        <ul class="text-[12px] list-disc pl-4 space-y-1">
+        <div class="flex items-center justify-between border-b border-black/10 pb-2">
+          <span class="font-display text-[15px] font-extrabold">${title}</span>
+          <span class="text-[11px] font-bold opacity-80">${Math.round(kcal100)} kcal/100g</span>
+        </div>
+        ${sealsHtml}
+        <ul class="text-[12px] list-disc pl-4 space-y-1 leading-snug">
           ${feedback.map(f => `<li>${f}</li>`).join('')}
         </ul>
-        <span class="text-[11px] font-semibold opacity-90 mt-1">
-          Valores analizados: ${kcal} kcal · ${satFat}g sat · ${transFat}g trans · ${sodium}mg Na
+        <span class="text-[11px] opacity-80 font-mono">
+          Por 100g: ${satFat100.toFixed(1)}g sat · ${transFat.toFixed(1)}g trans · ${Math.round(sodium100)}mg Na · ${sugar100.toFixed(1)}g azúcar
         </span>
+        ${actionBtnHtml}
       `;
       card.classList.remove('hidden');
       card.classList.add('flex');
@@ -5038,9 +5622,11 @@
         appState.groceries = [];
       }
       const input = document.getElementById('new-grocery-input');
+      const qtyInput = document.getElementById('new-grocery-qty');
       const catSelect = document.getElementById('new-grocery-category');
       const cat = catSelect ? catSelect.value : 'Frutas & Verduras';
       const val = input ? input.value.trim() : '';
+      const qty = qtyInput ? qtyInput.value.trim() : '';
 
       if (!val) {
         showToast('Escribe el alimento o producto que deseas comprar', 'info');
@@ -5048,22 +5634,73 @@
         return;
       }
 
-      // Support comma-separated items
-      const items = val.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+      const displayName = qty ? `${val} (${qty})` : val;
+      const items = displayName.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
       items.forEach(itemName => {
         appState.groceries.push({
           id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
           category: cat,
           name: itemName,
           checked: false,
-          note: 'Agregado a tu lista'
+          note: qty ? `Cantidad: ${qty}` : 'Agregado a tu lista'
         });
       });
 
       saveState();
       if (input) input.value = '';
+      if (qtyInput) qtyInput.value = '';
       renderGroceryList();
-      showToast(items.length === 1 ? `+ ${items[0]} agregado a tu lista` : `+ ${items.length} productos agregados`, 'playlist_add');
+      showToast(items.length === 1 ? `+ ${items[0]} agregado a tu lista` : `+ ${items.length} productos agregados`, 'add_shopping_cart');
+    }
+
+    function syncMealsToGroceryList() {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
+      const meals = appState.meals || [];
+      if (meals.length === 0) {
+        showToast('No hay comidas registradas hoy para sincronizar', 'info');
+        return;
+      }
+
+      let addedCount = 0;
+      const staples = [
+        { key: 'avena', name: 'Avena integral en hojuelas (500g)', cat: 'Granos & Semillas', note: 'Para desayuno cardioprotector' },
+        { key: 'chía', name: 'Semillas de Chía (250g)', cat: 'Granos & Semillas', note: 'Omega-3 vegetal' },
+        { key: 'salmón', name: 'Filetes de Salmón fresco', cat: 'Pescados & Proteínas', note: 'Almuerzo rico en EPA/DHA' },
+        { key: 'sardina', name: 'Sardinas en aceite de oliva (2 latas)', cat: 'Pescados & Proteínas', note: 'Omega-3 protector' },
+        { key: 'espinaca', name: 'Espinacas frescas baby (300g)', cat: 'Frutas & Verduras', note: 'Fibra y nitratos para óxido nítrico' },
+        { key: 'aguacate', name: 'Aguacates Hass (3 unidades)', cat: 'Frutas & Verduras', note: 'Grasas monoinsaturadas HDL+' },
+        { key: 'oliva', name: 'Aceite de Oliva Extra Virgen (1L)', cat: 'Grasas Buenas & Suplementos', note: 'Cocina saludable' },
+        { key: 'nueces', name: 'Nueces de Castilla sin sal (200g)', cat: 'Grasas Buenas & Suplementos', note: 'Snack cardioprotector' },
+        { key: 'lenteja', name: 'Lentejas secas o cocidas (500g)', cat: 'Granos & Semillas', note: 'Fibra soluble LDL-' },
+        { key: 'yogur', name: 'Yogurt Griego natural 0%', cat: 'Pescados & Proteínas', note: 'Proteína sin azúcar' }
+      ];
+
+      meals.forEach(m => {
+        const mealName = (m.name || m.description || '').toLowerCase();
+        staples.forEach(st => {
+          if (mealName.includes(st.key)) {
+            const alreadyInList = appState.groceries.some(g => g.name.toLowerCase().includes(st.key));
+            if (!alreadyInList) {
+              appState.groceries.push({
+                id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                category: st.cat,
+                name: st.name,
+                checked: false,
+                note: st.note
+              });
+              addedCount++;
+            }
+          }
+        });
+      });
+
+      saveState();
+      renderGroceryList();
+      if (addedCount > 0) {
+        showToast(`¡${addedCount} ingredientes de tus comidas agregados al súper!`, 'sync');
+      } else {
+        showToast('Los ingredientes principales de tu menú ya están en la lista del súper', 'check');
+      }
     }
 
     function quickAddGroceryChip(name, category) {
@@ -7507,6 +8144,55 @@
         appState.bloodGlucose = JSON.parse(JSON.stringify(DEFAULT_STATE.bloodGlucose || []));
       }
       const list = appState.bloodGlucose;
+
+      // Update Daily Dashboard Card in 'Hoy'
+      const dashGluVal = document.getElementById('dash-glu-val');
+      const dashGluBadge = document.getElementById('dash-glu-badge');
+      const dashGluType = document.getElementById('dash-glu-type');
+      const dashGluTime = document.getElementById('dash-glu-time');
+      const dashGluRecent = document.getElementById('dash-glu-recent-samples');
+
+      if (list.length > 0) {
+        const latest = list[0];
+        if (dashGluVal) dashGluVal.textContent = latest.value;
+        if (dashGluType) dashGluType.textContent = latest.type === 'ayunas' ? '☀️ En ayunas' : (latest.type === 'postprandial' ? '🍽️ Postprandial 2h' : '⏱️ Toma casual');
+        if (dashGluTime) dashGluTime.textContent = `${formatShortDate(latest.date)} a las ${latest.time} · ${latest.note || 'Glucemia registrada'}`;
+        if (dashGluBadge) {
+          if (latest.type === 'ayunas') {
+            if (latest.value < 100) {
+              dashGluBadge.className = 'px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-extrabold uppercase tracking-wide';
+              dashGluBadge.textContent = 'Óptima en Ayunas';
+            } else if (latest.value <= 125) {
+              dashGluBadge.className = 'px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-extrabold uppercase tracking-wide';
+              dashGluBadge.textContent = 'Alerta temprana (100-125)';
+            } else {
+              dashGluBadge.className = 'px-2 py-0.5 rounded-full bg-error text-white text-[10px] font-extrabold uppercase tracking-wide';
+              dashGluBadge.textContent = 'Elevada (≥126)';
+            }
+          } else {
+            if (latest.value < 140) {
+              dashGluBadge.className = 'px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-extrabold uppercase tracking-wide';
+              dashGluBadge.textContent = 'Normal Postprandial';
+            } else {
+              dashGluBadge.className = 'px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-extrabold uppercase tracking-wide';
+              dashGluBadge.textContent = 'Vigilar Postprandial';
+            }
+          }
+        }
+
+        if (dashGluRecent) {
+          dashGluRecent.innerHTML = list.slice(0, 4).map(item => `
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-surface-container text-[10px] font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full ${item.value < 100 ? 'bg-primary' : (item.value < 140 ? 'bg-secondary' : 'bg-error')}"></span>
+              <strong>${item.value}</strong> mg/dL · ${formatShortDate(item.date)}
+            </span>
+          `).join('');
+        }
+      }
+
+      // Re-render SVG chart
+      if (typeof renderGlucoseChart === 'function') renderGlucoseChart();
+
       const container = document.getElementById('glucose-history-list');
       const countBadge = document.getElementById('glu-count-badge');
       if (countBadge) countBadge.textContent = `${list.length} registro${list.length === 1 ? '' : 's'}`;
@@ -8202,6 +8888,61 @@ _Generado automáticamente desde NutriBalance para control en consulta médica._
         }, 800);
       };
       reader.readAsDataURL(file);
+    }
+
+
+    function setWorkActivityQuick(type) {
+      if (!appState.profile) appState.profile = {};
+      appState.profile.neatWork = type;
+
+      // Update UI buttons
+      const types = ['sedentary', 'standing', 'mixed', 'physical'];
+      types.forEach(t => {
+        const btn = document.getElementById(`btn-neat-${t}`);
+        if (btn) {
+          if (t === type) {
+            btn.className = 'neat-card-btn p-3.5 rounded-2xl border-2 border-primary bg-primary/10 text-left flex flex-col gap-1 transition-all shadow-xs';
+          } else {
+            btn.className = 'neat-card-btn p-3.5 rounded-2xl border border-outline-variant/20 bg-surface-container-low hover:border-primary text-left flex flex-col gap-1 transition-all';
+          }
+        }
+      });
+
+      // Update Pill
+      const pill = document.getElementById('act-neat-burn-pill');
+      const bonusMap = { sedentary: 0, standing: 150, mixed: 280, physical: 450 };
+      const bonus = bonusMap[type] || 0;
+      if (pill) pill.textContent = `+${bonus} kcal/día`;
+
+      // Update profile select if exists
+      const profSelect = document.getElementById('prof-neat-work');
+      if (profSelect) profSelect.value = type;
+
+      // Recalculate targets
+      if (typeof updateProfileTargetsPreview === 'function') {
+        updateProfileTargetsPreview();
+      }
+
+      saveState();
+      showToast(`¡Rutina laboral actualizada! Gasto NEAT: +${bonus} kcal/día`, 'airline_seat_recline_normal');
+    }
+
+    function updateNeatReminderFreq(freq) {
+      if (!appState.profile) appState.profile = {};
+      appState.profile.neatReminderFreq = freq;
+      saveState();
+      showToast('Preferencia de recordatorio laboral guardada', 'event_repeat');
+    }
+
+    function checkNeatNowPrompt() {
+      const cur = appState.profile?.neatWork || 'sedentary';
+      const names = {
+        sedentary: 'Sentado todo el día (Oficina/Escritorio)',
+        standing: 'De pie la mayor parte del día (Comercio/Atención)',
+        mixed: 'Combinado / Mixto (Sentado y caminando)',
+        physical: 'Físico Activo / Esfuerzo continuo'
+      };
+      showToast(`Rutina actual: ${names[cur] || cur}. Puedes pulsar cualquier tarjeta para cambiarla.`, 'info');
     }
 
     function scrollToExerciseForm(dateStr) {
