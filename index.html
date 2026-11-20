@@ -4577,6 +4577,7 @@
       saveState();
       closeAddMedModal();
       renderMedicationsList();
+      if (typeof renderMedicalHistoryUI === 'function') renderMedicalHistoryUI();
       showToast(`+${name} agregado a tu pastillero`, 'medication');
       playAlarmChime();
     }
@@ -7782,6 +7783,22 @@
       renderMedicationsList();
       showToast(`+ ${name} agregado a tu tratamiento`, 'pill');
     }
+        function toggleMedicationTaken(id) {
+      if (!Array.isArray(appState.medications)) return;
+      const med = appState.medications.find(m => String(m.id) === String(id));
+      if (med) {
+        med.takenToday = !med.takenToday;
+        if (med.takenToday && med.stock > 0) {
+          med.stock = Math.max(0, med.stock - (med.daily || 1));
+        }
+        saveState();
+        renderMedicalHistoryUI();
+        renderMedicationsList();
+        const msg = med.takenToday ? `Toma registrada: ${med.name}` : `Toma desmarcada: ${med.name}`;
+        showToast(msg, med.takenToday ? 'check_circle' : 'undo');
+      }
+    }
+
     function deleteMedicationRecord(id) {
       if (!Array.isArray(appState.medications)) return;
       appState.medications = appState.medications.filter(m => m.id !== id);
@@ -8185,10 +8202,9 @@ _Generado automáticamente desde NutriBalance para control en consulta médica._
         if (dateInput) dateInput.value = dateStr;
         renderWeeklyExerciseUI();
       }
-      const formEl = document.getElementById('sport-name-select');
+      const formEl = document.getElementById('sport-selector-grid') || document.getElementById('sport-minutes');
       if (formEl) {
         formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        formEl.focus();
         showToast(`Fecha de ejercicio fijada en: ${dateStr}`, 'calendar_today');
       }
     }
