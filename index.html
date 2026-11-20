@@ -1095,31 +1095,56 @@
             <p class="text-[12px] text-on-surface-variant">Los ingredientes exactos para bajar LDL, subir HDL y mantener tu déficit</p>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="suggestAiGroceryBasket()" title="Generar canasta semanal cardioprotectora sugerida" class="h-10 px-3.5 rounded-xl bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary-fixed-dim text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap">
+              <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+              <span>Canasta IA Recomendada</span>
+            </button>
             <button onclick="copyGroceryListToClipboard()" class="h-10 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all">
               <span class="material-symbols-outlined text-[18px]">content_copy</span>
-              <span>Copiar lista</span>
+              <span class="hidden sm:inline">Copiar lista</span>
             </button>
-            <button onclick="clearCheckedGroceries()" class="h-10 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-outline hover:text-error text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all">
+            <button onclick="clearCheckedGroceries()" class="h-10 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-outline hover:text-error text-[12px] font-bold flex items-center gap-1.5 shadow-sm transition-all">
               <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
-              <span>Limpiar comprados</span>
+              <span class="hidden sm:inline">Limpiar comprados</span>
             </button>
           </div>
         </div>
 
-        <!-- Add item row -->
-        <div class="flex gap-2 bg-surface-container-lowest p-2 rounded-2xl shadow-sm border border-outline-variant/20">
-          <input id="new-grocery-input" type="text" placeholder="Agregar nuevo alimento o producto (ej. Nueces, Espinacas)..." class="flex-1 px-3 py-2 bg-transparent text-[13px] outline-none" onkeydown="if(event.key==='Enter') addCustomGroceryItem()" />
-          <select id="new-grocery-category" class="px-3 py-2 rounded-xl bg-surface-container-low text-[12px] font-semibold outline-none">
-            <option value="Frutas & Verduras">🥬 Frutas & Verduras</option>
-            <option value="Granos & Semillas">🌾 Granos & Semillas</option>
-            <option value="Pescados & Proteínas">🐟 Pescados & Proteínas</option>
-            <option value="Grasas Buenas & Suplementos">🫒 Grasas & Suplementos</option>
-          </select>
-          <button onclick="addCustomGroceryItem()" class="h-10 px-4 rounded-xl bg-primary text-on-primary font-bold text-[13px] flex items-center gap-1 shrink-0">
-            <span class="material-symbols-outlined text-[18px]">add</span>
-            <span class="hidden sm:inline">Agregar</span>
-          </button>
+        <!-- Add item card with fast chips -->
+        <div class="bg-surface-container-lowest p-4 sm:p-5 rounded-3xl shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+            </div>
+            <span class="font-display text-[14px] font-bold text-on-surface">Añadir producto a tu lista de compras</span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="new-grocery-input" type="text" placeholder="Escribe el alimento o producto (ej. Nueces, Espinacas, Salmón)..." class="flex-1 h-11 px-3.5 rounded-xl bg-surface-container-low text-[13px] outline-none border border-outline-variant/20 focus:border-primary transition-all text-on-surface" onkeydown="if(event.key==='Enter') addCustomGroceryItem()" />
+            <select id="new-grocery-category" class="h-11 px-3 rounded-xl bg-surface-container-low text-[12px] font-semibold outline-none border border-outline-variant/20 focus:border-primary text-on-surface">
+              <option value="Frutas & Verduras">🥬 Frutas & Verduras</option>
+              <option value="Granos & Semillas">🌾 Granos & Semillas</option>
+              <option value="Pescados & Proteínas">🐟 Pescados & Proteínas</option>
+              <option value="Grasas Buenas & Suplementos">🫒 Grasas & Suplementos</option>
+            </select>
+            <button onclick="addCustomGroceryItem()" class="h-11 px-5 rounded-xl bg-primary text-on-primary font-bold text-[13px] flex items-center justify-center gap-1.5 shrink-0 shadow-sm hover:opacity-95 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[18px]">add</span>
+              <span>Añadir</span>
+            </button>
+          </div>
+
+          <!-- Quick-Add Suggestion Chips -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-outline-variant/15">
+            <span class="text-[11px] font-bold text-outline mr-1">Añadir rápido:</span>
+            <button type="button" onclick="quickAddGroceryChip('Aguacates Hass (3 piezas)', 'Frutas & Verduras')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🥑 Aguacate</button>
+            <button type="button" onclick="quickAddGroceryChip('Avena integral en hojuelas (500g)', 'Granos & Semillas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌾 Avena</button>
+            <button type="button" onclick="quickAddGroceryChip('Filetes de Salmón fresco', 'Pescados & Proteínas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🐟 Salmón</button>
+            <button type="button" onclick="quickAddGroceryChip('Nueces de Castilla sin sal (200g)', 'Grasas Buenas & Suplementos')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌰 Nueces</button>
+            <button type="button" onclick="quickAddGroceryChip('Semillas de Chía (250g)', 'Granos & Semillas')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🌱 Chía</button>
+            <button type="button" onclick="quickAddGroceryChip('Espinacas baby frescas (300g)', 'Frutas & Verduras')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🥬 Espinacas</button>
+            <button type="button" onclick="quickAddGroceryChip('Aceite de Oliva Extra Virgen (1L)', 'Grasas Buenas & Suplementos')" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-primary-fixed hover:text-on-primary-fixed-variant text-[11px] font-medium text-on-surface transition-all">+ 🫒 Aceite Oliva</button>
+          </div>
         </div>
 
         <!-- Categorized Grocery Sections -->
@@ -2447,7 +2472,8 @@
           ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
           ...parsed,
           profile: { ...DEFAULT_STATE.profile, ...(parsed.profile || {}) },
-          medications: (parsed.medications && parsed.medications.length) ? parsed.medications : DEFAULT_STATE.medications
+          medications: (parsed.medications && parsed.medications.length) ? parsed.medications : DEFAULT_STATE.medications,
+          groceries: (Array.isArray(parsed.groceries) && parsed.groceries.length > 0) ? parsed.groceries : DEFAULT_STATE.groceries
         };
       } catch (e) {
         return JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -3768,7 +3794,11 @@
 
     // ---- GROCERY LIST LOGIC ----
     function renderGroceryList() {
+      if (!Array.isArray(appState.groceries)) {
+        appState.groceries = JSON.parse(JSON.stringify(DEFAULT_STATE.groceries));
+      }
       const container = document.getElementById('grocery-categories-container');
+      if (!container) return;
       const categories = ['Frutas & Verduras', 'Granos & Semillas', 'Pescados & Proteínas', 'Grasas Buenas & Suplementos'];
 
       container.innerHTML = categories.map(cat => {
@@ -3782,7 +3812,7 @@
               </span>
             </div>
             <div class="flex flex-col gap-2">
-              ${items.length === 0 ? '<p class="text-[11px] text-outline">Sin elementos en esta sección.</p>' : ''}
+              ${items.length === 0 ? '<p class="text-[11px] text-outline italic py-2 text-center">No hay productos en esta sección. Añade uno arriba o desde el catálogo.</p>' : ''}
               ${items.map(item => `
                 <div class="flex items-center justify-between p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer" onclick="toggleGroceryItem('${item.id}')">
                   <div class="flex items-center gap-2.5 min-w-0">
@@ -3792,7 +3822,7 @@
                       ${item.note ? `<span class="text-[10px] text-outline truncate">${item.note}</span>` : ''}
                     </div>
                   </div>
-                  <button onclick="event.stopPropagation(); removeGroceryItem('${item.id}')" class="w-7 h-7 rounded-full flex items-center justify-center text-outline hover:text-error">
+                  <button type="button" onclick="event.stopPropagation(); removeGroceryItem('${item.id}')" title="Eliminar de la lista" class="w-7 h-7 rounded-full flex items-center justify-center text-outline hover:text-error hover:bg-error/10 transition-colors">
                     <span class="material-symbols-outlined text-[16px]">close</span>
                   </button>
                 </div>
@@ -3804,6 +3834,7 @@
     }
 
     function toggleGroceryItem(id) {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
       const item = appState.groceries.find(g => g.id === id);
       if (item) {
         item.checked = !item.checked;
@@ -3813,6 +3844,7 @@
     }
 
     function removeGroceryItem(id) {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
       appState.groceries = appState.groceries.filter(g => g.id !== id);
       saveState();
       renderGroceryList();
@@ -3820,24 +3852,122 @@
     }
 
     function addCustomGroceryItem() {
+      if (!Array.isArray(appState.groceries)) {
+        appState.groceries = [];
+      }
       const input = document.getElementById('new-grocery-input');
-      const cat = document.getElementById('new-grocery-category').value;
-      const val = input.value.trim();
-      if (!val) return;
+      const catSelect = document.getElementById('new-grocery-category');
+      const cat = catSelect ? catSelect.value : 'Frutas & Verduras';
+      const val = input ? input.value.trim() : '';
+
+      if (!val) {
+        showToast('Escribe el alimento o producto que deseas comprar', 'info');
+        if (input) input.focus();
+        return;
+      }
+
+      // Support comma-separated items
+      const items = val.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+      items.forEach(itemName => {
+        appState.groceries.push({
+          id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          category: cat,
+          name: itemName,
+          checked: false,
+          note: 'Agregado a tu lista'
+        });
+      });
+
+      saveState();
+      if (input) input.value = '';
+      renderGroceryList();
+      showToast(items.length === 1 ? `+ ${items[0]} agregado a tu lista` : `+ ${items.length} productos agregados`, 'playlist_add');
+    }
+
+    function quickAddGroceryChip(name, category) {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
+      const exists = appState.groceries.some(g => g.name.toLowerCase().includes(name.split(' ')[0].toLowerCase()));
+      if (exists) {
+        showToast(`"${name}" ya está en tu lista`, 'info');
+        return;
+      }
       appState.groceries.push({
-        id: 'g_' + Date.now(),
-        category: cat,
-        name: val,
+        id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        category: category,
+        name: name,
         checked: false,
-        note: 'Agregado por ti'
+        note: 'Sugerencia Cardioprotectora'
       });
       saveState();
-      input.value = '';
       renderGroceryList();
-      showToast(`+ ${val} agregado a tu lista`, 'playlist_add');
+      showToast(`+ ${name} agregado a tu lista`, 'playlist_add');
+    }
+
+    function addCatalogItemToGrocery(foodId) {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
+      const item = appState.catalog.find(c => c.id === foodId);
+      if (!item) return;
+
+      let cat = 'Frutas & Verduras';
+      const nameLower = item.name.toLowerCase();
+      if (nameLower.includes('salmón') || nameLower.includes('pescado') || nameLower.includes('sardina') || nameLower.includes('yogurt') || nameLower.includes('pollo') || nameLower.includes('pechuga')) {
+        cat = 'Pescados & Proteínas';
+      } else if (nameLower.includes('avena') || nameLower.includes('chía') || nameLower.includes('chia') || nameLower.includes('lenteja') || nameLower.includes('arroz') || nameLower.includes('quinoa')) {
+        cat = 'Granos & Semillas';
+      } else if (nameLower.includes('aceite') || nameLower.includes('nuez') || nameLower.includes('nueces') || nameLower.includes('omega') || nameLower.includes('suplemento') || nameLower.includes('berberina') || nameLower.includes('psyllium')) {
+        cat = 'Grasas Buenas & Suplementos';
+      }
+
+      appState.groceries.push({
+        id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        category: cat,
+        name: `${item.name} (${item.portion})`,
+        checked: false,
+        note: item.benefit || 'Cardioprotector'
+      });
+
+      saveState();
+      renderGroceryList();
+      showToast(`+ ${item.name} añadido a la Lista de Súper`, 'shopping_cart');
+    }
+
+    function suggestAiGroceryBasket() {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
+      const healthyBasket = [
+        { category: 'Frutas & Verduras', name: 'Aguacates Hass (3 unidades)', note: 'Grasas monoinsaturadas para subir HDL+' },
+        { category: 'Frutas & Verduras', name: 'Espinacas baby frescas (300g)', note: 'Nitratos naturales para relajar arterias' },
+        { category: 'Frutas & Verduras', name: 'Arándanos frescos o congelados (250g)', note: 'Antioxidantes y polifenoles' },
+        { category: 'Granos & Semillas', name: 'Avena integral en hojuelas gruesas (500g)', note: 'Betaglucano para atrapar colesterol LDL' },
+        { category: 'Granos & Semillas', name: 'Semillas de Chía o Linaza molida (250g)', note: 'Fibra soluble y Omega-3 vegetal' },
+        { category: 'Pescados & Proteínas', name: 'Filetes de Salmón fresco o congelado', note: 'EPA y DHA marino de alta potencia' },
+        { category: 'Pescados & Proteínas', name: 'Sardinas en aceite de oliva (3 latas)', note: 'Proteína marina cardioprotectora' },
+        { category: 'Pescados & Proteínas', name: 'Yogurt griego natural sin azúcar', note: 'Proteína saciante' },
+        { category: 'Grasas Buenas & Suplementos', name: 'Aceite de Oliva Extra Virgen (<0.5% acidez)', note: 'Polifenoles que protegen la pared arterial' },
+        { category: 'Grasas Buenas & Suplementos', name: 'Nueces de Castilla sin sal (200g)', note: 'Ácido alfa-linolénico protector' }
+      ];
+
+      let addedCount = 0;
+      healthyBasket.forEach(item => {
+        const exists = appState.groceries.some(g => g.name.toLowerCase().includes(item.name.split(' ')[0].toLowerCase()));
+        if (!exists) {
+          appState.groceries.push({
+            id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            category: item.category,
+            name: item.name,
+            checked: false,
+            note: item.note
+          });
+          addedCount++;
+        }
+      });
+
+      saveState();
+      renderGroceryList();
+      showToast(addedCount > 0 ? `+${addedCount} alimentos añadidos a tu canasta del súper` : 'Tu lista ya cuenta con la canasta completa', 'auto_awesome');
     }
 
     function clearCheckedGroceries() {
+      if (!Array.isArray(appState.groceries)) appState.groceries = [];
       appState.groceries = appState.groceries.filter(g => !g.checked);
       saveState();
       renderGroceryList();
@@ -4190,9 +4320,14 @@
               <span class="inline-block w-fit mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant">${item.benefit}</span>
             </div>
           </div>
-          <button type="button" onclick="addCatalogItemToDay('${item.id}')" aria-label="Añadir ${item.name}" class="w-10 h-10 rounded-xl bg-surface-container-low hover:bg-primary hover:text-on-primary text-primary flex items-center justify-center transition-colors shrink-0 shadow-sm">
-            <span class="material-symbols-outlined text-[20px]">add</span>
-          </button>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="addCatalogItemToGrocery('${item.id}')" title="Añadir a la Lista del Súper" aria-label="Añadir a lista del súper" class="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-secondary-fixed text-on-surface-variant hover:text-on-secondary-fixed-variant flex items-center justify-center transition-colors shadow-sm">
+              <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+            </button>
+            <button type="button" onclick="addCatalogItemToDay('${item.id}')" title="Sumar a lo que comí hoy" aria-label="Añadir a comidas de hoy" class="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-on-primary text-primary flex items-center justify-center transition-colors shadow-sm">
+              <span class="material-symbols-outlined text-[19px]">add</span>
+            </button>
+          </div>
         </article>
       `).join('');
     }
