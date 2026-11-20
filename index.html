@@ -2069,138 +2069,434 @@
     <!-- MODALS & OVERLAYS                                         -->
     <!-- ========================================================= -->
 
-    <!-- 0. PROFILE PERSONALIZATION MODAL (NEW FEATURE) -->
+        <!-- 0. PROFILE PERSONALIZATION MODAL (SMART PROFILE 5 TABS) -->
     <div id="profile-edit-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
-      <div class="w-full max-w-lg bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+      <div class="w-full max-w-xl bg-surface rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+        <!-- Header -->
         <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
           <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-2xl bg-primary-fixed text-primary flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[22px]">person</span>
+            <div class="w-10 h-10 rounded-2xl bg-primary-fixed text-primary flex items-center justify-center shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-[24px]">manage_accounts</span>
             </div>
             <div>
-              <h3 class="font-display text-[18px] font-bold text-on-surface">Personalizar Mi Perfil</h3>
-              <p class="text-[12px] text-on-surface-variant">Tus datos calculan automáticamente tus metas exactas</p>
+              <div class="flex items-center gap-2">
+                <h3 class="font-display text-[18px] font-bold text-on-surface">Mi Perfil Inteligente</h3>
+                <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">NutriBalance AI</span>
+              </div>
+              <p class="text-[12px] text-on-surface-variant">Metabolismo, perfil clínico, estilo de vida y proyección a tu meta</p>
             </div>
           </div>
-          <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline">
+          <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-outline transition-colors">
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Nombre completo</label>
-            <input id="prof-fullname" type="text" placeholder="Ej. Sofía Martínez" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Nombre de pila / saludo</label>
-            <input id="prof-displayname" type="text" placeholder="Ej. Sofía" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
+        <!-- 5 Segmented Tabs Navigation -->
+        <div class="bg-surface-container p-1 rounded-2xl flex items-center gap-1 shadow-sm overflow-x-auto no-scrollbar">
+          <button type="button" id="prof-tab-btn-goals" onclick="switchProfileTab('goals')" class="flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-bold bg-primary text-on-primary shadow-sm transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">flag</span>
+            <span>Metas</span>
+          </button>
+          <button type="button" id="prof-tab-btn-health" onclick="switchProfileTab('health')" class="flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-semibold text-on-surface-variant hover:bg-surface-container-high transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">ecg_heart</span>
+            <span>Salud</span>
+          </button>
+          <button type="button" id="prof-tab-btn-activity" onclick="switchProfileTab('activity')" class="flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-semibold text-on-surface-variant hover:bg-surface-container-high transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">directions_run</span>
+            <span>Actividad</span>
+          </button>
+          <button type="button" id="prof-tab-btn-diet" onclick="switchProfileTab('diet')" class="flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-semibold text-on-surface-variant hover:bg-surface-container-high transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">restaurant</span>
+            <span>Dieta</span>
+          </button>
+          <button type="button" id="prof-tab-btn-habits" onclick="switchProfileTab('habits')" class="flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-semibold text-on-surface-variant hover:bg-surface-container-high transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">psychology</span>
+            <span>Hábitos</span>
+          </button>
         </div>
 
-        <div class="grid grid-cols-3 gap-2.5">
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Género biológico</label>
-            <select id="prof-gender" onchange="previewProfileCalc()" class="w-full px-2.5 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
-              <option value="female">Femenino</option>
-              <option value="male">Masculino</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Edad (años)</label>
-            <input id="prof-age" type="number" value="34" min="15" max="110" oninput="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-outline block mb-1">Estatura (cm)</label>
-            <input id="prof-height" type="number" value="168" min="120" max="230" oninput="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="text-[11px] font-bold text-secondary block mb-1">Peso actual (kg)</label>
-            <input id="prof-weight" type="number" step="0.5" value="72" min="35" max="250" oninput="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low font-display text-[15px] font-extrabold outline-none" />
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-primary block mb-1">Peso deseado / meta (kg)</label>
-            <input id="prof-target-weight" type="number" step="0.5" value="65" min="35" max="250" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low font-display text-[15px] font-extrabold outline-none" />
-          </div>
-        </div>
-
-                  <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-outline">Nivel de actividad deportiva semanal</label>
-            <select id="prof-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
-              <option value="1.2">Sedentario (poco o nada de ejercicio estructurado)</option>
-              <option value="1.375">Ligero (ejercicio suave o caminatas 1-2 días/semana)</option>
-              <option value="1.45" selected>Moderado (entrenamiento o deporte 3-4 días/semana)</option>
-              <option value="1.6">Activo (deporte intenso o cardio 5-6 días/semana)</option>
-            </select>
-          </div>
-
-          <!-- Occupational Activity / NEAT -->
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center justify-between">
-              <label class="text-[11px] font-bold text-outline">Jornada Laboral y Postura Habitual (NEAT)</label>
-              <span class="text-[10px] font-bold text-primary">Gasto no deportivo</span>
+        <!-- TAB 1: METAS & CUERPO -->
+        <div id="prof-panel-goals" class="flex flex-col gap-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Nombre completo</label>
+              <input id="prof-fullname" type="text" placeholder="Ej. Sofía Martínez" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none border border-transparent focus:border-primary transition-colors" />
             </div>
-            <select id="prof-work-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
-              <option value="sitting" selected>🪑 Sentado la mayor parte del día (Escritorio / Computadora / Oficina)</option>
-              <option value="standing">🧍 De pie gran parte del día (Docente / Comercio / Salud) [+150 kcal]</option>
-              <option value="mixed">🚶 Combinado / Alternando sentado y caminatas activas [+280 kcal]</option>
-              <option value="physical">⚡ Trabajo físico continuo / Carga o alto desplazamiento [+450 kcal]</option>
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Nombre de pila / saludo</label>
+              <input id="prof-displayname" type="text" placeholder="Ej. Sofía" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none border border-transparent focus:border-primary transition-colors" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5">
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Género biológico</label>
+              <select id="prof-gender" onchange="previewProfileCalc()" class="w-full px-2 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+                <option value="female">Femenino</option>
+                <option value="male">Masculino</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Edad (años)</label>
+              <input id="prof-age" type="number" value="34" min="15" max="110" oninput="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Estatura (cm)</label>
+              <input id="prof-height" type="number" value="168" min="120" max="230" oninput="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-bold outline-none" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 rounded-2xl bg-secondary-fixed/30 border border-secondary/20 flex flex-col gap-1">
+              <label class="text-[11px] font-bold text-secondary">Peso actual (kg)</label>
+              <input id="prof-weight" type="number" step="0.5" value="72" min="35" max="250" oninput="previewProfileCalc()" class="w-full px-2.5 py-1.5 rounded-xl bg-surface font-display text-[17px] font-extrabold text-on-surface outline-none border border-outline-variant/30" />
+            </div>
+            <div class="p-3 rounded-2xl bg-primary-fixed/30 border border-primary/20 flex flex-col gap-1">
+              <label class="text-[11px] font-bold text-primary">Peso objetivo / meta (kg)</label>
+              <input id="prof-target-weight" type="number" step="0.5" value="65" min="35" max="250" oninput="previewProfileCalc()" class="w-full px-2.5 py-1.5 rounded-xl bg-surface font-display text-[17px] font-extrabold text-on-surface outline-none border border-outline-variant/30" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-outline">Ritmo de déficit calórico diario</label>
+              <span class="text-[10px] font-bold text-primary">Déficit seguro OMS/ADA</span>
+            </div>
+            <select id="prof-deficit" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="250">Suave y gradual (-250 kcal/día · Pérdida de ~0.23 kg/sem)</option>
+              <option value="450" selected>Moderado óptimo (-450 kcal/día · Recomendado · ~0.41 kg/sem)</option>
+              <option value="700">Intensivo controlado (-700 kcal/día · ~0.64 kg/sem)</option>
             </select>
           </div>
 
-        <div class="flex flex-col gap-1">
-          <label class="text-[11px] font-bold text-outline">Ritmo de déficit calórico</label>
-          <select id="prof-deficit" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none">
-            <option value="250">Lento y sostenible (-250 kcal/día)</option>
-            <option value="450" selected>Moderado óptimo (-450 kcal/día · Recomendado)</option>
-            <option value="700">Rápido controlado (-700 kcal/día)</option>
-          </select>
-        </div>
+          <!-- PROYECCIÓN MOTIVACIONAL Y METABOLISMO EN VIVO -->
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-primary-fixed/40 via-surface-container-low to-primary-fixed/20 border border-primary/30 flex flex-col gap-3 shadow-sm">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[22px] text-primary">event_available</span>
+                <div>
+                  <h4 class="text-[13px] font-bold text-on-surface">Proyección a tu Peso Meta (<span id="prof-calc-target-label">65 kg</span>)</h4>
+                  <p class="text-[11px] text-outline">Calculado según déficit acumulado y metabolismo en reposo</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-primary text-on-primary font-bold text-[10px] shrink-0">100% Clínico</span>
+            </div>
 
-        <!-- Live Calculation Feedback -->
-        <div class="p-3.5 rounded-2xl bg-primary-fixed/30 border border-primary/20 flex flex-col gap-2">
-          <div class="flex items-center justify-between text-[11px] text-on-primary-fixed-variant">
-            <span>Metabolismo Basal (BMR): <strong id="prof-calc-bmr">1,440 kcal</strong></span>
-            <span>Gasto Diario (TDEE): <strong id="prof-calc-tdee">2,088 kcal</strong></span>
-          </div>
-          <div class="flex items-center justify-between text-[13px] font-bold text-on-primary-fixed-variant border-t border-primary/10 pt-1.5">
-            <span>Nueva Meta Diaria:</span>
-            <span id="prof-calc-goal" class="font-display text-[17px] text-primary font-extrabold">1,638 kcal</span>
-          </div>
-          <div class="text-[11px] text-outline">
-            Meta de agua base sugerida: <strong id="prof-calc-water" class="text-primary font-bold">2,500 ml</strong> diarios.
-          </div>
-        </div>
-
-        <!-- Respaldo de Datos y Portabilidad -->
-        <div class="p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[20px] text-primary">cloud_sync</span>
-              <div>
-                <h4 class="text-[12px] font-bold text-on-surface">Copia de Seguridad y Transferencia</h4>
-                <p class="text-[10px] text-outline">Pasa tu historial entre tu PC y tu teléfono sin perder nada</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-surface/80 p-3 rounded-xl border border-outline-variant/20">
+              <div class="flex flex-col">
+                <span class="text-[10px] text-outline font-semibold">Peso por perder</span>
+                <span id="prof-calc-diff-kg" class="font-display text-[15px] font-extrabold text-secondary">-7.0 kg</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[10px] text-outline font-semibold">Tiempo estimado</span>
+                <span id="prof-calc-weeks" class="font-display text-[15px] font-extrabold text-primary">~17 semanas</span>
+              </div>
+              <div class="flex flex-col col-span-2 sm:col-span-1">
+                <span class="text-[10px] text-outline font-semibold">Fecha estimada</span>
+                <span id="prof-calc-arrival-date" class="font-display text-[13px] font-extrabold text-on-surface truncate">18 de mar. de 2027</span>
               </div>
             </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-primary/15 text-[11px]">
+              <div>
+                <span class="text-outline block text-[10px]">Metabolismo Basal</span>
+                <strong id="prof-calc-bmr" class="text-on-surface font-bold text-[12px]">1,440 kcal</strong>
+              </div>
+              <div>
+                <span class="text-outline block text-[10px]">NEAT Laboral</span>
+                <strong id="prof-calc-neat" class="text-primary font-bold text-[12px]">+0 kcal</strong>
+              </div>
+              <div>
+                <span class="text-outline block text-[10px]">Gasto Total TDEE</span>
+                <strong id="prof-calc-tdee" class="text-on-surface font-bold text-[12px]">2,088 kcal</strong>
+              </div>
+              <div>
+                <span class="text-primary font-bold block text-[10px]">Nueva Meta Diaria</span>
+                <strong id="prof-calc-goal" class="font-display text-[14px] text-primary font-extrabold">1,638 kcal</strong>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-outline flex items-center justify-between border-t border-primary/10 pt-2">
+              <span>Agua diaria recomendada base:</span>
+              <strong id="prof-calc-water" class="text-primary font-bold">2,520 ml / día</strong>
+            </div>
           </div>
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <button type="button" onclick="exportBackupData()" class="h-9 px-2.5 rounded-xl bg-surface hover:bg-surface-container border border-outline-variant/30 text-on-surface font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
-              <span class="material-symbols-outlined text-[16px] text-primary">download</span>
-              <span>Descargar Respaldo</span>
-            </button>
-            <button type="button" onclick="triggerImportFileInput()" class="h-9 px-2.5 rounded-xl bg-surface hover:bg-surface-container border border-outline-variant/30 text-on-surface font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
-              <span class="material-symbols-outlined text-[16px] text-secondary">upload</span>
-              <span>Restaurar Archivo</span>
+        </div>
+
+        <!-- TAB 2: SALUD & RIESGOS -->
+        <div id="prof-panel-health" class="hidden flex-col gap-3.5">
+          <div>
+            <h4 class="text-[13px] font-bold text-on-surface">Factores de Riesgo Cardiovascular & Clínico</h4>
+            <p class="text-[11px] text-outline">NutriBalance adapta los semáforos de sodio, grasas saturadas y fibra según tus condiciones activas</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="risk-colesterol" value="colesterol" class="prof-risk-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Colesterol LDL Alto (>100 mg/dL)</span>
+                <span class="text-[10px] text-outline">Prioriza avena, chía, fibra soluble y fitoesteroles.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="risk-hipertension" value="hipertension" class="prof-risk-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Hipertensión Arterial</span>
+                <span class="text-[10px] text-outline">Alerta estricta de sodio (&lt;2,000 mg/día) y potasio.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="risk-insulina" value="insulina" class="prof-risk-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Resistencia a Insulina / Glucosa</span>
+                <span class="text-[10px] text-outline">Control de azúcares libres e índice glucémico.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="risk-trigliceridos" value="trigliceridos" class="prof-risk-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Triglicéridos Elevados (>150 mg/dL)</span>
+                <span class="text-[10px] text-outline">Aumenta Omega-3 EPA/DHA y limita harinas refinadas.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="risk-tiroides" value="tiroides" class="prof-risk-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Hipotiroidismo / Metabolismo Lento</span>
+                <span class="text-[10px] text-outline">Ajuste de termogénesis y densidad de micronutrientes.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="risk-higado" value="higado_graso" class="prof-risk-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Hígado Graso No Alcohólico</span>
+                <span class="text-[10px] text-outline">Reducción de fructosa añadida y grasas trans.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Grupo Sanguíneo</label>
+              <select id="prof-blood-type" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+                <option value="O+" selected>O Positivo (O+)</option>
+                <option value="O-">O Negativo (O-)</option>
+                <option value="A+">A Positivo (A+)</option>
+                <option value="A-">A Negativo (A-)</option>
+                <option value="B+">B Positivo (B+)</option>
+                <option value="B-">B Negativo (B-)</option>
+                <option value="AB+">AB Positivo (AB+)</option>
+                <option value="AB-">AB Negativo (AB-)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-outline block mb-1">Alergias o Intolerancias Médicas</label>
+              <input id="prof-allergies-summary" type="text" placeholder="Ej. Penicilina, AINEs, Lactosa" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none border border-transparent focus:border-primary transition-colors" />
+            </div>
+          </div>
+
+          <!-- Medical Shortcut -->
+          <div class="p-3.5 rounded-2xl bg-secondary-fixed/25 border border-secondary/20 flex items-center justify-between gap-3 mt-1">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[22px] text-secondary">medical_information</span>
+              <div>
+                <h5 class="text-[12px] font-bold text-on-surface">Ficha Médica & Farmacológica Completa</h5>
+                <p class="text-[10px] text-outline">Gestiona dosis exactas, horarios de pastillas y cirugías previas</p>
+              </div>
+            </div>
+            <button type="button" onclick="closeProfileModal(); switchTab('salud'); switchSaludSubtab('historial');" class="h-9 px-3 rounded-xl bg-secondary text-white font-bold text-[11px] hover:opacity-90 active:scale-95 transition-all shrink-0">
+              Ver Ficha
             </button>
           </div>
         </div>
 
-        <button onclick="saveUserProfile()" class="w-full h-12 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-bold text-[14px] shadow-md active:scale-95 transition-all">
-          Guardar Mi Perfil y Recalcular Metas
-        </button>
+        <!-- TAB 3: ACTIVIDAD & SUEÑO -->
+        <div id="prof-panel-activity" class="hidden flex-col gap-3.5">
+          <div>
+            <h4 class="text-[13px] font-bold text-on-surface">Actividad Diaria (NEAT vs EAT) & Descanso</h4>
+            <p class="text-[11px] text-outline">Distingue tu gasto en el trabajo del ejercicio programado para no subestimar calorías</p>
+          </div>
+
+          <!-- NEAT Laboral -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-outline">Jornada Laboral y Postura Habitual (Gasto NEAT)</label>
+              <span class="text-[10px] font-bold text-primary">Gasto calórico de base</span>
+            </div>
+            <select id="prof-work-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="sitting" selected>Sentado la mayor parte del día (Escritorio / Oficina / Conductor) [+0 kcal]</option>
+              <option value="standing">De pie gran parte del día (Docente / Comercio / Dependiente) [+150 kcal]</option>
+              <option value="mixed">Combinado / Alternando sentado y caminatas activas (Enfermería / Almacén) [+280 kcal]</option>
+              <option value="physical">Trabajo físico pesado continuo (Construcción / Reparto activo / Faena) [+450 kcal]</option>
+            </select>
+          </div>
+
+          <!-- EAT Deportivo -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-outline">Frecuencia Deportiva Semanal (Entrenamiento EAT)</label>
+              <span class="text-[10px] font-bold text-outline">Ejercicio estructurado</span>
+            </div>
+            <select id="prof-activity" onchange="previewProfileCalc()" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="1.2">Sedentario (Poco o nada de ejercicio estructurado)</option>
+              <option value="1.375">Ligero (Ejercicio suave o caminatas 1-2 días/semana)</option>
+              <option value="1.45" selected>Moderado (Entrenamiento o deporte 3-4 días/semana · Recomendado)</option>
+              <option value="1.6">Activo (Deporte intenso o cardio 5-6 días/semana)</option>
+            </select>
+          </div>
+
+          <!-- Sueño y descanso -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-outline">Horas Promedio de Sueño por Noche</label>
+              <span class="text-[10px] font-bold text-tertiary">Recuperación hormonal</span>
+            </div>
+            <select id="prof-sleep-hours" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="5.5">Menos de 6 horas (Riesgo de grelina/apetito elevado)</option>
+              <option value="6.5">6 a 7 horas</option>
+              <option value="7.5" selected>7 a 8 horas (Rango clínico óptimo)</option>
+              <option value="8.5">Más de 8 horas</option>
+            </select>
+            <div class="p-2.5 rounded-xl bg-surface-container text-[11px] text-outline flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-primary">bedtime</span>
+              <span>Dormir al menos 7 horas estabiliza la leptina y disminuye la ansiedad por dulces en la tarde.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: ENFOQUE NUTRICIONAL & COMIDAS -->
+        <div id="prof-panel-diet" class="hidden flex-col gap-3.5">
+          <div>
+            <h4 class="text-[13px] font-bold text-on-surface">Tipo de Alimentación & Distribución Diaria</h4>
+            <p class="text-[11px] text-outline">Personaliza la selección de alimentos en la despensa, recetas inteligentes y compras</p>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-bold text-outline">Enfoque Dietario Principal</label>
+            <select id="prof-diet-type" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="cardio" selected>Cardioprotectora / Bajar LDL (Baja en saturadas, rica en fibra soluble y omega-3) · Recomendada</option>
+              <option value="mediterranean">Mediterránea Tradicional (Aceite de oliva virgen, pescado, granos enteros y legumbres)</option>
+              <option value="high_protein">Alta en Proteína (Saciante, preserva masa muscular magra en déficit calórico)</option>
+              <option value="low_carb">Baja en Carbohidratos / Low Carb (Control de glucemia y menor pico insulínico)</option>
+              <option value="vegetarian">Vegetariana / Plant-Based (Proteínas vegetales, semillas, frutos secos y hortalizas)</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-outline">Estructura de Tomas Diarias</label>
+              <span class="text-[10px] font-bold text-primary">Reparto de energía</span>
+            </div>
+            <select id="prof-meals-per-day" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="3">3 comidas (Desayuno, Almuerzo y Cena)</option>
+              <option value="4" selected>4 comidas (Desayuno, Almuerzo, Merienda y Cena) · Estándar equilibrado</option>
+              <option value="5">5 comidas (Desayuno, Media Mañana, Almuerzo, Merienda y Cena)</option>
+            </select>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-primary-fixed/20 border border-primary/20 flex flex-col gap-1.5 text-[11px]">
+            <span class="font-bold text-on-primary-fixed-variant flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              <span>Distribución Automática de Calorías</span>
+            </span>
+            <p class="text-on-surface-variant">Con 4 comidas, NutriBalance asigna de manera sugerida: 25% Desayuno, 35% Almuerzo, 15% Merienda y 25% Cena, ajustando las recomendaciones de la despensa a tu presupuesto en tiempo real.</p>
+          </div>
+        </div>
+
+        <!-- TAB 5: HÁBITOS & BARRERAS PSICOLÓGICAS -->
+        <div id="prof-panel-habits" class="hidden flex-col gap-3.5">
+          <div>
+            <h4 class="text-[13px] font-bold text-on-surface">Tus Retos Reales & Asistente IA</h4>
+            <p class="text-[11px] text-outline">Marca los obstáculos que más se te dificultan para que la app adapte sus alertas y motivación:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="barrier-ansiedad" value="ansiedad" class="prof-barrier-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Comer por ansiedad o estrés</span>
+                <span class="text-[10px] text-outline">Hambre emocional en momentos de tensión laboral o familiar.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="barrier-tiempo" value="falta_tiempo" class="prof-barrier-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Falta de tiempo para cocinar</span>
+                <span class="text-[10px] text-outline">Recurrir a domicilios o comida ultraprocesada rápida.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="barrier-antojos" value="antojos_noche" class="prof-barrier-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Antojos dulces en la tarde / noche</span>
+                <span class="text-[10px] text-outline">Picoteo nocturno de galletas, chocolate o postres.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors">
+              <input type="checkbox" id="barrier-culpa" value="culpa" class="prof-barrier-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Culpa o frustración tras comer</span>
+                <span class="text-[10px] text-outline">Sensación de haber "arruinado la dieta" por un desliz.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 cursor-pointer transition-colors sm:col-span-2">
+              <input type="checkbox" id="barrier-constancia" value="constancia" class="prof-barrier-cb mt-1 w-4 h-4 text-primary rounded accent-primary cursor-pointer" />
+              <div class="flex flex-col">
+                <span class="text-[12px] font-bold text-on-surface">Dificultad para mantener la constancia</span>
+                <span class="text-[10px] text-outline">Empezar con mucha motivación y abandonar a la segunda o tercera semana.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="flex flex-col gap-1.5 pt-1">
+            <label class="text-[11px] font-bold text-outline">Método preferido de registro con Inteligencia Artificial</label>
+            <select id="prof-preferred-logging" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low text-[13px] font-semibold outline-none cursor-pointer">
+              <option value="photo_ai" selected>Foto con IA (Reconocimiento visual de platillos y cálculo nutricional)</option>
+              <option value="text">Texto libre descriptivo ("Desayuné 2 huevos, 1 tostada y café")</option>
+              <option value="catalog">Buscador y catálogo manual de alimentos cardioprotectores</option>
+            </select>
+          </div>
+
+          <!-- Respaldo de Datos y Portabilidad -->
+          <div class="p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col gap-2 mt-1">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px] text-primary">cloud_sync</span>
+                <div>
+                  <h4 class="text-[12px] font-bold text-on-surface">Copia de Seguridad y Transferencia</h4>
+                  <p class="text-[10px] text-outline">Pasa tu historial completo entre tu PC y tu teléfono sin perder nada</p>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="exportBackupData()" class="h-9 px-2.5 rounded-xl bg-surface hover:bg-surface-container border border-outline-variant/30 text-on-surface font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px] text-primary">download</span>
+                <span>Descargar Respaldo</span>
+              </button>
+              <button type="button" onclick="triggerImportFileInput()" class="h-9 px-2.5 rounded-xl bg-surface hover:bg-surface-container border border-outline-variant/30 text-on-surface font-bold text-[11px] flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[16px] text-secondary">upload</span>
+                <span>Restaurar Archivo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer with Main Save Action -->
+        <div class="border-t border-outline-variant/20 pt-3">
+          <button onclick="saveUserProfile()" class="w-full h-12 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-bold text-[14px] shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <span>Guardar Mi Perfil y Actualizar Metas</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2930,9 +3226,18 @@
         weight: 72,
         targetWeight: 65,
         activity: 1.45,
-        deficitPace: 450
-      ,
-          workActivity: 'sitting'},
+        deficitPace: 450,
+        workActivity: 'sitting',
+        dietType: 'cardio',
+        mealsPerDay: 4,
+        sleepHours: 7.5,
+        bloodType: 'O+',
+        allergiesSummary: 'Penicilina, AINEs',
+        medicalRisks: ['colesterol', 'hipertension'],
+        psychBarriers: ['ansiedad', 'antojos_noche'],
+        preferredLogging: 'photo_ai',
+        projectedWeeks: 17
+      },
       goalKcal: 1850,
       warn75: true,
       confirmExceed: true,
@@ -3715,31 +4020,7 @@
       }
     }
 
-    // ---- PROFILE EDITING LOGIC ----
-    function openProfileModal() {
-      const p = appState.profile;
-      document.getElementById('prof-fullname').value = p.fullname || '';
-      document.getElementById('prof-displayname').value = p.displayName || '';
-      document.getElementById('prof-gender').value = p.gender || 'female';
-      document.getElementById('prof-age').value = p.age || 34;
-      document.getElementById('prof-height').value = p.height || 168;
-      document.getElementById('prof-weight').value = p.weight || 72;
-      document.getElementById('prof-target-weight').value = p.targetWeight || 65;
-      document.getElementById('prof-activity').value = p.activity || 1.45;
-      document.getElementById('prof-deficit').value = p.deficitPace || 450;
-      if (document.getElementById('prof-work-activity')) document.getElementById('prof-work-activity').value = p.workActivity || 'sitting';
-      previewProfileCalc();
-
-      const modal = document.getElementById('profile-edit-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeProfileModal() {
-      const modal = document.getElementById('profile-edit-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
+    // PROFILE EDITING LOGIC (MOVED BELOW)
 
     // ---- QR MOBILE ACCESS MODAL LOGIC ----
     function openQrModal() {
@@ -3887,34 +4168,167 @@
       reader.readAsText(file);
     }
 
+        // ---- PROFILE EDITING & SMART PERSONALIZATION LOGIC ----
+    function switchProfileTab(tabName) {
+      const tabs = ['goals', 'health', 'activity', 'diet', 'habits'];
+      tabs.forEach(t => {
+        const panel = document.getElementById(`prof-panel-${t}`);
+        const btn = document.getElementById(`prof-tab-btn-${t}`);
+        if (panel) {
+          if (t === tabName) {
+            panel.classList.remove('hidden');
+            panel.classList.add('flex');
+          } else {
+            panel.classList.add('hidden');
+            panel.classList.remove('flex');
+          }
+        }
+        if (btn) {
+          if (t === tabName) {
+            btn.className = 'flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-bold bg-primary text-on-primary shadow-sm transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5';
+          } else {
+            btn.className = 'flex-1 py-2 px-2 rounded-xl text-[11px] sm:text-[12px] font-semibold text-on-surface-variant hover:bg-surface-container-high transition-all text-center whitespace-nowrap flex items-center justify-center gap-1.5';
+          }
+        }
+      });
+    }
+
     function previewProfileCalc() {
-      const tempProf = {
-        gender: document.getElementById('prof-gender').value,
-        age: document.getElementById('prof-age').value,
-        height: document.getElementById('prof-height').value,
-        weight: document.getElementById('prof-weight').value,
-        activity: document.getElementById('prof-activity').value,
-        deficitPace: document.getElementById('prof-deficit').value,
-        workActivity: document.getElementById('prof-work-activity')?.value || 'sitting'
-      };
+      const weight = parseFloat(document.getElementById('prof-weight')?.value) || 72;
+      const targetWeight = parseFloat(document.getElementById('prof-target-weight')?.value) || 65;
+      const height = parseFloat(document.getElementById('prof-height')?.value) || 168;
+      const age = parseInt(document.getElementById('prof-age')?.value, 10) || 34;
+      const gender = document.getElementById('prof-gender')?.value || 'female';
+      const activity = parseFloat(document.getElementById('prof-activity')?.value) || 1.45;
+      const deficitPace = parseInt(document.getElementById('prof-deficit')?.value, 10) || 450;
+      const workAct = document.getElementById('prof-work-activity')?.value || 'sitting';
+
+      const tempProf = { gender, age, height, weight, activity, deficitPace, workActivity: workAct };
       const res = calculateMetabolicMetrics(tempProf);
-      document.getElementById('prof-calc-bmr').textContent = `${res.bmr.toLocaleString('es-ES')} kcal`;
-      document.getElementById('prof-calc-tdee').textContent = `${res.tdee.toLocaleString('es-ES')} kcal`;
-      document.getElementById('prof-calc-goal').textContent = `${res.goalKcal.toLocaleString('es-ES')} kcal`;
-      document.getElementById('prof-calc-water').textContent = `${res.waterBaseMl.toLocaleString('es-ES')} ml`;
+
+      // NEAT bonus calculation
+      let neatBonus = 0;
+      if (workAct === 'standing') neatBonus = 150;
+      else if (workAct === 'mixed') neatBonus = 280;
+      else if (workAct === 'physical') neatBonus = 450;
+
+      // Weight loss projection calculations
+      const diffKg = Math.max(0, weight - targetWeight);
+      const weeklyLossKg = (deficitPace * 7) / 7700; // ~7,700 kcal per kg of fat
+      const estimatedWeeks = weeklyLossKg > 0 ? Math.ceil(diffKg / weeklyLossKg) : 0;
+
+      // Arrival date calculation
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + (estimatedWeeks * 7));
+      const arrivalDateFormatted = targetDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      // Update DOM elements
+      const elBmr = document.getElementById('prof-calc-bmr');
+      const elNeat = document.getElementById('prof-calc-neat');
+      const elTdee = document.getElementById('prof-calc-tdee');
+      const elGoal = document.getElementById('prof-calc-goal');
+      const elWater = document.getElementById('prof-calc-water');
+      const elTargetLabel = document.getElementById('prof-calc-target-label');
+      const elDiffKg = document.getElementById('prof-calc-diff-kg');
+      const elWeeks = document.getElementById('prof-calc-weeks');
+      const elArrival = document.getElementById('prof-calc-arrival-date');
+
+      if (elBmr) elBmr.textContent = `${res.bmr.toLocaleString('es-ES')} kcal`;
+      if (elNeat) elNeat.textContent = `+${neatBonus} kcal`;
+      if (elTdee) elTdee.textContent = `${res.tdee.toLocaleString('es-ES')} kcal`;
+      if (elGoal) elGoal.textContent = `${res.goalKcal.toLocaleString('es-ES')} kcal`;
+      if (elWater) elWater.textContent = `${res.waterBaseMl.toLocaleString('es-ES')} ml / día`;
+      if (elTargetLabel) elTargetLabel.textContent = `${targetWeight} kg`;
+      if (elDiffKg) elDiffKg.textContent = diffKg > 0 ? `-${diffKg.toFixed(1)} kg` : '0 kg (¡Meta alcanzada!)';
+      if (elWeeks) elWeeks.textContent = diffKg > 0 ? `~${estimatedWeeks} semanas` : '¡Hoy!';
+      if (elArrival) elArrival.textContent = diffKg > 0 ? arrivalDateFormatted : '¡Objetivo logrado!';
+    }
+
+    function openProfileModal() {
+      const p = appState.profile;
+      if (document.getElementById('prof-fullname')) document.getElementById('prof-fullname').value = p.fullname || '';
+      if (document.getElementById('prof-displayname')) document.getElementById('prof-displayname').value = p.displayName || '';
+      if (document.getElementById('prof-gender')) document.getElementById('prof-gender').value = p.gender || 'female';
+      if (document.getElementById('prof-age')) document.getElementById('prof-age').value = p.age || 34;
+      if (document.getElementById('prof-height')) document.getElementById('prof-height').value = p.height || 168;
+      if (document.getElementById('prof-weight')) document.getElementById('prof-weight').value = p.weight || 72;
+      if (document.getElementById('prof-target-weight')) document.getElementById('prof-target-weight').value = p.targetWeight || 65;
+      if (document.getElementById('prof-activity')) document.getElementById('prof-activity').value = p.activity || 1.45;
+      if (document.getElementById('prof-deficit')) document.getElementById('prof-deficit').value = p.deficitPace || 450;
+      if (document.getElementById('prof-work-activity')) document.getElementById('prof-work-activity').value = p.workActivity || 'sitting';
+      
+      if (document.getElementById('prof-blood-type')) document.getElementById('prof-blood-type').value = p.bloodType || 'O+';
+      if (document.getElementById('prof-allergies-summary')) document.getElementById('prof-allergies-summary').value = p.allergiesSummary || 'Penicilina, AINEs';
+      if (document.getElementById('prof-sleep-hours')) document.getElementById('prof-sleep-hours').value = p.sleepHours || 7.5;
+      if (document.getElementById('prof-diet-type')) document.getElementById('prof-diet-type').value = p.dietType || 'cardio';
+      if (document.getElementById('prof-meals-per-day')) document.getElementById('prof-meals-per-day').value = p.mealsPerDay || 4;
+      if (document.getElementById('prof-preferred-logging')) document.getElementById('prof-preferred-logging').value = p.preferredLogging || 'photo_ai';
+
+      // Checkboxes for medical risks
+      const risks = Array.isArray(p.medicalRisks) ? p.medicalRisks : ['colesterol', 'hipertension'];
+      document.querySelectorAll('.prof-risk-cb').forEach(cb => {
+        cb.checked = risks.includes(cb.value);
+      });
+
+      // Checkboxes for psych barriers
+      const barriers = Array.isArray(p.psychBarriers) ? p.psychBarriers : ['ansiedad', 'antojos_noche'];
+      document.querySelectorAll('.prof-barrier-cb').forEach(cb => {
+        cb.checked = barriers.includes(cb.value);
+      });
+
+      previewProfileCalc();
+      switchProfileTab('goals');
+
+      const modal = document.getElementById('profile-edit-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeProfileModal() {
+      const modal = document.getElementById('profile-edit-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
     }
 
     function saveUserProfile() {
-      const fullname = document.getElementById('prof-fullname').value.trim() || 'Sofía Martínez';
-      const displayName = document.getElementById('prof-displayname').value.trim() || fullname.split(' ')[0];
-      const gender = document.getElementById('prof-gender').value;
-      const age = parseInt(document.getElementById('prof-age').value, 10) || 34;
-      const height = parseInt(document.getElementById('prof-height').value, 10) || 168;
-      const weight = parseFloat(document.getElementById('prof-weight').value) || 72;
-      const targetWeight = parseFloat(document.getElementById('prof-target-weight').value) || 65;
-      const activity = parseFloat(document.getElementById('prof-activity').value) || 1.45;
-      const deficitPace = parseInt(document.getElementById('prof-deficit').value, 10) || 450;
+      const fullname = document.getElementById('prof-fullname')?.value.trim() || 'Sofía Martínez';
+      const displayName = document.getElementById('prof-displayname')?.value.trim() || fullname.split(' ')[0];
+      const gender = document.getElementById('prof-gender')?.value || 'female';
+      const age = parseInt(document.getElementById('prof-age')?.value, 10) || 34;
+      const height = parseInt(document.getElementById('prof-height')?.value, 10) || 168;
+      const weight = parseFloat(document.getElementById('prof-weight')?.value) || 72;
+      const targetWeight = parseFloat(document.getElementById('prof-target-weight')?.value) || 65;
+      const activity = parseFloat(document.getElementById('prof-activity')?.value) || 1.45;
+      const deficitPace = parseInt(document.getElementById('prof-deficit')?.value, 10) || 450;
       const workActivity = document.getElementById('prof-work-activity')?.value || 'sitting';
+
+      const bloodType = document.getElementById('prof-blood-type')?.value || 'O+';
+      const allergiesSummary = document.getElementById('prof-allergies-summary')?.value.trim() || 'Penicilina, AINEs';
+      const sleepHours = parseFloat(document.getElementById('prof-sleep-hours')?.value) || 7.5;
+      const dietType = document.getElementById('prof-diet-type')?.value || 'cardio';
+      const mealsPerDay = parseInt(document.getElementById('prof-meals-per-day')?.value, 10) || 4;
+      const preferredLogging = document.getElementById('prof-preferred-logging')?.value || 'photo_ai';
+
+      // Read risks
+      const medicalRisks = [];
+      document.querySelectorAll('.prof-risk-cb:checked').forEach(cb => {
+        medicalRisks.push(cb.value);
+      });
+
+      // Read barriers
+      const psychBarriers = [];
+      document.querySelectorAll('.prof-barrier-cb:checked').forEach(cb => {
+        psychBarriers.push(cb.value);
+      });
+
+      // Calculate projected weeks
+      const diffKg = Math.max(0, weight - targetWeight);
+      const weeklyLossKg = (deficitPace * 7) / 7700;
+      const projectedWeeks = weeklyLossKg > 0 ? Math.ceil(diffKg / weeklyLossKg) : 0;
 
       appState.profile = {
         fullname,
@@ -3926,15 +4340,25 @@
         targetWeight,
         activity,
         deficitPace,
-        workActivity
+        workActivity,
+        bloodType,
+        allergiesSummary,
+        sleepHours,
+        dietType,
+        mealsPerDay,
+        preferredLogging,
+        medicalRisks,
+        psychBarriers,
+        projectedWeeks
       };
+
       const metrics = calculateMetabolicMetrics(appState.profile);
       appState.goalKcal = metrics.goalKcal;
 
       saveState();
       closeProfileModal();
       updateAllUI();
-      showToast(`¡Perfil actualizado! Nueva meta: ${appState.goalKcal} kcal`, 'verified_user');
+      showToast(`¡Perfil Inteligente actualizado! Nueva meta: ${appState.goalKcal} kcal`, 'verified_user');
     }
 
     // ---- MEDICATION TRACKER LOGIC (NEW FEATURE) ----
